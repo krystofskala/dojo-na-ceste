@@ -130,19 +130,17 @@
     padding: 1.1rem var(--gutter); pointer-events: none;
     color: var(--nav-ink, #182338); transition: color 320ms var(--ease);
   }
-  /* A short chapter can leave its last line peeking out right under this
-     bar when scrolled to its own bottom; a soft scrim keeps the nav
-     legible instead of colliding with whatever text is under it. */
-  .topnav::before {
-    content: ""; position: absolute; inset: -1rem -1rem auto -1rem; height: 4.5rem;
-    background: linear-gradient(to bottom, var(--paper) 0%, transparent 100%);
-    opacity: 0.88; z-index: -1; pointer-events: none;
-    transition: background-color 320ms var(--ease);
-  }
-  .topnav--dark::before { background: linear-gradient(to bottom, var(--navy-deep) 0%, transparent 100%); }
+  /* No scrim here on purpose: a solid backdrop behind the bar would sit
+     between the blended elements below and the real chapter background,
+     so mix-blend-mode would diff against the scrim's own (still binary)
+     color instead of the true, continuously-changing background — exactly
+     the bug this is meant to fix. Legibility comes from the per-pixel
+     contrast below instead of a painted-on fade. */
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
-  .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; transition: filter 320ms var(--ease); }
-  .topnav--dark .topnav__mark img { filter: invert(1) brightness(1.6); }
+  /* Same per-pixel contrast trick as the wordmark/kanji, applied to the
+     icon's own artwork instead of a filter toggle, so it too tracks the
+     real boundary instead of flipping in one shot. */
+  .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; mix-blend-mode: difference; }
   /* The mark's wordmark always sits exactly on the page background right
      behind it (no dimming, no ancestor opacity — either would isolate the
      blend below into its own group and starve it of a real backdrop to
@@ -252,15 +250,17 @@
     color: inherit; font-family: var(--font-text); font-size: 0.82rem; letter-spacing: 0.01em;
     padding: 0.3rem 0.1rem; transition: transform 180ms var(--ease);
   }
-  /* Kanji contrasts itself against whatever chapter background is actually
-     behind it, per pixel — see .topnav__mark span above for why opacity
-     can't live on an ancestor of a blended element. That's also why the
-     dim/bright active-state opacity moved down onto .navlink__label only:
-     it has to stay off every element between the kanji and the page. */
+  /* Kanji and label both contrast themselves against whatever chapter
+     background is actually behind them, per pixel — see .topnav__mark span
+     above for why opacity can't live on an ancestor of a blended element.
+     It also can't live on the blended element itself: opacity re-mixes the
+     already-diffed pixel back toward that same backdrop afterwards, which
+     washes a "dimmed inactive" label out to a flat, low-contrast gray
+     instead of leaving it legible-but-quieter. Active/hover state is
+     carried by weight and color instead, never opacity, here. */
   .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; color: #fff; mix-blend-mode: difference; transition: color 180ms var(--ease); }
-  .navlink__label { color: #fff; mix-blend-mode: difference; opacity: 0.62; transition: opacity 180ms var(--ease), color 180ms var(--ease); }
+  .navlink__label { color: #fff; mix-blend-mode: difference; transition: color 180ms var(--ease); }
   .navlink:hover, .navlink:focus-visible { transform: translateY(-1px); }
-  .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label { opacity: 1; }
   /* Hover leaves the auto-contrast system for a deliberate brand color —
      the site's own light-chapter accent (red) or dark-chapter accent
      (gold) — rather than another diffed value. mix-blend-mode: normal
@@ -275,7 +275,7 @@
   .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label {
     color: var(--gold);
   }
-  .navlink.is-active .navlink__label { opacity: 1; font-weight: 600; }
+  .navlink.is-active .navlink__label { font-weight: 600; }
   .navlink.is-active svg { opacity: 1; }
   @media (max-width: 900px) {
     .navlink span { display: none; }
