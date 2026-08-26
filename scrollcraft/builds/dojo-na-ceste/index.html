@@ -29,7 +29,7 @@
   :root {
     --paper: #F7F4EC; --paper-alt: #EFE8D9;
     --navy: #182338; --navy-deep: #101828;
-    --red: #A63D2C; --red-deep: #8A3223; --gold: #E9C9A0;
+    --red: #A63D2C; --red-deep: #8A3223; --gold: #E9C9A0; --gold-hover: #f0dcc0;
     --font-display: "EB Garamond", serif;
     --font-kanji: "Shippori Mincho", "Hiragino Mincho ProN", serif;
     --font-text: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -157,7 +157,7 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     display: flex; align-items: center; justify-content: space-between;
     padding: 1.1rem var(--gutter); pointer-events: none;
-    color: var(--nav-ink, #182338); transition: color 320ms var(--ease);
+    color: var(--nav-ink, var(--navy)); transition: color 320ms var(--ease);
   }
   /* No scrim here on purpose: legibility comes from the two-layer color
      split below, not a painted-on fade. */
@@ -239,16 +239,19 @@
   }
   .modal-overlay.is-open { opacity: 1; pointer-events: auto; }
   .modal-card {
-    background: var(--paper); color: #182338; width: 100%; max-width: 32rem; max-height: 85vh; overflow-y: auto;
+    background: var(--paper); color: var(--navy); width: 100%; max-width: 32rem; max-height: 85vh; overflow-y: auto;
     border-radius: 18px; padding: clamp(1.5rem, 4vw, 2.4rem); position: relative;
     box-shadow: 0 30px 70px rgba(0,0,0,0.45); transform: translateY(10px) scale(0.98); transition: transform 220ms var(--ease);
   }
   .modal-overlay.is-open .modal-card { transform: translateY(0) scale(1); }
-  .modal-close {
-    position: absolute; top: 0.9rem; right: 0.9rem; width: 2.2rem; height: 2.2rem; border-radius: 50%;
-    border: none; background: rgba(24,35,56,0.08); font-size: 1.3rem; line-height: 1; cursor: pointer; color: #182338;
+  .modal-close, .course-popup__close {
+    display: flex; align-items: center; justify-content: center;
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    border: none; background: rgba(24,35,56,0.08); font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--navy);
+    transition: background 150ms var(--ease);
   }
-  .modal-close:hover { background: rgba(24,35,56,0.16); }
+  .modal-close:hover, .course-popup__close:hover { background: rgba(24,35,56,0.16); }
+  .modal-close { position: absolute; top: 0.9rem; right: 0.9rem; }
   .modal-card__body figure img { width: 100%; height: auto; border-radius: 12px; margin-bottom: 1.1rem; }
   /* A cloned post keeps its inner markup but not its .post--photo wrapper
      class (only innerHTML is cloned), so the width/height attributes on a
@@ -433,7 +436,7 @@
   .post__btn:hover, .post__btn:focus-visible { opacity: 1; transform: translateY(-1px); }
   .post__btn--pdf { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); opacity: 1; }
   .post__btn--pdf:hover { background: var(--red-deep); border-color: var(--red-deep); }
-  [data-ground="navy"] .post__btn--pdf:hover, [data-ground="navy-deep"] .post__btn--pdf:hover { background: #f0dcc0; border-color: #f0dcc0; }
+  [data-ground="navy"] .post__btn--pdf:hover, [data-ground="navy-deep"] .post__btn--pdf:hover { background: var(--gold-hover); border-color: var(--gold-hover); }
 
   /* ---------------------------------------------------------------------
      Slide 5 · Kresba — all four in one row
@@ -498,7 +501,7 @@
      for a real card shape instead of a flattened strip. */
   @media (max-width: 900px) { .courses { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .course__age { display: inline-block; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
-  .course h3 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.3rem; color: #F7F4EC; }
+  .course h3 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--paper); }
   /* Hidden on the card face; the popup reads this same text directly off
      the card's own DOM, so nothing is duplicated in JS. */
   .course p { display: none; }
@@ -516,7 +519,7 @@
   .course-popup.is-visible { display: flex; }
   .course-popup.is-open { background: rgba(24,35,56,0.4); }
   .course-popup__card {
-    width: 100%; height: 100%; background: var(--paper); color: #182338; border-radius: 16px; overflow: hidden;
+    width: 100%; height: 100%; background: var(--paper); color: var(--navy); border-radius: 16px; overflow: hidden;
     display: grid; grid-template-columns: 1fr 1fr; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.4);
     transform-origin: top left;
   }
@@ -546,13 +549,10 @@
     .course-popup__card { grid-template-columns: 1fr; grid-template-rows: 1fr 2fr; border-radius: 0; max-height: 100vh; max-height: 100svh; }
     .course-popup__body { padding: 1.75rem; }
   }
-  .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: #182338; }
+  .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: var(--navy); }
   .course-popup__body p { display: block; font-size: 0.96rem; line-height: 1.7; color: #4A5163; margin: 0 0 1.2rem; }
   .course-popup__body .course__age { color: var(--red); }
-  .course-popup__close {
-    position: absolute; top: 1.1rem; right: 1.1rem; width: 2.3rem; height: 2.3rem; border-radius: 50%; border: none;
-    background: rgba(24,35,56,0.08); font-size: 1.3rem; cursor: pointer; z-index: 2; line-height: 1; color: #182338;
-  }
+  .course-popup__close { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 2; }
   .cta-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-1); }
   .btn {
     display: inline-block; font-size: 0.88rem; font-weight: 600; padding: 0.75em 1.4em;
@@ -562,7 +562,7 @@
   .btn--solid { background: var(--red); color: #fff; }
   .btn--solid:hover { background: var(--red-deep); box-shadow: 0 8px 20px rgba(166,61,44,0.3); }
   [data-ground="navy"] .btn--solid, [data-ground="navy-deep"] .btn--solid { background: var(--gold); color: var(--navy-deep); }
-  [data-ground="navy"] .btn--solid:hover, [data-ground="navy-deep"] .btn--solid:hover { background: #f0dcc0; }
+  [data-ground="navy"] .btn--solid:hover, [data-ground="navy-deep"] .btn--solid:hover { background: var(--gold-hover); }
   .btn--ghost { border: 1.5px solid currentColor; color: var(--ink); }
   .btn--ghost:hover { background: rgba(0,0,0,0.05); }
   [data-ground="navy"] .btn--ghost:hover, [data-ground="navy-deep"] .btn--ghost:hover { background: rgba(255,255,255,0.08); }
