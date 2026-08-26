@@ -520,6 +520,21 @@
      descriptions centered but lets a long one start from the top and
      scroll down, rather than opening already scrolled to its middle. */
   .course-popup__body { padding: 2.75rem; display: flex; flex-direction: column; justify-content: safe center; min-height: 0; overflow-y: auto; }
+  /* On a phone, .courses-wrap itself is only as tall as the small card grid
+     above it -- confining the popup there forces a scroll to reach the
+     buttons on anything but the shortest description, and on a very small
+     or square screen (a flip phone's cover display, say) even full-screen
+     can't rule that out entirely -- but full-screen at least fits every
+     normal case without one. Stacking media above body (instead of the
+     desktop side-by-side split), weighted toward the text since that's the
+     part actually being read, uses that room well. No ancestor between
+     here and the viewport sets a transform, so position:fixed genuinely
+     escapes to it. */
+  @media (max-width: 700px) {
+    .course-popup { position: fixed; z-index: 100; }
+    .course-popup__card { grid-template-columns: 1fr; grid-template-rows: 1fr 2fr; border-radius: 0; max-height: 100vh; max-height: 100svh; }
+    .course-popup__body { padding: 1.75rem; }
+  }
   .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: #182338; }
   .course-popup__body p { display: block; font-size: 0.96rem; line-height: 1.7; color: #4A5163; margin: 0 0 1.2rem; }
   .course-popup__body .course__age { color: var(--red); }
@@ -1814,13 +1829,21 @@
     coursePopupTitle.textContent = card.querySelector('h3').textContent;
     coursePopupDesc.textContent = card.querySelector('p').textContent;
 
-    var origin = card.getBoundingClientRect();
-    var wrapRect = coursesWrap.getBoundingClientRect();
-    var dx = origin.left - wrapRect.left;
-    var dy = origin.top - wrapRect.top;
-    var sx = origin.width / wrapRect.width;
-    var sy = origin.height / wrapRect.height;
+    /* .course-popup is display:none until is-visible is added -- measuring
+       its rect any earlier than this returns an all-zero box, which is
+       exactly what was breaking the animation (dividing by a zero width
+       silently produces an Infinity scale). Reading it straight off the
+       element, now that it actually has a box, keeps the FLIP math correct
+       regardless of which layout mode is active (confined to the card grid
+       on desktop, full-viewport on mobile) instead of hard-coding one
+       target rect. */
     coursePopup.classList.add('is-visible');
+    var origin = card.getBoundingClientRect();
+    var target = coursePopup.getBoundingClientRect();
+    var dx = origin.left - target.left;
+    var dy = origin.top - target.top;
+    var sx = origin.width / target.width;
+    var sy = origin.height / target.height;
     coursePopupCard.style.transition = 'none';
     coursePopupCard.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
     coursePopupCard.style.opacity = '0.55';
@@ -1838,11 +1861,11 @@
   function closeCourse() {
     if (!openCourseEl) { coursePopup.classList.remove('is-visible', 'is-open'); return; }
     var origin = openCourseEl.getBoundingClientRect();
-    var wrapRect = coursesWrap.getBoundingClientRect();
-    var dx = origin.left - wrapRect.left;
-    var dy = origin.top - wrapRect.top;
-    var sx = origin.width / wrapRect.width;
-    var sy = origin.height / wrapRect.height;
+    var target = coursePopup.getBoundingClientRect();
+    var dx = origin.left - target.left;
+    var dy = origin.top - target.top;
+    var sx = origin.width / target.width;
+    var sy = origin.height / target.height;
     var closedCard = openCourseEl;
     coursePopup.classList.remove('is-open');
     coursePopupCard.style.transition = 'transform 360ms cubic-bezier(0.4,0,0.2,1), opacity 280ms ease';
