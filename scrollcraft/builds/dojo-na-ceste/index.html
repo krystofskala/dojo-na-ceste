@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dójó Na Cestě · nenásilná cesta</title>
 <meta name="description" content="Aikido a jóga v Říčanech od roku 2004. Kronika, komiksy od kamaráda, kurzy podle věku, rozpis, galerie a kontakt.">
+<meta name="theme-color" content="#F7F4EC">
 <link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,7 +88,7 @@
   .gal-scroll::-webkit-scrollbar { display: none; }
   .slide__inner {
     min-height: 100%; padding: clamp(5rem, 11vh, 8rem) var(--gutter) clamp(3rem, 7vh, 5rem);
-    display: flex; flex-direction: column; justify-content: center;
+    display: flex; flex-direction: column; justify-content: safe center;
   }
   .slide__inner--top { justify-content: flex-start; }
   /* Chapters with nothing below the fold (Pro koho, Kdy přijít, Kontakt):
@@ -111,7 +112,14 @@
      squeezed to fit — the whole column just grows past one viewport when
      one is present, which is exactly the "requires a scroll" behavior
      those need. */
-  .chapter-body { flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+  /* justify-content: safe center, not plain center: when content (mobile's
+     single-column stacks, mainly) is taller than the space available here,
+     plain center overflows equally in both directions — bleeding upward
+     into the heading above and off the bottom, rather than just needing a
+     scroll. "safe" falls back to start-alignment exactly when centering
+     would do that, so oversized content just flows from the top instead
+     of overlapping its neighbors. */
+  .chapter-body { flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; justify-content: safe center; }
   /* Only for chapters with real content below the fold (Cesta -> O nás,
      Galerie -> Kresba): reserves a guaranteed full screen for the heading
      + .chapter-body pair so the next part can never bleed into view
@@ -308,7 +316,7 @@
   .origin-block { max-width: var(--container); margin: clamp(3rem, 8vh, 5rem) auto 0; padding-top: var(--sp-5); border-top: 1px solid rgba(245,235,221,0.14); }
   .origin-block__grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); margin-top: 1.1rem; align-items: start; }
   .origin-block__grid p + p { margin-top: 1em; }
-  @media (max-width: 760px) { .origin-block__grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .origin-block__grid { grid-template-columns: minmax(0, 1fr); } }
   .photo-placeholder {
     aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed rgba(245,235,221,0.3);
     background: rgba(245,235,221,0.05); display: flex; align-items: center; justify-content: center;
@@ -321,7 +329,7 @@
     position: relative; padding-left: 1.4rem; font-size: 0.96rem; color: var(--ink-soft); line-height: 1.5;
   }
   .yoga-benefits li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  @media (max-width: 860px) { .cesta-hero__grid { grid-template-columns: 1fr; } .cesta-hero__grid > *:first-child { order: 2; } .cesta-hero__grid > *:last-child { order: 1; } }
+  @media (max-width: 860px) { .cesta-hero__grid { grid-template-columns: minmax(0, 1fr); } .cesta-hero__grid > *:first-child { order: 2; } .cesta-hero__grid > *:last-child { order: 1; } }
 
   /* ---------------------------------------------------------------------
      Slide 0 · Domů — Aktuality feed, merged below the hero. One real
@@ -460,7 +468,7 @@
   .course > div:last-child { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.2rem; z-index: 2; }
   .course__more { display: inline-block; font-size: 0.85rem; font-weight: 600; color: var(--gold); margin-top: 0.3rem; }
   @media (max-width: 900px) { .courses { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 540px) { .courses { grid-template-columns: 1fr; } }
+  @media (max-width: 540px) { .courses { grid-template-columns: minmax(0, 1fr); } }
   .course__age { display: inline-block; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
   .course h3 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.3rem; color: #F7F4EC; }
   /* Hidden on the card face; the popup reads this same text directly off
@@ -505,7 +513,7 @@
      you-want philosophy, side by side rather than one stacked under other.
   --------------------------------------------------------------------- */
   .kdy-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2.5rem, 6vw, 4.5rem); max-width: var(--container); margin: 0 auto; align-items: start; }
-  @media (max-width: 760px) { .kdy-columns { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .kdy-columns { grid-template-columns: minmax(0, 1fr); } }
   .kdy-subhead { font-size: var(--text-subhead); margin: 0 0 1.4rem; }
   .mini-schedule { display: flex; gap: 1.4rem; flex-wrap: wrap; }
   .mini-schedule__day {
@@ -521,7 +529,7 @@
      horizontal scroller so a growing archive never forces a taller page.
   --------------------------------------------------------------------- */
   .gal-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2rem); max-width: var(--container); margin: 0 auto; }
-  @media (max-width: 860px) { .gal-columns { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .gal-columns { grid-template-columns: minmax(0, 1fr); } }
   .gal-panel { border: 1px solid var(--hairline, rgba(245,235,221,0.18)); border-radius: 18px; padding: clamp(1.3rem, 2.5vw, 1.75rem); }
   [data-ground="paper"] .gal-panel, [data-ground="paper-alt"] .gal-panel { --hairline: rgba(24,35,56,0.14); }
   .gal-panel h3 { font-size: 1.3rem; margin: 0 0 0.2rem; }
@@ -585,7 +593,7 @@
   .kontakt__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .kontakt__name { font-size: 1.2rem; margin: 0 0 0.2rem; }
   .kontakt__role { font-size: 0.82rem; color: var(--accent); }
-  @media (max-width: 760px) { .kontakt { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .kontakt { grid-template-columns: minmax(0, 1fr); } }
 
   @media (max-width: 700px) {
     .slide__inner { padding-top: clamp(4.5rem, 14vh, 6rem); }
@@ -1508,6 +1516,11 @@
   var topnav = document.querySelector('.topnav');
 
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
+  /* Tints the mobile browser's own chrome (Safari/Chrome's status bar and
+     address bar) to match whichever chapter is showing, instead of
+     leaving it a fixed white that clashes with dark chapters. */
+  var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
+  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
 
   /* A second, purely decorative copy of the whole nav bar. As the hub
      scrolls across a chapter boundary, the real background switches at
@@ -1557,6 +1570,7 @@
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
     updateTopnavSplit();
+    if (themeColorMeta) themeColorMeta.setAttribute('content', groundBg[ground] || '#F7F4EC');
   }
 
   /* Colors the two topnav layers to exactly straddle the real, continuously
