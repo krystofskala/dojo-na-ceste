@@ -123,14 +123,18 @@
      squeezed to fit — the whole column just grows past one viewport when
      one is present, which is exactly the "requires a scroll" behavior
      those need. */
-  /* justify-content: safe center, not plain center: when content (mobile's
-     single-column stacks, mainly) is taller than the space available here,
-     plain center overflows equally in both directions — bleeding upward
-     into the heading above and off the bottom, rather than just needing a
-     scroll. "safe" falls back to start-alignment exactly when centering
-     would do that, so oversized content just flows from the top instead
-     of overlapping its neighbors. */
-  .chapter-body { flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; justify-content: safe center; }
+  /* flex-start, not center: centering fixed-size content in whatever space
+     is left under the heading looked fine at the one viewport height this
+     was tuned against, but on a taller one the same content just gets
+     centered in a bigger box — the gap between the heading and its own
+     content grows without bound instead of the content using that room.
+     (An earlier "safe center" here only fixed the mirror case, oversized
+     mobile content overflowing in both directions — flex-start gets that
+     safety for free, since it never centers into overflow to begin with,
+     while also fixing the tall-viewport gap.) Content sits a fixed
+     distance below its heading at every viewport height; extra room on a
+     tall screen shows up at the bottom instead. */
+  .chapter-body { flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; }
   /* Only for chapters with real content below the fold (Cesta -> O nás,
      Galerie -> Kresba): reserves a guaranteed full screen for the heading
      + .chapter-body pair so the next part can never bleed into view
