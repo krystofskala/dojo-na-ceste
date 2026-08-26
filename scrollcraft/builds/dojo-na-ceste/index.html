@@ -67,7 +67,9 @@
     display: flex; height: 100vh; height: 100svh; width: 100vw;
     overflow-x: auto; overflow-y: hidden;
     scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    scrollbar-width: none;
   }
+  #hub::-webkit-scrollbar { display: none; }
   /* Suspended for the duration of the JS-eased chapter jump (see goto()).
      Both matter: scroll-snap-type mandatory re-snaps every non-aligned
      write back to the nearest slide, and scroll-behavior smooth turns each
@@ -78,8 +80,11 @@
   .slide {
     flex: 0 0 100vw; width: 100vw; height: 100%;
     overflow-y: auto; overflow-x: hidden; scroll-snap-align: start;
-    position: relative; scrollbar-width: thin;
+    position: relative; scrollbar-width: none;
   }
+  .slide::-webkit-scrollbar { display: none; }
+  .gal-scroll { scrollbar-width: none; }
+  .gal-scroll::-webkit-scrollbar { display: none; }
   .slide__inner {
     min-height: 100%; padding: clamp(5rem, 11vh, 8rem) var(--gutter) clamp(3rem, 7vh, 5rem);
     display: flex; flex-direction: column; justify-content: center;
@@ -521,17 +526,19 @@
   [data-ground="paper"] .gal-panel, [data-ground="paper-alt"] .gal-panel { --hairline: rgba(24,35,56,0.14); }
   .gal-panel h3 { font-size: 1.3rem; margin: 0 0 0.2rem; }
   .gal-panel__filter { font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 1.1rem; }
+  /* Infinite carousel: the JS triples each tile set and wraps scrollLeft
+     back into the middle copy, so there's no native scroll-snap here (it
+     would fight the programmatic wrapping) — the "focus" width below does
+     the same visual job snap points would have. */
   .gal-scroll {
-    display: flex; gap: 0.8rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-    padding-bottom: 0.8rem; scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+    display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.8rem;
   }
-  .gal-scroll::-webkit-scrollbar { height: 6px; }
-  .gal-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; opacity: 0.5; }
   .gal-tile {
-    flex: none; width: 9rem; height: 16.5rem; scroll-snap-align: start; border-radius: 12px; overflow: hidden;
-    position: relative; cursor: pointer; transition: transform 280ms var(--ease), box-shadow 280ms var(--ease);
+    flex: none; width: 9rem; height: 16.5rem; border-radius: 12px; overflow: hidden;
+    position: relative; cursor: pointer; transition: width 320ms var(--ease), transform 280ms var(--ease), box-shadow 280ms var(--ease);
   }
-  .gal-tile:first-child { width: 13rem; }
+  /* Whichever tile sits nearest the scroller's own center, per the JS. */
+  .gal-tile--focus { width: 16rem; }
   .gal-tile:hover, .gal-tile:focus-visible { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(16,24,40,0.3); z-index: 2; }
   .gal-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .gal-tile--video { background: linear-gradient(160deg, var(--navy), var(--navy-deep)); text-decoration: none; }
@@ -1330,11 +1337,10 @@
   <!-- 4 · GALERIE -->
   <section class="slide" id="slide-4" data-ground="navy-deep" data-label="Galerie">
     <div class="slide__inner slide__inner--top">
+      <div class="chapter-first-screen">
       <span class="kicker">五 &middot; Galerie</span>
       <h2 class="h2">Ze života dójó.</h2>
       <p class="lede">Podívejte se, jak trénujeme.</p>
-
-      <div class="chapter-first-screen">
       <div class="chapter-body">
       <div class="gal-columns">
         <div class="gal-panel">
@@ -1868,6 +1874,88 @@
     void document.body.offsetHeight;
     els.forEach(function (el) { io.observe(el); });
   })();
+
+  /* -------------------------------------------------------------------
+     Galerie: each .gal-scroll becomes its own infinite, wheel-driven
+     carousel. The tile nearest the scroller's own center widens into
+     focus; scrolling past either end of the real set silently wraps back
+     into it — two decorative copies flank the real one so there's always
+     a full set to scroll into before a wrap is needed. Wheel input is
+     captured and stopped here specifically so scrolling over the gallery
+     never falls through to the slide's own vertical scroll or the hub's
+     chapter-navigation wheel handler above.
+  ------------------------------------------------------------------- */
+  document.querySelectorAll('.gal-scroll').forEach(function (scrollEl) {
+    var originals = Array.prototype.slice.call(scrollEl.children);
+    if (originals.length < 2) return;
+
+    function cloneSet() {
+      return originals.map(function (t) {
+        var c = t.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true');
+        c.tabIndex = -1;
+        return c;
+      });
+    }
+    var frag = document.createDocumentFragment();
+    cloneSet().forEach(function (c) { frag.appendChild(c); });
+    scrollEl.insertBefore(frag, scrollEl.firstChild);
+    cloneSet().forEach(function (c) { scrollEl.appendChild(c); });
+
+    var copyWidth = 0;
+    function measure() { copyWidth = scrollEl.scrollWidth / 3; }
+    function normalize() {
+      if (!copyWidth) return;
+      while (scrollEl.scrollLeft < copyWidth * 0.5) scrollEl.scrollLeft += copyWidth;
+      while (scrollEl.scrollLeft > copyWidth * 1.5) scrollEl.scrollLeft -= copyWidth;
+    }
+    function updateFocus() {
+      var rect = scrollEl.getBoundingClientRect();
+      var centerX = rect.left + rect.width / 2;
+      var tiles = scrollEl.querySelectorAll('.gal-tile');
+      var closest = null, minDist = Infinity;
+      tiles.forEach(function (t) {
+        var r = t.getBoundingClientRect();
+        var d = Math.abs((r.left + r.width / 2) - centerX);
+        if (d < minDist) { minDist = d; closest = t; }
+      });
+      tiles.forEach(function (t) { t.classList.toggle('gal-tile--focus', t === closest); });
+    }
+    var focusTicking = false;
+    function scheduleFocusUpdate() {
+      if (focusTicking) return;
+      focusTicking = true;
+      requestAnimationFrame(function () { updateFocus(); focusTicking = false; });
+    }
+
+    requestAnimationFrame(function () {
+      measure();
+      scrollEl.scrollLeft = copyWidth;
+      updateFocus();
+    });
+
+    scrollEl.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      scrollEl.scrollLeft += delta;
+      normalize();
+      scheduleFocusUpdate();
+    }, { passive: false });
+
+    scrollEl.addEventListener('scroll', function () {
+      normalize();
+      scheduleFocusUpdate();
+    }, { passive: true });
+
+    window.addEventListener('resize', function () {
+      var frac = copyWidth ? scrollEl.scrollLeft / copyWidth : 1;
+      measure();
+      scrollEl.scrollLeft = copyWidth * frac;
+      normalize();
+      scheduleFocusUpdate();
+    });
+  });
 
   modalClose.addEventListener('click', closeModal);
   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
