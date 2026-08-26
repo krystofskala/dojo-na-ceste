@@ -143,7 +143,14 @@
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
   .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; transition: filter 320ms var(--ease); }
   .topnav--dark .topnav__mark img { filter: invert(1) brightness(1.6); }
-  .topnav__mark span { font-family: var(--font-text); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
+  /* The mark's wordmark always sits exactly on the page background right
+     behind it (no dimming, no ancestor opacity — either would isolate the
+     blend below into its own group and starve it of a real backdrop to
+     diff against), so mix-blend-mode: difference can compute its color
+     live, per pixel, straight off whatever chapter background is actually
+     there. This is what makes it correct exactly at the seam between two
+     chapters, not just once fully settled on one side of it. */
+  .topnav__mark span { font-family: var(--font-text); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; }
   /* Side arrows: real navigation tools, not just a scroll hint. Click to
      move a chapter; hovering in their zone also redirects the wheel there
      even mid-way through reading a tall chapter (see the JS wheel handler). */
@@ -243,11 +250,32 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: 0.82rem; letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; opacity: 0.62; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+    padding: 0.3rem 0.1rem; transition: transform 180ms var(--ease);
   }
-  .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; }
-  .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
-  .navlink.is-active { opacity: 1; font-weight: 600; }
+  /* Kanji contrasts itself against whatever chapter background is actually
+     behind it, per pixel — see .topnav__mark span above for why opacity
+     can't live on an ancestor of a blended element. That's also why the
+     dim/bright active-state opacity moved down onto .navlink__label only:
+     it has to stay off every element between the kanji and the page. */
+  .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; color: #fff; mix-blend-mode: difference; transition: color 180ms var(--ease); }
+  .navlink__label { color: #fff; mix-blend-mode: difference; opacity: 0.62; transition: opacity 180ms var(--ease), color 180ms var(--ease); }
+  .navlink:hover, .navlink:focus-visible { transform: translateY(-1px); }
+  .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label { opacity: 1; }
+  /* Hover leaves the auto-contrast system for a deliberate brand color —
+     the site's own light-chapter accent (red) or dark-chapter accent
+     (gold) — rather than another diffed value. mix-blend-mode: normal
+     turns off the blend for these two so the accent renders as itself
+     instead of being diffed against the background a second time.
+     .topnav--dark already tracks which accent applies (see the JS). */
+  .navlink:hover .navlink__kanji, .navlink:focus-visible .navlink__kanji,
+  .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
+    color: var(--red); mix-blend-mode: normal;
+  }
+  .topnav--dark .navlink:hover .navlink__kanji, .topnav--dark .navlink:focus-visible .navlink__kanji,
+  .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label {
+    color: var(--gold);
+  }
+  .navlink.is-active .navlink__label { opacity: 1; font-weight: 600; }
   .navlink.is-active svg { opacity: 1; }
   @media (max-width: 900px) {
     .navlink span { display: none; }
@@ -569,27 +597,27 @@
   <ul class="navlinks" role="tablist">
     <li><button class="navlink" data-goto="0" aria-label="Domů">
       <span class="navlink__kanji">一</span>
-      <span>Domů</span>
+      <span class="navlink__label">Domů</span>
     </button></li>
     <li><button class="navlink" data-goto="1" aria-label="Cesta">
       <span class="navlink__kanji">二</span>
-      <span>Cesta</span>
+      <span class="navlink__label">Cesta</span>
     </button></li>
     <li><button class="navlink" data-goto="2" aria-label="Pro koho">
       <span class="navlink__kanji">三</span>
-      <span>Pro koho</span>
+      <span class="navlink__label">Pro koho</span>
     </button></li>
     <li><button class="navlink" data-goto="3" aria-label="Kdy přijít">
       <span class="navlink__kanji">四</span>
-      <span>Kdy přijít</span>
+      <span class="navlink__label">Kdy přijít</span>
     </button></li>
     <li><button class="navlink" data-goto="4" aria-label="Galerie">
       <span class="navlink__kanji">五</span>
-      <span>Galerie</span>
+      <span class="navlink__label">Galerie</span>
     </button></li>
     <li><button class="navlink" data-goto="5" aria-label="Kontakt">
       <span class="navlink__kanji">六</span>
-      <span>Kontakt</span>
+      <span class="navlink__label">Kontakt</span>
     </button></li>
   </ul>
 </nav>
@@ -1497,6 +1525,10 @@
     var s = slides[i];
     var ground = s.getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
+    /* Only the mark icon, the arrows and the bottom-line hairline use this
+       single flip — the mark's wordmark and the kanji glyphs contrast
+       themselves live via mix-blend-mode instead (see the CSS), so they're
+       already correct throughout the scroll, not just once settled. */
     topnav.style.color = ink;
     topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
     [arrowLeft, arrowRight, arrowDown, bottomLine].forEach(function (el) { if (el) el.style.color = ink; });
