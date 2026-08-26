@@ -207,7 +207,7 @@
      also a real control (jumps one screen down within the chapter). */
   .down-arrow {
     position: fixed; left: 50%; bottom: 1.1rem; transform: translateX(-50%); z-index: 55;
-    width: 2.6rem; height: 2.6rem; border-radius: 50%; border: none; cursor: pointer;
+    width: 2.75rem; height: 2.75rem; border-radius: 50%; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     background: rgba(128,128,128,0.12); color: inherit; opacity: 0.5;
     transition: opacity 200ms var(--ease), background 200ms var(--ease);
@@ -231,6 +231,16 @@
   .reveal.d3 { transition-delay: 320ms; }
   .reveal.d4 { transition-delay: 440ms; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  /* Catches every other CSS transition/animation on the page, including
+     durations set inline from JS (el.style.transition = '...') -- an
+     !important duration always wins over a non-important one regardless
+     of origin, so this reaches inline styles too. What it can't reach:
+     JS that manually steps a scroll position frame-by-frame (the hub's
+     chapter-to-chapter animation) or calls the native smooth-scroll API
+     directly -- those are gated in JS instead, next to where they run. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+  }
 
   /* Reactive cards: click a course, its full info opens in a popup with
      the same CTAs as the chapter. */
@@ -1587,6 +1597,7 @@
 
 <script>
 (function () {
+  var prefersReducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var hub = document.getElementById('hub');
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var navlinks = Array.prototype.slice.call(document.querySelectorAll('.navlink'));
@@ -1706,7 +1717,7 @@
     stopSlideScrollAnim();
     var start = hub.scrollLeft;
     var distance = target - start;
-    if (Math.abs(distance) < 1) { hub.scrollLeft = target; return; }
+    if (Math.abs(distance) < 1 || prefersReducedMotion) { hub.scrollLeft = target; return; }
     hub.classList.add('hub--animating');
     var duration = Math.min(1500, Math.max(560, Math.abs(distance) / Math.max(1, hub.clientWidth) * 640));
     var startTime = null;
@@ -1747,7 +1758,7 @@
   arrowRight.addEventListener('click', function () { goto(activeIndex() + 1); });
   arrowDown.addEventListener('click', function () {
     var s = slides[activeIndex()];
-    s.scrollBy({ top: s.clientHeight * 0.82, behavior: 'smooth' });
+    s.scrollBy({ top: s.clientHeight * 0.82, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
   });
 
   var hubTicking = false;
@@ -1836,6 +1847,7 @@
      the tilt continues to track the cursor directly rather than lagging
      behind it. */
   function tiltCourse(e) {
+    if (prefersReducedMotion) return;
     var el = e.currentTarget;
     var r = el.getBoundingClientRect();
     var px = (e.clientX - r.left) / r.width - 0.5;
@@ -1845,6 +1857,7 @@
     el.style.transform = 'perspective(1000px) rotateX(' + (py * -6) + 'deg) rotateY(' + (px * 6) + 'deg) translateY(-2px) scale(1.008)';
   }
   function untiltCourse(e) {
+    if (prefersReducedMotion) return;
     var el = e.currentTarget;
     el.style.transition = 'transform 500ms var(--ease)';
     el.style.transform = '';
