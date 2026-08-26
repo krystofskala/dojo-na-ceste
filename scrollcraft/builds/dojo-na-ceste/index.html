@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dójó Na Cestě · nenásilná cesta</title>
 <meta name="description" content="Aikido a jóga v Říčanech od roku 2004. Kronika, komiksy od kamaráda, kurzy podle věku, rozpis, galerie a kontakt.">
-<meta name="theme-color" content="#F7F4EC">
+<!-- Two variants, not one: on first paint (before the JS below has run —
+     or on iOS Safari, which never re-reads this after that first paint no
+     matter what the JS sets), the browser picks whichever matches the
+     phone's own light/dark setting instead of always defaulting to the
+     light one regardless of it. -->
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F4EC">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101828">
 <link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1529,11 +1535,6 @@
   var topnav = document.querySelector('.topnav');
 
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
-  /* Tints the mobile browser's own chrome (Safari/Chrome's status bar and
-     address bar) to match whichever chapter is showing, instead of
-     leaving it a fixed white that clashes with dark chapters. */
-  var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
-  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
 
   /* A second, purely decorative copy of the whole nav bar. As the hub
      scrolls across a chapter boundary, the real background switches at
@@ -1583,7 +1584,6 @@
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
     updateTopnavSplit();
-    if (themeColorMeta) themeColorMeta.setAttribute('content', groundBg[ground] || '#F7F4EC');
   }
 
   /* Colors the two topnav layers to exactly straddle the real, continuously
