@@ -498,8 +498,15 @@
   /* Hidden on the card face; the popup reads this same text directly off
      the card's own DOM, so nothing is duplicated in JS. */
   .course p { display: none; }
+  /* max-width/margin here match .courses, not .courses-wrap: the popup is
+     positioned (inset:0) relative to courses-wrap, which stretches to the
+     full chapter-body width now that the container cap lives on .courses
+     itself (see .courses-wrap's own comment) -- without repeating that cap
+     here, the popup spanned that full width instead of the visible card
+     grid's, pushing its close button out toward the actual screen edge. */
   .course-popup {
     display: none; position: absolute; inset: 0; z-index: 5; align-items: center; justify-content: center;
+    max-width: var(--container); margin: 0 auto;
     background: rgba(24,35,56,0); border-radius: 16px; transition: background 320ms ease;
   }
   .course-popup.is-visible { display: flex; }
