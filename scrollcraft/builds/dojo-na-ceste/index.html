@@ -510,7 +510,16 @@
     transform-origin: top left;
   }
   .course-popup__media { background-size: cover; background-position: center; }
-  .course-popup__body { padding: 2.75rem; display: flex; flex-direction: column; justify-content: center; }
+  /* min-height:0 is load-bearing: a grid item defaults to min-height:auto,
+     refusing to shrink below its content's natural size -- so a long
+     description didn't get clipped in place, it forced the whole grid row
+     (and the card riding along with it) to balloon to fit, and only THEN
+     did the card's own overflow:hidden chop off everything past its fixed
+     height. With min-height:0 the body actually shrinks to its row and
+     scrolls its own overflow instead. safe center leaves short
+     descriptions centered but lets a long one start from the top and
+     scroll down, rather than opening already scrolled to its middle. */
+  .course-popup__body { padding: 2.75rem; display: flex; flex-direction: column; justify-content: safe center; min-height: 0; overflow-y: auto; }
   .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: #182338; }
   .course-popup__body p { display: block; font-size: 0.96rem; line-height: 1.7; color: #4A5163; margin: 0 0 1.2rem; }
   .course-popup__body .course__age { color: var(--red); }
