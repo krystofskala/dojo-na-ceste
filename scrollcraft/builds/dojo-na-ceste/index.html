@@ -538,12 +538,25 @@
      back into the middle copy, so there's no native scroll-snap here (it
      would fight the programmatic wrapping) — the "focus" width below does
      the same visual job snap points would have. */
+  /* padding-top isn't decorative: setting overflow-x here makes overflow-y
+     compute to auto too, per spec, even though it's never set explicitly —
+     so any tile that visually exceeds this box's own auto-fit height gets
+     flattened against it, rounded corners and all. The focused tile is
+     taller than its neighbors, and hover lifts it further
+     (translateY(-6px) scale(1.02)), so without headroom here that corner
+     gets clipped into a flat edge. This padding is exactly the worst-case
+     margin that combination needs. */
+  /* Fixed height (19.5rem tile + its padding) rather than auto: with auto,
+     the row — and the panel around it — visibly grew and shrank every time
+     a taller/shorter tile came into focus. Pinning it to the focused
+     tile's own height means only the tile changes size; the box around it
+     never does. */
   .gal-scroll {
-    display: flex; align-items: center; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.8rem; overflow-x: auto; height: 21.05rem; padding: 0.75rem 0 0.8rem;
   }
   .gal-tile {
     flex: none; width: 9rem; height: 16.5rem; border-radius: 12px; overflow: hidden;
-    position: relative; cursor: pointer; transition: width 320ms var(--ease), height 320ms var(--ease), transform 280ms var(--ease), box-shadow 280ms var(--ease);
+    position: relative; cursor: pointer; transition: width 220ms var(--ease), height 220ms var(--ease), transform 280ms var(--ease), box-shadow 280ms var(--ease);
   }
   /* Whichever tile sits nearest the scroller's own center, per the JS. Height
      grows along with width (not just width) — object-fit:cover on most of
@@ -1922,12 +1935,21 @@
     cloneSet().forEach(function (c) { scrollEl.appendChild(c); });
 
     var copyWidth = 0;
+    /* Re-measured on every normalize() call, not cached — the focused
+       tile is wider than the rest, so the row's total scrollWidth (and
+       therefore "one copy") shifts by that difference every time focus
+       moves to a different tile. A copyWidth measured once at init goes
+       stale the moment focus changes, and wrapping against a stale value
+       is exactly what showed up as a visible gap in the shorter (4-tile)
+       video row, where that error is a much bigger fraction of the total. */
     function measure() { copyWidth = scrollEl.scrollWidth / 3; }
     function normalize() {
+      measure();
       if (!copyWidth) return;
       while (scrollEl.scrollLeft < copyWidth * 0.5) scrollEl.scrollLeft += copyWidth;
       while (scrollEl.scrollLeft > copyWidth * 1.5) scrollEl.scrollLeft -= copyWidth;
     }
+    var lastFocused = null;
     function updateFocus() {
       var rect = scrollEl.getBoundingClientRect();
       var centerX = rect.left + rect.width / 2;
@@ -1938,6 +1960,8 @@
         var d = Math.abs((r.left + r.width / 2) - centerX);
         if (d < minDist) { minDist = d; closest = t; }
       });
+      if (closest === lastFocused) return; // nothing actually changed — skip the reflow
+      lastFocused = closest;
       tiles.forEach(function (t) { t.classList.toggle('gal-tile--focus', t === closest); });
     }
     var focusTicking = false;
@@ -1953,11 +1977,15 @@
       updateFocus();
     });
 
+    /* Damped: a raw wheel deltaY (often 100+ per notch) swept several
+       tiles past center in one tick, so the focus target kept jumping two
+       or three tiles at a time instead of settling on its neighbor —
+       that's what read as "too sensitive" and choppy. */
     scrollEl.addEventListener('wheel', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      scrollEl.scrollLeft += delta;
+      var raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      scrollEl.scrollLeft += raw * 0.45;
       normalize();
       scheduleFocusUpdate();
     }, { passive: false });
