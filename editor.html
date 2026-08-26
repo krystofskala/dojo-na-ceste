@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor kroniky – Aikido Dójó Na Cestě</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/editor.css">
+</head>
+<body class="editor-body">
+
+<header class="editor-header">
+  <div class="container">
+    <div>
+      <h1>Editor obsahu</h1>
+      <p>Nahraďte text skutečným původním zněním, doplňte fotky a odkazy. Změny se po uložení hned objeví na živém webu.</p>
+    </div>
+    <div class="editor-actions">
+      <span class="editor-status" id="status"></span>
+    </div>
+  </div>
+  <div class="container editor-tabs">
+    <button class="tab-btn active" data-tab="content" type="button">Obsah stránek <span id="tab-count-content"></span></button>
+    <button class="tab-btn" data-tab="aktuality" type="button">Kronika (Historie) <span id="tab-count-aktuality"></span></button>
+  </div>
+</header>
+
+<main class="editor-main">
+  <div class="container">
+
+    <div id="panel-content" class="tab-panel">
+      <div class="editor-toolbar">
+        <span class="editor-count" id="count-content">Načítám&hellip;</span>
+        <span class="editor-count">Textové bloky ze všech stránek webu &mdash; odkaz &bdquo;otevřít zdroj&ldquo; vede na živou stránku aikidoricany.cz, odkud lze text zkopírovat.</span>
+      </div>
+      <div id="content-entries"></div>
+    </div>
+
+    <div id="panel-aktuality" class="tab-panel hidden">
+      <div class="editor-toolbar">
+        <span class="editor-count" id="count">Načítám&hellip;</span>
+        <span class="editor-count">Řadit podle roku sestupně &mdash; použijte šipky u příspěvku pro přesun</span>
+      </div>
+      <div id="entries"></div>
+      <div class="add-entry-bar" id="add-entry">+ Přidat nový příspěvek</div>
+    </div>
+
+  </div>
+</main>
+
+<div class="save-bar">
+  <div class="container">
+    <span class="editor-status" id="status-bottom"></span>
+    <button class="btn btn-primary" id="save-content-btn" type="button">Uložit obsah stránek</button>
+    <button class="btn btn-outline" id="save-btn" type="button" style="background:#fff;">Uložit kroniku</button>
+  </div>
+</div>
+
+<script>
+var entries = [];
+var entriesEl = document.getElementById('entries');
+var countEl = document.getElementById('count');
+var statusEls = [document.getElementById('status'), document.getElementById('status-bottom')];
+
+function setStatus(msg, isError) {
+  statusEls.forEach(function (el) {
+    el.textContent = msg;
+    el.classList.toggle('error', !!isError);
+  });
+}
+
+function load() {
+  fetch('data/aktuality.json', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      entries = data;
+      render();
+      setStatus('Načteno ' + entries.length + ' příspěvků.');
+    })
+    .catch(function (err) {
+      setStatus('Nepodařilo se načíst data/aktuality.json', true);
+      console.error(err);
+    });
+}
+
+function render() {
+  entriesEl.innerHTML = '';
+  countEl.textContent = entries.length + ' příspěvků';
+  var tabCount = document.getElementById('tab-count-aktuality');
+  if (tabCount) tabCount.textContent = '(' + entries.length + ')';
+  entries.forEach(function (entry, index) {
+    entriesEl.appendChild(buildCard(entry, index));
+  });
+}
+
+function buildCard(entry, index) {
+  var card = document.createElement('div');
+  card.className = 'entry-card';
+
+  // order controls
+  var order = document.createElement('div');
+  order.className = 'entry-order';
+  var upBtn = document.createElement('button');
+  upBtn.className = 'order-btn';
+  upBtn.type = 'button';
+  upBtn.textContent = '↑';
+  upBtn.disabled = index === 0;
+  upBtn.onclick = function () { moveEntry(index, -1); };
+  var downBtn = document.createElement('button');
+  downBtn.className = 'order-btn';
+  downBtn.type = 'button';
+  downBtn.textContent = '↓';
+  downBtn.disabled = index === entries.length - 1;
+  downBtn.onclick = function () { moveEntry(index, 1); };
+  order.appendChild(upBtn);
+  order.appendChild(downBtn);
+  card.appendChild(order);
+
+  // year + date
+  var meta = document.createElement('div');
+  meta.innerHTML = '';
+  var yearField = fieldText('Rok (nadpis)', entry.year, function (v) { entry.year = v; });
+  var dateField = fieldText('Datum', entry.date, function (v) { entry.date = v; });
+  meta.appendChild(yearField);
+  meta.appendChild(dateField);
+  card.appendChild(meta);
+
+  // text
+  var textWrap = document.createElement('div');
+  var textField = fieldTextarea('Text příspěvku (lze použít &mdash; &bdquo; atd.)', entry.text, function (v) { entry.text = v; });
+  textWrap.appendChild(textField);
+  card.appendChild(textWrap);
+
+  // photo
+  var photoBlock = document.createElement('div');
+  photoBlock.className = 'entry-photo-block';
+  var preview = document.createElement('div');
+  preview.className = 'entry-photo-preview';
+  preview.id = 'preview-' + index;
+  if (entry.photo) {
+    var img = document.createElement('img');
+    img.src = entry.photo;
+    preview.appendChild(img);
+  } else {
+    preview.textContent = 'bez fotky';
+  }
+  photoBlock.appendChild(preview);
+
+  var altField = fieldText('Popisek fotky (alt)', entry.photoAlt || '', function (v) { entry.photoAlt = v; });
+  var sourceField = fieldText('Odkaz na originál', entry.photoSource || '', function (v) { entry.photoSource = v; });
+  photoBlock.appendChild(altField);
+  photoBlock.appendChild(sourceField);
+
+  var controls = document.createElement('div');
+  controls.className = 'entry-photo-controls';
+  var uploadLabel = document.createElement('label');
+  uploadLabel.className = 'btn-tiny';
+  uploadLabel.textContent = entry.photo ? 'Nahradit' : 'Nahrát fotku';
+  var uploadInput = document.createElement('input');
+  uploadInput.type = 'file';
+  uploadInput.accept = 'image/*';
+  uploadInput.onchange = function () {
+    if (uploadInput.files && uploadInput.files[0]) {
+      uploadPhoto(uploadInput.files[0], entry, index);
+    }
+  };
+  uploadLabel.appendChild(uploadInput);
+  controls.appendChild(uploadLabel);
+
+  if (entry.photo) {
+    var removeBtn = document.createElement('button');
+    removeBtn.className = 'btn-tiny danger';
+    removeBtn.type = 'button';
+    removeBtn.textContent = 'Odebrat';
+    removeBtn.onclick = function () {
+      entry.photo = null;
+      entry.photoAlt = null;
+      render();
+    };
+    controls.appendChild(removeBtn);
+  }
+  photoBlock.appendChild(controls);
+  card.appendChild(photoBlock);
+
+  // delete
+  var delBtn = document.createElement('button');
+  delBtn.className = 'entry-delete';
+  delBtn.type = 'button';
+  delBtn.title = 'Smazat příspěvek';
+  delBtn.textContent = '✕';
+  delBtn.onclick = function () {
+    if (confirm('Smazat tento příspěvek?')) {
+      entries.splice(index, 1);
+      render();
+    }
+  };
+  card.appendChild(delBtn);
+
+  return card;
+}
+
+function fieldText(labelText, value, onChange) {
+  var wrap = document.createElement('div');
+  wrap.className = 'entry-field';
+  var label = document.createElement('label');
+  label.textContent = labelText;
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.value = value || '';
+  input.oninput = function () { onChange(input.value); };
+  wrap.appendChild(label);
+  wrap.appendChild(input);
+  return wrap;
+}
+
+function fieldTextarea(labelText, value, onChange) {
+  var wrap = document.createElement('div');
+  wrap.className = 'entry-field';
+  var label = document.createElement('label');
+  label.textContent = labelText;
+  var textarea = document.createElement('textarea');
+  textarea.value = value || '';
+  textarea.oninput = function () { onChange(textarea.value); };
+  wrap.appendChild(label);
+  wrap.appendChild(textarea);
+  return wrap;
+}
+
+function moveEntry(index, dir) {
+  var target = index + dir;
+  if (target < 0 || target >= entries.length) return;
+  var tmp = entries[index];
+  entries[index] = entries[target];
+  entries[target] = tmp;
+  render();
+}
+
+function uploadPhoto(file, entry, index) {
+  setStatus('Nahrávám fotku…');
+  var fd = new FormData();
+  fd.append('file', file);
+  fetch('/api/upload-image', { method: 'POST', body: fd })
+    .then(function (r) {
+      if (!r.ok) throw new Error('upload failed: ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      entry.photo = data.path;
+      if (!entry.photoAlt) entry.photoAlt = '';
+      render();
+      setStatus('Fotka nahrána.');
+    })
+    .catch(function (err) {
+      setStatus('Nahrání fotky selhalo. Běží editor_server.py?', true);
+      console.error(err);
+    });
+}
+
+document.getElementById('add-entry').onclick = function () {
+  entries.unshift({
+    id: Date.now(),
+    year: new Date().getFullYear().toString(),
+    date: '',
+    text: '',
+    photo: null,
+    photoAlt: null,
+    photoSource: null
+  });
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+document.getElementById('save-btn').onclick = function () {
+  setStatus('Ukládám…');
+  fetch('/api/save-aktuality', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entries)
+  })
+    .then(function (r) {
+      if (!r.ok) throw new Error('save failed: ' + r.status);
+      return r.json();
+    })
+    .then(function () {
+      setStatus('Uloženo ✓ (' + new Date().toLocaleTimeString('cs-CZ') + ')');
+    })
+    .catch(function (err) {
+      setStatus('Uložení selhalo. Musíte spustit editor_server.py (ne obyčejný http.server).', true);
+      console.error(err);
+    });
+};
+
+// ---------- tabs ----------
+document.querySelectorAll('.tab-btn').forEach(function (btn) {
+  btn.onclick = function () {
+    document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var tab = btn.getAttribute('data-tab');
+    document.getElementById('panel-content').classList.toggle('hidden', tab !== 'content');
+    document.getElementById('panel-aktuality').classList.toggle('hidden', tab !== 'aktuality');
+  };
+});
+
+// ---------- page content (site-content.json) ----------
+var contentEntries = [];
+var contentEntriesEl = document.getElementById('content-entries');
+var contentCountEl = document.getElementById('count-content');
+
+function loadContent() {
+  fetch('data/site-content.json', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      contentEntries = data;
+      renderContent();
+      document.getElementById('tab-count-content').textContent = '(' + contentEntries.length + ')';
+    })
+    .catch(function (err) {
+      contentCountEl.textContent = 'Nepodařilo se načíst data/site-content.json';
+      console.error(err);
+    });
+}
+
+function renderContent() {
+  contentEntriesEl.innerHTML = '';
+  contentCountEl.textContent = contentEntries.length + ' textových bloků';
+  contentEntries.forEach(function (entry) {
+    var card = document.createElement('div');
+    card.className = 'content-card';
+
+    var head = document.createElement('div');
+    head.className = 'content-card-head';
+    var strong = document.createElement('strong');
+    strong.textContent = entry.label + ' (' + entry.page + ')';
+    head.appendChild(strong);
+    if (entry.sourceUrl) {
+      var link = document.createElement('a');
+      link.className = 'source-link';
+      link.href = entry.sourceUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'otevřít zdroj (živý web)';
+      link.style.color = 'var(--red-deep)';
+      head.appendChild(link);
+    }
+    card.appendChild(head);
+
+    var textarea = document.createElement('textarea');
+    textarea.value = entry.text || '';
+    textarea.oninput = function () { entry.text = textarea.value; };
+    card.appendChild(textarea);
+
+    contentEntriesEl.appendChild(card);
+  });
+}
+
+document.getElementById('save-content-btn').onclick = function () {
+  setStatus('Ukládám…');
+  fetch('/api/save-content', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(contentEntries)
+  })
+    .then(function (r) {
+      if (!r.ok) throw new Error('save failed: ' + r.status);
+      return r.json();
+    })
+    .then(function () {
+      setStatus('Obsah uložen ✓ (' + new Date().toLocaleTimeString('cs-CZ') + ')');
+    })
+    .catch(function (err) {
+      setStatus('Uložení selhalo. Musíte spustit editor_server.py (ne obyčejný http.server).', true);
+      console.error(err);
+    });
+};
+
+document.getElementById('tab-count-aktuality').textContent = '';
+loadContent();
+load();
+</script>
+</body>
+</html>
