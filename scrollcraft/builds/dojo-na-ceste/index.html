@@ -531,14 +531,19 @@
      would fight the programmatic wrapping) — the "focus" width below does
      the same visual job snap points would have. */
   .gal-scroll {
-    display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.8rem;
   }
   .gal-tile {
     flex: none; width: 9rem; height: 16.5rem; border-radius: 12px; overflow: hidden;
-    position: relative; cursor: pointer; transition: width 320ms var(--ease), transform 280ms var(--ease), box-shadow 280ms var(--ease);
+    position: relative; cursor: pointer; transition: width 320ms var(--ease), height 320ms var(--ease), transform 280ms var(--ease), box-shadow 280ms var(--ease);
   }
-  /* Whichever tile sits nearest the scroller's own center, per the JS. */
-  .gal-tile--focus { width: 16rem; }
+  /* Whichever tile sits nearest the scroller's own center, per the JS. Height
+     grows along with width (not just width) — object-fit:cover on most of
+     these photos is height-constrained, so widening alone re-crops the
+     sides but never gives a tight composition (a subject's head close to
+     the top of frame) any more room. Growing height too actually enlarges
+     the shown image instead of just re-cropping it. */
+  .gal-tile--focus { width: 16rem; height: 19.5rem; }
   .gal-tile:hover, .gal-tile:focus-visible { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(16,24,40,0.3); z-index: 2; }
   .gal-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .gal-tile--video { background: linear-gradient(160deg, var(--navy), var(--navy-deep)); text-decoration: none; }
