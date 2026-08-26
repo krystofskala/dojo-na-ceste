@@ -50,7 +50,12 @@
     --text-hero: clamp(2.6rem, 8vw, 5.2rem);
   }
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; overscroll-behavior: none; }
+  /* iOS Safari's home-indicator safe-area strip (and any elastic overscroll
+     bounce) reveals whatever's behind #hub — html/body had no background of
+     their own, so that sliver rendered as unstyled white/grey regardless of
+     which chapter was showing. background-color here is a static fallback;
+     the JS keeps it in sync with the current chapter's actual ground. */
+  html, body { height: 100%; margin: 0; overscroll-behavior: none; background-color: var(--paper); }
   body {
     font-family: var(--font-text); -webkit-font-smoothing: antialiased;
     overflow: hidden; /* #hub owns scrolling, not the document */
@@ -1533,6 +1538,7 @@
   var navlinks = Array.prototype.slice.call(document.querySelectorAll('.navlink'));
   var hint = document.querySelector('[data-hint]');
   var topnav = document.querySelector('.topnav');
+  var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
 
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
@@ -1584,6 +1590,7 @@
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
     updateTopnavSplit();
+    document.body.style.backgroundColor = groundBg[ground] || '#F7F4EC';
   }
 
   /* Colors the two topnav layers to exactly straddle the real, continuously
