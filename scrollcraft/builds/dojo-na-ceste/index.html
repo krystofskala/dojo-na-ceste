@@ -130,25 +130,18 @@
     padding: 1.1rem var(--gutter); pointer-events: none;
     color: var(--nav-ink, #182338); transition: color 320ms var(--ease);
   }
-  /* No scrim here on purpose: a solid backdrop behind the bar would sit
-     between the blended elements below and the real chapter background,
-     so mix-blend-mode would diff against the scrim's own (still binary)
-     color instead of the true, continuously-changing background — exactly
-     the bug this is meant to fix. Legibility comes from the per-pixel
-     contrast below instead of a painted-on fade. */
+  /* No scrim here on purpose: legibility comes from the two-layer color
+     split below, not a painted-on fade. */
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
-  /* Same per-pixel contrast trick as the wordmark/kanji, applied to the
-     icon's own artwork instead of a filter toggle, so it too tracks the
-     real boundary instead of flipping in one shot. */
-  .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; mix-blend-mode: difference; }
-  /* The mark's wordmark always sits exactly on the page background right
-     behind it (no dimming, no ancestor opacity — either would isolate the
-     blend below into its own group and starve it of a real backdrop to
-     diff against), so mix-blend-mode: difference can compute its color
-     live, per pixel, straight off whatever chapter background is actually
-     there. This is what makes it correct exactly at the seam between two
-     chapters, not just once fully settled on one side of it. */
-  .topnav__mark span { font-family: var(--font-text); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; }
+  .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; transition: filter 320ms var(--ease); }
+  .topnav--dark .topnav__mark img { filter: invert(1) brightness(1.6); }
+  .topnav__mark span { font-family: var(--font-text); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
+  /* Decorative color-matching layer (see topnavOverlay in the JS): never
+     receives input, and it must never carry its own scrim (there isn't
+     one) or a duplicate id. */
+  .topnav--overlay { pointer-events: none; }
+  .topnav--overlay .topnav__mark,
+  .topnav--overlay .navlinks { pointer-events: none; }
   /* Side arrows: real navigation tools, not just a scroll hint. Click to
      move a chapter; hovering in their zone also redirects the wheel there
      even mid-way through reading a tall chapter (see the JS wheel handler). */
@@ -248,34 +241,22 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: 0.82rem; letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; transition: transform 180ms var(--ease);
+    padding: 0.3rem 0.1rem; opacity: 0.62; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
   }
-  /* Kanji and label both contrast themselves against whatever chapter
-     background is actually behind them, per pixel — see .topnav__mark span
-     above for why opacity can't live on an ancestor of a blended element.
-     It also can't live on the blended element itself: opacity re-mixes the
-     already-diffed pixel back toward that same backdrop afterwards, which
-     washes a "dimmed inactive" label out to a flat, low-contrast gray
-     instead of leaving it legible-but-quieter. Active/hover state is
-     carried by weight and color instead, never opacity, here. */
-  .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; color: #fff; mix-blend-mode: difference; transition: color 180ms var(--ease); }
-  .navlink__label { color: #fff; mix-blend-mode: difference; transition: color 180ms var(--ease); }
-  .navlink:hover, .navlink:focus-visible { transform: translateY(-1px); }
-  /* Hover leaves the auto-contrast system for a deliberate brand color —
-     the site's own light-chapter accent (red) or dark-chapter accent
-     (gold) — rather than another diffed value. mix-blend-mode: normal
-     turns off the blend for these two so the accent renders as itself
-     instead of being diffed against the background a second time.
-     .topnav--dark already tracks which accent applies (see the JS). */
+  .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; }
+  .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
+  /* Hover shows a deliberate brand color instead of the current ink — the
+     site's own light-chapter accent (red) or dark-chapter accent (gold).
+     .topnav--dark already tracks which one applies (see the JS). */
   .navlink:hover .navlink__kanji, .navlink:focus-visible .navlink__kanji,
   .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
-    color: var(--red); mix-blend-mode: normal;
+    color: var(--red);
   }
   .topnav--dark .navlink:hover .navlink__kanji, .topnav--dark .navlink:focus-visible .navlink__kanji,
   .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label {
     color: var(--gold);
   }
-  .navlink.is-active .navlink__label { font-weight: 600; }
+  .navlink.is-active { opacity: 1; font-weight: 600; }
   .navlink.is-active svg { opacity: 1; }
   @media (max-width: 900px) {
     .navlink span { display: none; }
@@ -441,14 +422,16 @@
   .prokoho-head { text-align: left; margin-bottom: var(--sp-5); max-width: var(--container); }
   /* .courses-wrap sits inside .chapter-body, which resolves to a definite,
      always-correct height (exactly the space left under .prokoho-head, for
-     THIS viewport, computed by flexbox — not guessed). height:100% here
-     lets that flow all the way down to each card, so aspect-ratio derives
-     WIDTH from a real height instead of the reverse — which is what
-     previously made cards run off the bottom on shorter viewports. */
+     THIS viewport, computed by flexbox — not guessed). Width comes from the
+     grid column (never wider than its 1fr share, so cards can never overlap
+     however tall the available height is); max-height:100% caps the
+     aspect-ratio-derived height so a card can't run off the bottom on short
+     viewports either. Whichever constraint binds, object-fit:cover on the
+     photo absorbs the difference instead of distorting or overflowing. */
   .courses-wrap { position: relative; max-width: var(--container); margin: 0 auto; height: 100%; }
-  .courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; justify-items: center; height: 100%; }
+  .courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; height: 100%; }
   .course {
-    position: relative; height: 100%; aspect-ratio: 1 / 2.4; border-radius: 30px; overflow: hidden;
+    position: relative; width: 100%; max-height: 100%; aspect-ratio: 1 / 2.4; border-radius: 30px; overflow: hidden;
     cursor: pointer; display: block; padding: 0; margin: 0;
     transform-style: preserve-3d; transition: box-shadow 420ms var(--ease); will-change: transform;
   }
@@ -1504,6 +1487,27 @@
 
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
+  /* A second, purely decorative copy of the whole nav bar. As the hub
+     scrolls across a chapter boundary, the real background switches at
+     whatever x position that boundary currently sits on screen — not at
+     some fixed point — so a single global ink color for the whole bar is
+     wrong for roughly half of every light<->dark transition (mismatched
+     text over the incoming chapter until the color caught up). This
+     overlay is clipped to that same moving x position and carries the
+     NEXT chapter's ink, so the bar's color boundary always lines up,
+     pixel for pixel, with the real background boundary underneath it —
+     every glyph on either side of that line is always correct, not just
+     once the scroll settles. See updateTopnavSplit(). */
+  var topnavOverlay = topnav.cloneNode(true);
+  topnavOverlay.classList.add('topnav--overlay');
+  topnavOverlay.setAttribute('aria-hidden', 'true');
+  topnavOverlay.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+  topnavOverlay.querySelectorAll('[data-goto], button, a').forEach(function (el) {
+    el.removeAttribute('data-goto');
+    el.tabIndex = -1;
+  });
+  topnav.insertAdjacentElement('afterend', topnavOverlay);
+
   function activeIndex() {
     var mid = hub.scrollLeft + hub.clientWidth / 2;
     var best = 0, bestDist = Infinity;
@@ -1525,17 +1529,39 @@
     var s = slides[i];
     var ground = s.getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
-    /* Only the mark icon, the arrows and the bottom-line hairline use this
-       single flip — the mark's wordmark and the kanji glyphs contrast
-       themselves live via mix-blend-mode instead (see the CSS), so they're
-       already correct throughout the scroll, not just once settled. */
-    topnav.style.color = ink;
-    topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
     [arrowLeft, arrowRight, arrowDown, bottomLine].forEach(function (el) { if (el) el.style.color = ink; });
     navlinks.forEach(function (n) { n.classList.toggle('is-active', parseInt(n.getAttribute('data-goto'), 10) === i); });
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
+    updateTopnavSplit();
+  }
+
+  /* Colors the two topnav layers to exactly straddle the real, continuously
+     moving boundary between whichever two chapters are on screen right now.
+     idx is a floor, not a nearest-neighbor round, because it needs to
+     identify which slide's background currently occupies the LEFT edge of
+     the viewport — the overlay then represents whatever sits to its right,
+     and boundaryPct is exactly the on-screen x position (as a % of the bar's
+     width) where the real chapter backgrounds actually meet. */
+  function updateTopnavSplit() {
+    var vw = hub.clientWidth || 1;
+    var idx = Math.floor(hub.scrollLeft / vw + 1e-6);
+    idx = Math.max(0, Math.min(slides.length - 1, idx));
+    var fracIntoSlide = Math.min(1, Math.max(0, (hub.scrollLeft - idx * vw) / vw));
+    var boundaryPct = (1 - fracIntoSlide) * 100;
+
+    var ground = slides[idx].getAttribute('data-ground');
+    var ink = groundInk[ground] || '#182338';
+    topnav.style.color = ink;
+    topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
+
+    var nextIdx = Math.min(slides.length - 1, idx + 1);
+    var nextGround = slides[nextIdx].getAttribute('data-ground');
+    var nextInk = groundInk[nextGround] || '#182338';
+    topnavOverlay.style.color = nextInk;
+    topnavOverlay.classList.toggle('topnav--dark', nextGround === 'navy' || nextGround === 'navy-deep');
+    topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
   }
 
   function syncSlideEdges(s) {
