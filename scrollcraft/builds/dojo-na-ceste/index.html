@@ -605,7 +605,11 @@
      the row — and the panel around it — visibly grew and shrank every time
      a taller/shorter tile came into focus. Pinning it to the focused
      tile's own height means only the tile changes size; the box around it
-     never does. */
+     never does. (A vh-based version of this was tried to also close the
+     gap that opens above the panel on a tall viewport, but it overshot and
+     overflowed the bottom of the screen at ordinary window heights instead
+     — worse than the gap it was meant to fix. Left as a fixed value until
+     that can be tuned properly.) */
   .gal-scroll {
     display: flex; align-items: center; gap: 0.8rem; overflow-x: auto; height: 21.05rem; padding: 0.75rem 0 0.8rem;
   }
@@ -1830,9 +1834,9 @@
     var r = el.getBoundingClientRect();
     var px = (e.clientX - r.left) / r.width - 0.5;
     var py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transition = el.dataset.tilting ? 'none' : 'transform 450ms var(--ease)';
+    el.style.transition = el.dataset.tilting ? 'none' : 'transform 600ms var(--ease)';
     el.dataset.tilting = '1';
-    el.style.transform = 'perspective(1000px) rotateX(' + (py * -16) + 'deg) rotateY(' + (px * 16) + 'deg) translateY(-6px) scale(1.03)';
+    el.style.transform = 'perspective(1000px) rotateX(' + (py * -6) + 'deg) rotateY(' + (px * 6) + 'deg) translateY(-2px) scale(1.008)';
   }
   function untiltCourse(e) {
     var el = e.currentTarget;
@@ -1869,6 +1873,18 @@
        target rect. */
     coursePopup.classList.add('is-visible');
     var origin = card.getBoundingClientRect();
+    /* .courses is forced to height:100% of courses-wrap so .course's own
+       max-height:100% has something definite to clamp against on short
+       viewports -- but on a tall one, the card's aspect-ratio caps it
+       *below* that 100%, so the container ends up taller than the card
+       actually is. The popup was matching the container's height, not the
+       card's, so on any viewport tall enough for that gap to open up, it
+       extended past the visible cards' real bottom edge. Explicitly
+       sizing it to the card's own height (only in the confined desktop
+       layout -- mobile's fixed full-viewport mode overrides this) fixes
+       that regardless of viewport height. */
+    var isFixed = getComputedStyle(coursePopup).position === 'fixed';
+    coursePopup.style.height = isFixed ? '' : origin.height + 'px';
     var target = coursePopup.getBoundingClientRect();
     var dx = origin.left - target.left;
     var dy = origin.top - target.top;
@@ -1911,7 +1927,7 @@
     coursesEl.style.opacity = '1';
     coursesEl.style.pointerEvents = '';
     openCourseEl = null;
-    setTimeout(function () { coursePopup.classList.remove('is-visible'); closedCard.focus(); }, COURSE_CLOSE_MS);
+    setTimeout(function () { coursePopup.classList.remove('is-visible'); coursePopup.style.height = ''; closedCard.focus(); }, COURSE_CLOSE_MS);
   }
   document.querySelectorAll('.course').forEach(function (c) {
     c.addEventListener('mousemove', tiltCourse);
