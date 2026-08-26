@@ -463,8 +463,15 @@
      aspect-ratio-derived height so a card can't run off the bottom on short
      viewports either. Whichever constraint binds, object-fit:cover on the
      photo absorbs the difference instead of distorting or overflowing. */
-  .courses-wrap { position: relative; max-width: var(--container); margin: 0 auto; height: 100%; }
-  .courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; height: 100%; }
+  /* max-width + centering live on .courses, not .courses-wrap: courses-wrap
+     is itself a flex item (child of .chapter-body's column flex), and auto
+     margins on a flex item's cross axis disable its default stretch
+     entirely -- even align-self:stretch can't override that, per spec. With
+     the centering here instead, courses-wrap stretches to its full width as
+     normal, and .courses (an ordinary block-level grid container, not a
+     flex item itself) centers within it the plain, unconflicted way. */
+  .courses-wrap { position: relative; height: 100%; }
+  .courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; height: 100%; max-width: var(--container); margin: 0 auto; }
   .course {
     position: relative; width: 100%; max-height: 100%; aspect-ratio: 1 / 2.4; border-radius: 30px; overflow: hidden;
     cursor: pointer; display: block; padding: 0; margin: 0;
