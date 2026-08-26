@@ -8,7 +8,7 @@
 <link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Antic+Didot:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ---------------------------------------------------------------------
      A different shape than the last build: horizontal between chapters,
@@ -23,7 +23,8 @@
     --paper: #F7F4EC; --paper-alt: #EFE8D9;
     --navy: #182338; --navy-deep: #101828;
     --red: #A63D2C; --red-deep: #8A3223; --gold: #E9C9A0;
-    --font-display: "Shippori Mincho", "Hiragino Mincho ProN", serif;
+    --font-display: "Antic Didot", Georgia, serif;
+    --font-kanji: "Shippori Mincho", "Hiragino Mincho ProN", serif;
     --font-text: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --gutter: clamp(1.25rem, 5vw, 5.5rem);
     --ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -133,8 +134,18 @@
   /* No scrim here on purpose: legibility comes from the two-layer color
      split below, not a painted-on fade. */
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
-  .topnav__mark img { width: 26px; height: 26px; border-radius: 5px; transition: filter 320ms var(--ease); }
-  .topnav--dark .topnav__mark img { filter: invert(1) brightness(1.6); }
+  /* Recolored via mask instead of filter: invert()/brightness() pushed the
+     fine woodcut hatching to blown-out pure black/white with no tone left
+     in it. Masking the artwork's own alpha with background:currentColor
+     paints it in the exact same ink as the wordmark next to it — inherited
+     automatically, so it also splits at the same pixel-exact boundary. */
+  .topnav__mark-icon {
+    display: block; width: 26px; height: 26px; border-radius: 5px; background-color: currentColor;
+    -webkit-mask-image: url('assets/mark.gif'); mask-image: url('assets/mark.gif');
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+  }
   .topnav__mark span { font-family: var(--font-text); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
   /* Decorative color-matching layer (see topnavOverlay in the JS): never
      receives input, and it must never carry its own scrim (there isn't
@@ -243,7 +254,7 @@
     color: inherit; font-family: var(--font-text); font-size: 0.82rem; letter-spacing: 0.01em;
     padding: 0.3rem 0.1rem; opacity: 0.62; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
   }
-  .navlink__kanji { font-family: var(--font-display); font-size: 1rem; line-height: 1; flex: none; }
+  .navlink__kanji { font-family: var(--font-kanji); font-size: 1rem; line-height: 1; flex: none; }
   .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
   /* Hover shows a deliberate brand color instead of the current ink — the
      site's own light-chapter accent (red) or dark-chapter accent (gold).
@@ -574,7 +585,7 @@
 
 <nav class="topnav" aria-label="Kapitoly">
   <a class="topnav__mark" href="#slide-0" data-goto="0">
-    <img src="assets/mark.gif" alt="Dójó Na Cestě">
+    <span class="topnav__mark-icon" aria-hidden="true"></span>
     <span>Dójó Na Cestě</span>
   </a>
   <ul class="navlinks" role="tablist">
