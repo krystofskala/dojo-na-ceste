@@ -188,33 +188,45 @@
      even mid-way through reading a tall chapter (see the JS wheel handler). */
   .side-arrow {
     position: fixed; top: 50%; transform: translateY(-50%); z-index: 55;
-    width: 3.2rem; height: 3.2rem; border-radius: 50%; border: none; cursor: pointer;
+    padding: 0.6rem; border: none; background: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(128,128,128,0.12); color: inherit; opacity: 0.55;
-    transition: opacity 200ms var(--ease), background 200ms var(--ease), transform 200ms var(--ease);
+    color: inherit; opacity: 0.5;
+    transition: opacity 200ms var(--ease), transform 200ms var(--ease);
   }
-  .side-arrow:hover { opacity: 1; background: rgba(128,128,128,0.22); }
-  .side-arrow:active { transform: translateY(-50%) scale(0.94); }
-  .side-arrow--left { left: clamp(0.75rem, 2.5vw, 2rem); }
-  .side-arrow--right { right: clamp(0.75rem, 2.5vw, 2rem); }
-  .side-arrow svg { width: 1.4rem; height: 1.4rem; }
+  .side-arrow:hover { opacity: 1; }
+  .side-arrow:active { transform: translateY(-50%) scale(0.9); }
+  .side-arrow--left { left: clamp(0.4rem, 1.8vw, 1.5rem); }
+  .side-arrow--right { right: clamp(0.4rem, 1.8vw, 1.5rem); }
+  .side-arrow svg { width: 1.7rem; height: 1.7rem; }
   .side-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
   .side-arrow-zone { position: fixed; top: 0; bottom: 0; width: 12vw; z-index: 54; }
   .side-arrow-zone--left { left: 0; } .side-arrow-zone--right { right: 0; }
+  /* Touch already has swipe + the chapter dots; bare edge arrows just clutter. */
+  @media (max-width: 760px) {
+    .side-arrow, .side-arrow-zone { display: none; }
+  }
 
   /* Bottom indicator: a hairline that brightens near the pointer or when
      there's more of the chapter below the fold, plus a down-arrow that's
      also a real control (jumps one screen down within the chapter). */
   .down-arrow {
-    position: fixed; left: 50%; bottom: 1.1rem; transform: translateX(-50%); z-index: 55;
-    width: 2.75rem; height: 2.75rem; border-radius: 50%; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(128,128,128,0.12); color: inherit; opacity: 0.5;
-    transition: opacity 200ms var(--ease), background 200ms var(--ease);
+    position: fixed; left: 50%; bottom: 0.9rem; transform: translateX(-50%); z-index: 55;
+    min-width: 44px; min-height: 44px; padding: 0.35rem 0.8rem; border: none; background: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 0.3rem;
+    color: inherit; opacity: 0.65;
+    transition: opacity 200ms var(--ease);
   }
-  .down-arrow:hover { opacity: 1; background: rgba(128,128,128,0.22); }
+  .down-arrow:hover { opacity: 1; }
   .down-arrow svg { width: 1.1rem; height: 1.1rem; }
   .down-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
+  /* Name of the next named section the current chapter reveals as you scroll
+     down (set from [data-down-label] in the JS); empty on chapters whose
+     overflow is just more of the same, and then it collapses to nothing. */
+  .down-arrow__label {
+    font-size: var(--text-micro); letter-spacing: 0.09em; text-transform: uppercase;
+    font-weight: 600; line-height: 1; white-space: nowrap;
+  }
+  .down-arrow__label:empty { display: none; }
   .bottom-line {
     position: fixed; left: 0; right: 0; bottom: 0; height: 2px; z-index: 53;
     background: currentColor; opacity: 0.12; transform: scaleX(0.3); transform-origin: center;
@@ -747,6 +759,7 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
 </button>
 <button class="down-arrow" id="arrowDown" aria-label="Posunout dolů v kapitole">
+  <span class="down-arrow__label" id="arrowDownLabel" aria-hidden="true"></span>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
 </button>
 <div class="bottom-line" id="bottomLine" aria-hidden="true"></div>
@@ -762,7 +775,7 @@
       <p class="home__lede d4">nenásilná cesta</p>
     </div>
     <p class="hint" data-hint><span class="hint__arrow">&#8594;</span> táhněte nebo scrollujte doprava mezi kapitolami, dolů uvnitř nich</p>
-    <div class="slide__inner slide__inner--top aktuality-in-home">
+    <div class="slide__inner slide__inner--top aktuality-in-home" data-down-label="Aktuality">
       <span class="kicker">Kompletní kronika</span>
       <h2 class="h2">Aktuality.</h2>
       <p class="lede">2025–2003. Nejnovější nahoře, přesně jak to dřív dělal starý web — nic se nemaže. Všechny příspěvky verbatim, s dobovými fotkami a odkazy tam, kde se dochovaly.</p>
@@ -1297,7 +1310,7 @@
       </div>
       </div>
 
-      <div class="origin-block">
+      <div class="origin-block" data-down-label="O nás">
         <span class="kicker">O nás</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Parta lidí, kteří rádi cvičí nenásilnou cestou.</h2>
         <div class="origin-block__grid">
@@ -1310,7 +1323,7 @@
         </div>
       </div>
 
-      <div class="origin-block">
+      <div class="origin-block" data-down-label="Aikido">
         <span class="kicker">Aikido</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; cesta harmonie.</h2>
         <div class="origin-block__grid">
@@ -1320,7 +1333,7 @@
         <p class="lede" style="margin-top:1em; max-width:34rem;">Založil ho Morihei Ueshiba (1883&ndash;1969) jako umění, které klade důraz na mentální i fyzický rozvoj a odmítá soutěžní pojetí. Pro mnohé praktikující se tak aikido stává jakousi životní filosofií.</p>
       </div>
 
-      <div class="origin-block">
+      <div class="origin-block" data-down-label="Jóga">
         <span class="kicker">Jóga</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Rádža jóga pro každého.</h2>
         <div class="origin-block__grid">
@@ -1519,7 +1532,7 @@
            Galerie reveals it here, the way Aktuality lives inside Domů.
            .chapter-first-screen above reserves a guaranteed full screen so
            this never shares the first fold with the Galerie/Videa panels. -->
-      <div class="gal-kresba">
+      <div class="gal-kresba" data-down-label="Kresba">
         <span class="kicker">Kresba</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Nenásilná cesta, nakreslená.</h2>
         <p class="lede" style="max-width:46rem;">Čtyři postavy od kamaráda dójó, nakreslené v roce 2003, ještě dřív než klub měl vlastní web.</p>
@@ -1655,6 +1668,7 @@
   var arrowLeft = document.getElementById('arrowLeft');
   var arrowRight = document.getElementById('arrowRight');
   var arrowDown = document.getElementById('arrowDown');
+  var arrowDownLabel = document.getElementById('arrowDownLabel');
   var bottomLine = document.getElementById('bottomLine');
 
   function syncChrome() {
@@ -1701,6 +1715,23 @@
   function syncSlideEdges(s) {
     var hasMore = s.scrollTop + s.clientHeight < s.scrollHeight - 4;
     arrowDown.toggleAttribute('disabled', !hasMore);
+    if (s === slides[activeIndex()]) updateDownLabel(s, hasMore);
+  }
+
+  /* The label above the down-arrow: the next [data-down-label] section in
+     this chapter that hasn't yet reached the upper half of the screen, i.e.
+     the one you're about to scroll into. Empty (label hidden) when there's
+     no named section ahead. */
+  function updateDownLabel(s, hasMore) {
+    var next = '';
+    if (hasMore) {
+      var marks = s.querySelectorAll('[data-down-label]');
+      var line = window.innerHeight * 0.5;
+      for (var i = 0; i < marks.length; i++) {
+        if (marks[i].getBoundingClientRect().top > line) { next = marks[i].getAttribute('data-down-label'); break; }
+      }
+    }
+    if (arrowDownLabel.textContent !== next) arrowDownLabel.textContent = next;
   }
 
   /* Native scrollIntoView({behavior:'smooth'}) runs at a roughly fixed
