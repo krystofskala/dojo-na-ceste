@@ -687,6 +687,19 @@
     .slide__inner { padding-top: clamp(4.5rem, 14vh, 6rem); }
     .home__h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
   }
+
+  /* Pro koho, Kdy přijít, Kontakt: on phones their stacked content routinely
+     runs taller than one screen. .slide__inner--fill's height:100% cap (which
+     the desktop layout needs — see its comment) then makes the overflow spill
+     *past* the inner's own padding-bottom, so the last line ends flush against
+     the bottom edge with nothing below it. On mobile that height chain isn't
+     needed, so drop the cap back to a floor and let the inner grow with its
+     content — its padding-bottom then always sits below everything. */
+  @media (max-width: 760px) {
+    #slide-2 .slide__inner,
+    #slide-3 .slide__inner,
+    #slide-5 .slide__inner { height: auto; min-height: 100%; padding-bottom: clamp(2rem, 7vh, 3rem); }
+  }
 </style>
 </head>
 <body>
