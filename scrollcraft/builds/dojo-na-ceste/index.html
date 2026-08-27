@@ -256,49 +256,68 @@
 
   /* Reactive cards: click a course, its full info opens in a popup with
      the same CTAs as the chapter. */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200; background: rgba(16,24,40,0.66); backdrop-filter: blur(3px);
-    display: flex; align-items: center; justify-content: center; padding: var(--sp-5);
-    opacity: 0; pointer-events: none; transition: opacity 220ms var(--ease);
+  /* Aktuality photo lightbox: a large paper viewer on a navy wash, with a
+     thumbnail strip + prev/next for posts that carry more than one photo. */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200; background: rgba(16,24,40,0.82); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: clamp(0.75rem, 3vw, 2rem);
+    opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease);
   }
-  .modal-overlay.is-open { opacity: 1; pointer-events: auto; }
-  .modal-card {
-    background: var(--paper); color: var(--navy); width: 100%; max-width: 32rem; max-height: 85vh; overflow-y: auto;
-    border-radius: 18px; padding: clamp(1.5rem, 4vw, 2.4rem); position: relative;
-    box-shadow: 0 30px 70px rgba(0,0,0,0.45); transform: translateY(10px) scale(0.98); transition: transform 220ms var(--ease);
+  .lightbox.is-open { opacity: 1; pointer-events: auto; }
+  .lightbox__card {
+    position: relative; background: var(--paper); color: var(--navy);
+    width: min(96vw, 1400px); height: min(94vh, 100%);
+    display: flex; flex-direction: column; padding: clamp(0.75rem, 2vw, 1.4rem);
+    border-radius: 16px; box-shadow: 0 40px 90px rgba(0,0,0,0.5);
+    transform: scale(0.97); transition: transform 200ms var(--ease);
   }
-  .modal-overlay.is-open .modal-card { transform: translateY(0) scale(1); }
-  .modal-close, .course-popup__close {
+  .lightbox.is-open .lightbox__card { transform: none; }
+  .lightbox__stage {
+    flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
+    padding: 0 clamp(1.6rem, 4vw, 3rem);
+  }
+  .lightbox__stage img {
+    max-width: 100%; max-height: 100%; width: auto; height: auto;
+    object-fit: contain; border-radius: 8px; display: block;
+  }
+  .lightbox__nav {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+    border: none; background: none; padding: 0.4rem; cursor: pointer; color: var(--navy); opacity: 0.55;
+    display: flex; align-items: center; justify-content: center; transition: opacity 150ms var(--ease);
+  }
+  .lightbox__nav:hover { opacity: 1; }
+  .lightbox__nav svg { width: 1.9rem; height: 1.9rem; }
+  .lightbox__nav--prev { left: 0.2rem; }
+  .lightbox__nav--next { right: 0.2rem; }
+  .lightbox__nav[hidden] { display: none; }
+  .lightbox__close, .course-popup__close {
     display: flex; align-items: center; justify-content: center;
     width: 2.75rem; height: 2.75rem; border-radius: 50%;
     border: none; background: rgba(24,35,56,0.08); font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--navy);
     transition: background 150ms var(--ease);
   }
-  .modal-close:hover, .course-popup__close:hover { background: rgba(24,35,56,0.16); }
-  .modal-close { position: absolute; top: 0.9rem; right: 0.9rem; }
-  .modal-card__body figure img { width: 100%; height: auto; border-radius: 12px; margin-bottom: 1.1rem; }
-  /* A cloned post keeps its inner markup but not its .post--photo wrapper
-     class (only innerHTML is cloned), so the width/height attributes on a
-     plain <img> would otherwise render at their literal pixel size instead
-     of scaling — this is what stretched photos into a tall sliver. */
-  .modal-card__body img { width: 100%; height: auto; border-radius: 12px; margin-bottom: 1.1rem; display: block; }
-  .modal-card__body .post__photo-wrap { position: relative; margin-bottom: 1.6rem; }
-  .modal-card__body .post__photo-wrap img { margin-bottom: 0; }
-  .modal-card__body .post__more-photos {
-    position: absolute; left: 1rem; bottom: -1.2rem; display: flex; background: var(--paper);
-    border-radius: 10px; padding: 0.4rem; box-shadow: 0 10px 24px rgba(16,24,40,0.3); gap: 0.4rem;
+  .lightbox__close:hover, .course-popup__close:hover { background: rgba(24,35,56,0.16); }
+  .lightbox__close { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 3; }
+  .lightbox__strip {
+    flex: none; display: flex; gap: 0.5rem; overflow-x: auto;
+    margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid rgba(24,35,56,0.12);
   }
-  .modal-card__body .post__more-photos img { width: 4.4rem; height: 4.4rem; object-fit: cover; border-radius: 6px; margin-bottom: 0; }
-  .modal-card__body .post__gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.4rem, 1fr)); gap: var(--sp-1); margin: 0.8rem 0 1.2rem; }
-  .modal-card__body .post__gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; margin-bottom: 0; }
-  .modal-card__body .post__gallery--single { grid-template-columns: none; width: 8rem; }
-  .modal-card__body .post__gallery--single img { aspect-ratio: auto; height: auto; }
-  .modal-card__body .post__buttons { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin: 0.8rem 0; }
-  .modal-card__body .course__age { color: var(--red); font-size: var(--text-micro); letter-spacing: 0.06em; text-transform: uppercase; display: inline-block; margin-bottom: 0.4rem; }
-  .modal-card__body h3 { font-size: 1.6rem; margin: 0 0 0.6rem; }
-  .modal-card__body p { color: #4A5163; font-size: var(--text-caption); line-height: 1.6; }
-  .modal-card__body .course__more { display: none; }
-  .modal-card__cta { margin-top: 1.3rem; }
+  .lightbox__strip:empty { display: none; }
+  .lightbox__strip::-webkit-scrollbar { height: 6px; }
+  .lightbox__strip::-webkit-scrollbar-thumb { background: rgba(24,35,56,0.2); border-radius: 3px; }
+  .lightbox__thumb {
+    flex: none; width: 4.6rem; height: 4.6rem; padding: 0; overflow: hidden;
+    border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer;
+  }
+  .lightbox__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.55; transition: opacity 150ms var(--ease); }
+  .lightbox__thumb:hover img { opacity: 0.85; }
+  .lightbox__thumb[aria-current="true"] { border-color: var(--red); }
+  .lightbox__thumb[aria-current="true"] img { opacity: 1; }
+  @media (max-width: 520px) {
+    .lightbox__stage { padding: 0 1.4rem; }
+    .lightbox__nav svg { width: 1.5rem; height: 1.5rem; }
+    .lightbox__thumb { width: 3.6rem; height: 3.6rem; }
+  }
 
   .navlinks {
     display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 1.9rem); pointer-events: auto;
@@ -415,40 +434,47 @@
     border: 2px solid var(--accent); position: relative; margin-top: 0.15rem;
   }
   .post__marker::after { content: ""; position: absolute; inset: 0.24rem; border-radius: 50%; background: var(--accent); }
-  /* One-image or one-PDF posts get a single media tile on the right; posts
-     with no media at all stay a single full-width text column. Posts are
-     no longer clickable as a whole — only the picture opens a gallery view. */
-  .post:has(> .post__photo-wrap, > img, > .post__gallery) {
-    display: grid; grid-template-columns: 1fr minmax(9rem, 16vw); gap: clamp(1.2rem, 2vw, 1.8rem); align-items: start;
+  /* Post media is normalised by JS (see the Aktuality script) into one of
+     two shapes. Single photo: floated so the text wraps past it and then
+     runs full width beneath (.post--media-1). Two or more: a full-width
+     bento of tiles below the text (.post--media-many). Both open the
+     lightbox on click. */
+  .post--media-1 { display: flow-root; }
+  .post__figure {
+    float: right; width: clamp(9rem, 32%, 15rem); margin: 0.25rem 0 0.9rem 1.4rem;
   }
-  .post > .post__photo-wrap, .post > img, .post > .post__gallery { order: 2; }
-  .post > .post__body { order: 1; min-width: 0; }
-  .post--photo img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 10px; display: block; cursor: zoom-in; }
-  .post--photo .post__gallery { margin-top: var(--sp-1); }
-  /* When a real post had more than one surviving photo, arrange them as a
-     small overlapping cluster on the main image rather than picking just
-     one and dropping the rest. */
-  .post__photo-wrap { position: relative; }
-  .post__more-photos {
-    position: absolute; left: 0.6rem; bottom: -0.8rem; display: flex; background: var(--paper);
-    border-radius: 8px; padding: 0.3rem; box-shadow: 0 8px 18px rgba(16,24,40,0.3); gap: 0.3rem;
+  .post__figure img {
+    width: 100%; height: auto; border-radius: 10px; display: block; cursor: zoom-in;
+    box-shadow: 0 6px 16px rgba(16,24,40,0.18);
   }
-  .post__more-photos img {
-    width: 2.6rem; height: 2.6rem; object-fit: cover; border-radius: 5px; box-shadow: none; margin: 0;
-    aspect-ratio: 1; cursor: zoom-in;
+  /* Tall posters: cap the floated height so the wrap resolves quickly and
+     the text drops to full width sooner. Click still opens the whole poster. */
+  .post__figure--poster { width: auto; }
+  .post__figure--poster img {
+    max-height: 15rem; width: auto; max-width: clamp(8rem, 34%, 13rem); object-fit: contain;
   }
-  /* Archived photos a post linked out to: a compact bento of thumbnails
-     confined to the media column, hotlinked or localized as available. */
-  .post__gallery {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(3.6rem, 1fr)); gap: 0.4rem;
+  .post__bento {
+    display: grid; grid-auto-flow: dense; gap: 0.5rem; margin-top: 1.1rem;
+    grid-template-columns: repeat(2, 1fr);
   }
-  .post__gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 7px; display: block; cursor: zoom-in; }
-  .post__gallery a { display: block; opacity: 0.88; transition: opacity 150ms var(--ease); }
-  .post__gallery a:hover, .post__gallery a:focus-visible { opacity: 1; }
-  /* A single recovered flyer/plakát photo (portrait, not meant to crop to a
-     square) sits as its own tile instead of stretching to fill the grid. */
-  .post__gallery--single { display: block; grid-template-columns: none; }
-  .post__gallery--single img { aspect-ratio: auto; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 16px rgba(16,24,40,0.18); }
+  .post__bento img {
+    width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3;
+    border-radius: 9px; display: block; cursor: zoom-in;
+  }
+  /* Three photos: one tall lead tile beside two stacked ones. */
+  .post__bento[data-count="3"] { grid-template-columns: 1.3fr 1fr; }
+  .post__bento[data-count="3"] > :first-child { grid-row: 1 / span 2; }
+  /* Five or six: a 2x2 lead tile in a three-column grid. */
+  .post__bento[data-count="5"], .post__bento[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
+  .post__bento[data-count="5"] > :first-child,
+  .post__bento[data-count="6"] > :first-child { grid-column: span 2; grid-row: span 2; }
+  .post__bento[data-count="3"] > :first-child,
+  .post__bento[data-count="5"] > :first-child,
+  .post__bento[data-count="6"] > :first-child { aspect-ratio: auto; height: 100%; }
+  @media (max-width: 520px) {
+    .post__figure { float: none; width: 100%; max-width: 22rem; margin: 0 0 1rem; text-align: center; }
+    .post__figure--poster img { max-width: 100%; }
+  }
   /* A post's real buttons: pdf invites, video links, everything else that
      used to just be inline text is now a row of real controls. */
   .post__buttons { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1.1rem; }
@@ -1610,14 +1636,17 @@
 
 </div>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Detail kurzu">
-    <button class="modal-close" id="modalClose" aria-label="Zavřít">&times;</button>
-    <div class="modal-card__body" id="modalBody"></div>
-    <div class="cta-row modal-card__cta">
-      <a class="btn btn--solid" href="../../../rozpis-hodin.html">Rozpis hodin</a>
-      <a class="btn btn--ghost" href="../../../prihaska.html">Přihláška</a>
-    </div>
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox__card" role="dialog" aria-modal="true" aria-label="Fotografie">
+    <button class="lightbox__close" id="lbClose" type="button" aria-label="Zavřít">&times;</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" type="button" aria-label="Předchozí fotka" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <div class="lightbox__stage"><img id="lbImg" alt=""></div>
+    <button class="lightbox__nav lightbox__nav--next" id="lbNext" type="button" aria-label="Další fotka" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+    <div class="lightbox__strip" id="lbStrip"></div>
   </div>
 </div>
 
@@ -2004,46 +2033,140 @@
   coursePopup.addEventListener('click', function (e) { if (e.target === coursePopup) closeCourse(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && coursePopup.classList.contains('is-open')) closeCourse(); });
 
-  /* The Aktuality gallery lightbox still uses the shared modal overlay —
-     posts never adopted the FLIP popup, they just needed a plain viewer. */
-  var overlay = document.getElementById('modalOverlay');
-  var modalBody = document.getElementById('modalBody');
-  var modalClose = document.getElementById('modalClose');
-  var lastFocused = null;
-  var modalCta = document.querySelector('.modal-card__cta');
-  function closeModal() {
-    overlay.classList.remove('is-open');
-    if (lastFocused) lastFocused.focus();
-  }
-  /* Posts themselves are read straight off the card now, not opened in a
-     popup — only a post's own picture is reactive, opening it (and any
-     sibling photos from that same post) large. */
-  function openGallery(clickedImg) {
-    var post = clickedImg.closest('.post');
-    var dateEl = post && post.querySelector('.post__date');
-    var imgs = post ? Array.prototype.slice.call(post.querySelectorAll('img')) : [clickedImg];
-    var html = '<img src="' + clickedImg.currentSrc + '" alt="' + (clickedImg.alt || '').replace(/"/g, '&quot;') + '" style="width:100%; height:auto; border-radius:12px; display:block;">';
-    if (imgs.length > 1) {
-      html += '<div class="post__gallery" style="margin-top:0.8rem;">' + imgs.map(function (i) {
-        return '<img src="' + i.currentSrc + '" alt="" style="cursor:zoom-in;">';
-      }).join('') + '</div>';
+  /* --- Aktuality: normalise each post's photos, then a large lightbox ---
+     A post with one photo gets it floated (.post--media-1, text wraps past
+     it); a post with several gets a bento of tiles below the text
+     (.post--media-many). Either way, clicking a photo opens the lightbox,
+     which carries every photo from that post with a thumbnail strip and
+     prev/next (buttons, arrow keys, or the strip itself). */
+  var lightbox = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
+  var lbStrip = document.getElementById('lbStrip');
+  var lbPrev = document.getElementById('lbPrev');
+  var lbNext = document.getElementById('lbNext');
+  var lbClose = document.getElementById('lbClose');
+  var lbItems = [];
+  var lbIndex = 0;
+  var lbLastFocused = null;
+
+  function lbShow() {
+    var it = lbItems[lbIndex];
+    if (!it) return;
+    lbImg.src = it.src;
+    lbImg.alt = it.alt || '';
+    var multi = lbItems.length > 1;
+    lbPrev.hidden = !multi;
+    lbNext.hidden = !multi;
+    for (var i = 0; i < lbStrip.children.length; i++) {
+      lbStrip.children[i].setAttribute('aria-current', i === lbIndex ? 'true' : 'false');
     }
-    if (dateEl) html = '<span class="post__date">' + dateEl.textContent + '</span>' + html;
-    lastFocused = document.activeElement;
-    modalBody.innerHTML = html;
-    modalCta.innerHTML = '';
-    overlay.classList.add('is-open');
-    modalClose.focus();
-    modalBody.querySelectorAll('.post__gallery img').forEach(function (thumb) {
-      thumb.addEventListener('click', function () { openGallery(thumb); });
-    });
+    var cur = lbStrip.children[lbIndex];
+    if (cur && cur.scrollIntoView) cur.scrollIntoView({ inline: 'center', block: 'nearest' });
   }
-  document.querySelectorAll('.post img').forEach(function (img) {
-    img.addEventListener('click', function (e) {
-      var link = e.target.closest('a');
-      if (link) e.preventDefault();
-      openGallery(img);
+  function lbStep(delta) {
+    if (lbItems.length < 2) return;
+    lbIndex = (lbIndex + delta + lbItems.length) % lbItems.length;
+    lbShow();
+  }
+  function openLightbox(items, index) {
+    lbItems = items;
+    lbIndex = index || 0;
+    lbLastFocused = document.activeElement;
+    lbStrip.innerHTML = '';
+    if (items.length > 1) {
+      items.forEach(function (it, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'lightbox__thumb';
+        b.setAttribute('aria-label', 'Fotka ' + (i + 1));
+        var t = document.createElement('img');
+        t.src = it.src;
+        t.alt = '';
+        b.appendChild(t);
+        b.addEventListener('click', function () { lbIndex = i; lbShow(); });
+        lbStrip.appendChild(b);
+      });
+    }
+    lbShow();
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    lbClose.focus();
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lbImg.removeAttribute('src');
+    if (lbLastFocused && lbLastFocused.focus) lbLastFocused.focus();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.posts .post'), function (post) {
+    var imgNodes = Array.prototype.slice.call(post.querySelectorAll('img'));
+    if (!imgNodes.length) return;
+    var data = imgNodes.map(function (im) {
+      var a = im.closest('a');
+      return {
+        src: (a && a.getAttribute('href')) || im.getAttribute('src'),
+        alt: im.getAttribute('alt') || '',
+        w: parseInt(im.getAttribute('width'), 10) || 0,
+        h: parseInt(im.getAttribute('height'), 10) || 0,
+        poster: !!im.closest('.post__gallery--single')
+      };
     });
+    Array.prototype.forEach.call(
+      post.querySelectorAll(':scope > img, :scope > .post__photo-wrap, :scope > .post__gallery'),
+      function (n) { n.remove(); }
+    );
+    var body = post.querySelector('.post__body');
+    var esc = function (s) { return String(s).replace(/"/g, '&quot;'); };
+    post.classList.remove('post--photo', 'post--gallery');
+
+    if (data.length === 1) {
+      post.classList.add('post--media-1');
+      var d = data[0];
+      /* Poster = a tall portrait image (plakát/flyer) whose height is capped
+         while it's floated. Guess from the markup + any width/height attrs
+         up front, then correct against the real ratio once the image loads
+         (a landscape photo that happened to sit in a single-gallery is not
+         a poster). */
+      var tall = function (w, h) { return w && h && h / w >= 1.35; };
+      var isPoster = d.poster || tall(d.w, d.h);
+      var fig = document.createElement('figure');
+      fig.className = 'post__figure' + (isPoster ? ' post__figure--poster' : '');
+      fig.innerHTML = '<img src="' + esc(d.src) + '" alt="' + esc(d.alt) + '" loading="lazy">';
+      if (body) post.insertBefore(fig, body); else post.appendChild(fig);
+      var fimg = fig.querySelector('img');
+      var refinePoster = function () {
+        if (!fimg.naturalWidth) return;
+        fig.classList.toggle('post__figure--poster', tall(fimg.naturalWidth, fimg.naturalHeight));
+      };
+      if (fimg.complete) refinePoster();
+      else fimg.addEventListener('load', refinePoster);
+    } else {
+      post.classList.add('post--media-many');
+      var bento = document.createElement('div');
+      bento.className = 'post__bento';
+      bento.setAttribute('data-count', Math.min(data.length, 6));
+      bento.innerHTML = data.map(function (dd) {
+        return '<img src="' + esc(dd.src) + '" alt="' + esc(dd.alt) + '" loading="lazy">';
+      }).join('');
+      post.appendChild(bento);
+    }
+
+    var items = data.map(function (dd) { return { src: dd.src, alt: dd.alt }; });
+    Array.prototype.forEach.call(post.querySelectorAll('.post__figure img, .post__bento img'), function (im, i) {
+      im.addEventListener('click', function () { openLightbox(items, i); });
+    });
+  });
+
+  lbPrev.addEventListener('click', function () { lbStep(-1); });
+  lbNext.addEventListener('click', function () { lbStep(1); });
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') lbStep(-1);
+    else if (e.key === 'ArrowRight') lbStep(1);
   });
   /* Reveal-on-scroll. One shared observer works fine even though each
      chapter scrolls its own axis: every .slide is exactly one viewport, so
@@ -2174,9 +2297,6 @@
     });
   });
 
-  modalClose.addEventListener('click', closeModal);
-  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal(); });
   })();
 </script>
 </body>
