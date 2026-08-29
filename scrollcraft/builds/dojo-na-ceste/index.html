@@ -171,13 +171,15 @@
      to be clip-pathed to catch up (which WebKit doesn't do reliably while
      a momentum fling is in flight). */
   .chapter-topscrim {
+    --scrim-h: clamp(6rem, 16vh, 11rem);
     position: sticky; top: 0; z-index: 6; pointer-events: none;
-    height: clamp(4.5rem, 11vh, 7.5rem);
-    margin-bottom: calc(-1 * clamp(4.5rem, 11vh, 7.5rem));
+    height: var(--scrim-h);
+    margin-bottom: calc(-1 * var(--scrim-h));
     background: linear-gradient(to bottom, var(--ground, transparent), transparent 100%);
     background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ground, transparent) 82%, transparent) 0%,
-      color-mix(in srgb, var(--ground, transparent) 38%, transparent) 46%,
+      color-mix(in srgb, var(--ground, transparent) 86%, transparent) 0%,
+      color-mix(in srgb, var(--ground, transparent) 62%, transparent) 34%,
+      color-mix(in srgb, var(--ground, transparent) 30%, transparent) 66%,
       transparent 100%);
   }
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
@@ -507,8 +509,12 @@
   .post__bento[data-count="3"] > :first-child,
   .post__bento[data-count="5"] > :first-child,
   .post__bento[data-count="6"] > :first-child { aspect-ratio: auto; height: 100%; }
-  @media (max-width: 520px) {
-    .post__figure { float: none; width: 100%; max-width: 22rem; margin: 0 0 1rem; text-align: center; }
+  /* On a phone the wrap never has room to read well, so a single-image post
+     stacks — and always image UNDER the text (flex column + order), to match
+     the multi-image bento which is already below. */
+  @media (max-width: 640px) {
+    .post--media-1 { display: flex; flex-direction: column; }
+    .post__figure { order: 2; float: none; width: 100%; max-width: 22rem; margin: 1rem auto 0; text-align: center; }
     .post__figure--poster img { max-width: 100%; }
   }
   /* ---------------------------------------------------------------------
@@ -701,6 +707,12 @@
     margin-right: 0.7rem; padding-right: 0.7rem; border-right: 1px solid var(--hairline, rgba(245,235,221,0.25));
   }
   .deck__count:empty { display: none; }
+  /* Phones: shorter deck, and the fan spread in the JS scales itself down
+     so the peeking stack/pile cards stay inside the chapter width. */
+  @media (max-width: 560px) {
+    .deck { height: clamp(13.5rem, 34vh, 18rem); }
+    .deck__card { width: clamp(9rem, 58%, 13rem); }
+  }
 
   .videa { margin: clamp(2rem, 5vh, 3.2rem) 0 0; }
   .videa h3 { font-size: 1.15rem; margin: 0 0 0.9rem; }
@@ -2298,22 +2310,29 @@
 
     function place(card, off, deckW) {
       var cardW = card.offsetWidth || deckW * 0.52;
-      var Sx = deckW - cardW - 6;                 // right-stack anchor
+      /* Spread factor: full when there's plenty of slack beside the front
+         card, scaled down when the deck is narrow — so the fanned stack and
+         the left pile always stay inside deckW instead of poking past the
+         chapter edge on a phone. */
+      var s = Math.max(0.42, Math.min(1, (deckW - cardW) / 250));
+      var fan1 = 15 * s, fan2 = 28 * s, fanBuf = 40 * s;
+      var lead = 18 * s;                          // front card nudged right, leaving room for the pile
+      var Sx = deckW - cardW - 6 - fan2;          // deepest visible stack card (off 3) ends at deckW - 6
       var t, o = 1, f = 'none', z = 1, buffer = false;
       if (off === 0) {                            // front, being read
-        t = 'translate(0px,0px) rotate(0deg) scale(1)'; z = 100;
+        t = 'translate(' + lead + 'px,0px) rotate(0deg) scale(1)'; z = 100;
       } else if (off === 1) {                     // top of the stack
-        t = 'translate(' + Sx + 'px,9px) rotate(3deg) scale(0.955)'; z = 60;
+        t = 'translate(' + Sx + 'px,' + (9 * s) + 'px) rotate(' + (3 * s) + 'deg) scale(0.955)'; z = 60;
       } else if (off === 2) {
-        t = 'translate(' + (Sx + 15) + 'px,22px) rotate(6deg) scale(0.905)'; z = 55; o = 0.9;
+        t = 'translate(' + (Sx + fan1) + 'px,' + (22 * s) + 'px) rotate(' + (6 * s) + 'deg) scale(0.905)'; z = 55; o = 0.9;
       } else if (off === 3) {                     // faint 3rd card, back of stack
-        t = 'translate(' + (Sx + 28) + 'px,34px) rotate(9deg) scale(0.85)'; z = 50; o = 0.42;
+        t = 'translate(' + (Sx + fan2) + 'px,' + (34 * s) + 'px) rotate(' + (9 * s) + 'deg) scale(0.85)'; z = 50; o = 0.42;
       } else if (off === N - 1) {                 // just-viewed, on the left pile
-        t = 'translate(-26px,16px) rotate(-4.5deg) scale(0.92)'; z = 40; f = 'brightness(0.72)';
+        t = 'translate(' + (lead - 22 * s) + 'px,16px) rotate(' + (-4.5 * s) + 'deg) scale(0.92)'; z = 40; f = 'brightness(0.72)';
       } else if (off === N - 2) {                 // parked (left) — carries round the loop unseen
-        t = 'translate(-44px,28px) rotate(-7.5deg) scale(0.86)'; z = 8; o = 0; buffer = true;
+        t = 'translate(' + (lead - 40 * s) + 'px,28px) rotate(' + (-7.5 * s) + 'deg) scale(0.86)'; z = 8; o = 0; buffer = true;
       } else {                                    // parked (right)
-        t = 'translate(' + (Sx + 40) + 'px,40px) rotate(11deg) scale(0.8)'; z = 5; o = 0; buffer = true;
+        t = 'translate(' + (Sx + fanBuf) + 'px,40px) rotate(' + (11 * s) + 'deg) scale(0.8)'; z = 5; o = 0; buffer = true;
       }
       card.classList.toggle('deck__card--buffer', buffer);
       card.classList.toggle('deck__card--front', off === 0);
