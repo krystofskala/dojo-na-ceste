@@ -157,7 +157,10 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     display: flex; align-items: center; justify-content: space-between;
     padding: 1.1rem var(--gutter); pointer-events: none;
-    color: var(--nav-ink, var(--navy)); transition: color 320ms var(--ease);
+    color: var(--nav-ink, var(--navy));
+    /* No colour transition: updateTopnavSplit() sets the exact-correct ink
+       every frame of a scroll, so a transition here only lags behind the
+       moving chapter boundary and smears the text during a chapter change. */
   }
   /* No scrim here on purpose: legibility comes from the two-layer color
      split below, not a painted-on fade. */
@@ -1678,6 +1681,11 @@
     el.tabIndex = -1;
   });
   topnav.insertAdjacentElement('afterend', topnavOverlay);
+  /* The overlay is a frozen clone — its .navlink data-goto attrs were
+     stripped, so the active-chapter highlight has to be mirrored onto it
+     by index from syncChrome(), or it keeps lighting whichever numeral was
+     active at page load and you get two highlights (a ghost) mid-transition. */
+  var overlayNavlinks = Array.prototype.slice.call(topnavOverlay.querySelectorAll('.navlink'));
 
   function activeIndex() {
     var mid = hub.scrollLeft + hub.clientWidth / 2;
@@ -1707,7 +1715,11 @@
       el.style.color = ink;
       el.style.setProperty('--halo', bg);
     });
-    navlinks.forEach(function (n) { n.classList.toggle('is-active', parseInt(n.getAttribute('data-goto'), 10) === i); });
+    navlinks.forEach(function (n, k) {
+      var on = parseInt(n.getAttribute('data-goto'), 10) === i;
+      n.classList.toggle('is-active', on);
+      if (overlayNavlinks[k]) overlayNavlinks[k].classList.toggle('is-active', on);
+    });
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
