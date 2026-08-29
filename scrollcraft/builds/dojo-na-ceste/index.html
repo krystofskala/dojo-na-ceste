@@ -162,8 +162,20 @@
        every frame of a scroll, so a transition here only lags behind the
        moving chapter boundary and smears the text during a chapter change. */
   }
-  /* No scrim here on purpose: legibility comes from the two-layer color
-     split below, not a painted-on fade. */
+  /* Scrim: a short fade of the CURRENT chapter's own ground colour under
+     the bar so the nav stays legible over whatever scrolls past. It lives
+     on ::before of both layers and --scrim is set per layer in the JS, so
+     the overlay's clip-path splits the scrim at the exact chapter boundary
+     too — the colour break runs through the whole top strip, not just the
+     glyphs, which is what keeps it from fighting the pixel-split effect. */
+  .topnav::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: clamp(5rem, 13vh, 8.5rem); z-index: -1; pointer-events: none;
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--scrim, transparent) 90%, transparent) 0%,
+      color-mix(in srgb, var(--scrim, transparent) 46%, transparent) 42%,
+      transparent 100%);
+  }
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
   /* Recolored via mask instead of filter: invert()/brightness() pushed the
      fine woodcut hatching to blown-out pure black/white with no tone left
@@ -1744,12 +1756,14 @@
     var ground = slides[idx].getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
     topnav.style.color = ink;
+    topnav.style.setProperty('--scrim', groundBg[ground] || '#F7F4EC');
     topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
 
     var nextIdx = Math.min(slides.length - 1, idx + 1);
     var nextGround = slides[nextIdx].getAttribute('data-ground');
     var nextInk = groundInk[nextGround] || '#182338';
     topnavOverlay.style.color = nextInk;
+    topnavOverlay.style.setProperty('--scrim', groundBg[nextGround] || '#F7F4EC');
     topnavOverlay.classList.toggle('topnav--dark', nextGround === 'navy' || nextGround === 'navy-deep');
     topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
   }
@@ -1871,6 +1885,13 @@
   var hubTicking = false;
   hub.addEventListener('scroll', function () {
     if (hint && !hint.classList.contains('is-hidden')) hint.classList.add('is-hidden');
+    /* Run the colour split on EVERY scroll event, not behind the rAF gate:
+       it's a handful of style writes and it must stay pixel-locked to the
+       moving chapter boundary. Routed through rAF (as it was, via
+       syncChrome) it lagged a frame or more during a momentum scroll — the
+       bar kept the outgoing chapter's ink/scrim over the incoming chapter
+       for the first part of the transition, then snapped mid-way. */
+    updateTopnavSplit();
     if (!hubTicking) { hubTicking = true; requestAnimationFrame(function () { syncChrome(); hubTicking = false; }); }
   }, { passive: true });
   slides.forEach(function (s) {
