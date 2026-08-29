@@ -199,6 +199,12 @@
   .side-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
   .side-arrow-zone { position: fixed; top: 0; bottom: 0; width: 12vw; z-index: 54; }
   .side-arrow-zone--left { left: 0; } .side-arrow-zone--right { right: 0; }
+  /* Phones: swipe changes chapters and the top-bar numerals show the
+     position, so the edge arrows are just something for content to collide
+     with. The wheel-zone behaviour they pair with is desktop-only anyway. */
+  @media (max-width: 760px) {
+    .side-arrow, .side-arrow-zone { display: none; }
+  }
 
   /* Bottom indicator: a hairline that brightens near the pointer or when
      there's more of the chapter below the fold, plus a down-arrow that's
@@ -346,10 +352,17 @@
     color: var(--gold);
   }
   .navlink.is-active { opacity: 1; font-weight: 600; }
-  .navlink.is-active svg { opacity: 1; }
+  /* Current chapter: colour the numeral in the chapter's accent so the
+     top bar reads clearly as "you are here" — especially on mobile, where
+     the numerals are all that's left of the nav. */
+  .navlink.is-active .navlink__kanji { color: var(--red); }
+  .topnav--dark .navlink.is-active .navlink__kanji { color: var(--gold); }
   @media (max-width: 900px) {
-    .navlink span { display: none; }
-    .navlinks { gap: 1.1rem; }
+    /* only the word, not the numeral — .navlink span used to hit both,
+       which blanked the whole nav on phones. */
+    .navlink__label { display: none; }
+    .navlinks { gap: clamp(0.9rem, 3.5vw, 1.4rem); }
+    .navlink__kanji { font-size: 1.15rem; }
   }
 
   /* horizontal-scroll hint, title slide only */
