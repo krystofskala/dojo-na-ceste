@@ -2302,28 +2302,62 @@
       else if (acc <= -90) { acc = 0; advance(-1); }
     }, { passive: false });
 
-    /* sideways drag (touch + mouse). touch-action:pan-y in the CSS keeps
-       vertical swipes scrolling the chapter. */
-    var dragX = null, dragAcc = 0, moved = false;
+    /* Was the just-finished gesture a drag? Read by the click handler to
+       tell a swipe from a tap. Reset at the start of each new gesture (not
+       on a timer — a timer can clear it before the click that follows a
+       drag, or leave it stale before a later tap). */
+    var moved = false;
+
+    /* --- touch: a horizontal swipe deals one card ---
+       touchmove is non-passive so a swipe judged horizontal can call
+       preventDefault() and keep the browser from stealing it as a page
+       scroll (the flaky part of the old pointer version — a slightly
+       diagonal drag would get claimed as a vertical pan and the pointer
+       cancelled before any threshold was reached). A vertical drag is left
+       alone so the page still scrolls down to Kresba. */
+    var tsx = 0, tsy = 0, taxis = null, tdealt = false;
+    deck.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      tsx = t.clientX; tsy = t.clientY; taxis = null; tdealt = false; moved = false;
+    }, { passive: true });
+    deck.addEventListener('touchmove', function (e) {
+      var t = e.touches[0];
+      var dx = t.clientX - tsx, dy = t.clientY - tsy;
+      if (taxis === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+        taxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      if (taxis !== 'x') return;
+      e.preventDefault();
+      moved = true;
+      var step = Math.abs(dx) > 130 ? 2 : 1;      // a long swipe can turn two
+      if (!tdealt && Math.abs(dx) > 34) {
+        advance(dx < 0 ? step : -step);
+        tdealt = true;
+      }
+    }, { passive: false });
+    deck.addEventListener('touchend', function () { taxis = null; });
+
+    /* --- mouse drag (desktop only; touch is handled above) --- */
+    var mx = null, macc = 0;
     deck.addEventListener('pointerdown', function (e) {
-      dragX = e.clientX; dragAcc = 0; moved = false;
+      if (e.pointerType === 'touch') return;
+      mx = e.clientX; macc = 0; moved = false;
       try { deck.setPointerCapture(e.pointerId); } catch (err) {}
     });
     deck.addEventListener('pointermove', function (e) {
-      if (dragX === null) return;
-      var dx = e.clientX - dragX;
+      if (mx === null || e.pointerType === 'touch') return;
+      var dx = e.clientX - mx;
       if (Math.abs(dx) > 6) moved = true;
-      if (dx - dragAcc <= -80) { dragAcc -= 80; advance(1); }
-      else if (dx - dragAcc >= 80) { dragAcc += 80; advance(-1); }
+      if (dx - macc <= -70) { macc -= 70; advance(1); }
+      else if (dx - macc >= 70) { macc += 70; advance(-1); }
     });
-    function endDrag(e) {
-      if (dragX === null) return;
-      dragX = null;
+    function endMouseDrag(e) {
+      if (mx === null) return;
+      mx = null;
       try { deck.releasePointerCapture(e.pointerId); } catch (err) {}
-      setTimeout(function () { moved = false; }, 0);
     }
-    deck.addEventListener('pointerup', endDrag);
-    deck.addEventListener('pointercancel', endDrag);
+    deck.addEventListener('pointerup', endMouseDrag);
+    deck.addEventListener('pointercancel', endMouseDrag);
 
     deck.addEventListener('click', function (e) {
       if (moved) return;
