@@ -417,7 +417,8 @@
   .origin-block__grid p + p { margin-top: 1em; }
   @media (max-width: 760px) { .origin-block__grid { grid-template-columns: minmax(0, 1fr); } }
   .photo-placeholder {
-    aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed rgba(245,235,221,0.3);
+    aspect-ratio: 4 / 3; max-height: 14rem; align-self: start;
+    border-radius: 12px; border: 1.5px dashed rgba(245,235,221,0.3);
     background: rgba(245,235,221,0.05); display: flex; align-items: center; justify-content: center;
     color: var(--ink-soft); font-size: var(--text-caption); text-align: center; padding: var(--sp-3);
   }
@@ -673,7 +674,7 @@
      not inside a centred wrapper). width:100% first so it has a definite
      size to cap — the deck's cards are absolutely positioned and give it
      none on their own. */
-  .gal-stage { width: 100%; max-width: var(--container); }
+  .gal-stage { width: 100%; max-width: var(--container); margin: 0 auto; }
   .deck {
     position: relative; width: 100%; max-width: 37rem;
     height: clamp(17rem, 42vh, 24rem);
@@ -747,14 +748,43 @@
   .gal-modal__title { font-size: var(--text-heading); margin: 0 0 0.2rem; }
   .gal-modal__sub { font-size: var(--text-caption); color: var(--ink-soft); margin: 0 0 1.3rem; }
   .gal-modal__close { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; }
-  .gal-modal__bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-flow: dense; gap: 0.5rem; }
-  @media (max-width: 560px) { .gal-modal__bento { grid-template-columns: repeat(2, 1fr); } }
+  /* Masonry columns, not a fixed grid: every photo keeps its own natural
+     ratio, so a mix of portrait / landscape / panorama shots lays itself
+     out unevenly (that's the "interesting" part). First photo runs full
+     width as a lead. */
+  .gal-modal__bento { column-count: 3; column-gap: 0.5rem; }
+  @media (max-width: 720px) { .gal-modal__bento { column-count: 2; } }
+  @media (max-width: 420px) { .gal-modal__bento { column-count: 1; } }
   .gal-modal__bento img {
-    width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1; border-radius: 8px;
-    display: block; cursor: zoom-in;
+    width: 100%; display: block; border-radius: 8px; cursor: zoom-in;
+    margin: 0 0 0.5rem; break-inside: avoid;
   }
-  .gal-modal__bento img:first-child { grid-column: span 2; grid-row: span 2; aspect-ratio: 1; }
-  @media (max-width: 560px) { .gal-modal__bento img:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 16/10; } }
+  .gal-modal__bento img:first-child {
+    column-span: all; margin-bottom: 0.6rem; max-height: 24rem; object-fit: cover;
+  }
+
+  /* "Všechny sbírky" — a plain grid of all collection covers. */
+  .deck__all {
+    margin-top: 0.8rem; font-size: var(--text-caption); font-weight: 600;
+    background: none; border: 1px solid currentColor; color: var(--ink);
+    padding: 0.5em 1.1em; border-radius: 999px; cursor: pointer; opacity: 0.78;
+    transition: opacity 150ms var(--ease), background 150ms var(--ease);
+  }
+  .deck__all:hover, .deck__all:focus-visible { opacity: 1; background: rgba(128,128,128,0.12); }
+  .gal-all__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.7rem; }
+  .gal-all__tile {
+    position: relative; border: none; padding: 0; background: none; cursor: pointer;
+    border-radius: 10px; overflow: hidden; aspect-ratio: 4 / 3; color: #fff;
+  }
+  .gal-all__tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 260ms var(--ease); }
+  .gal-all__tile:hover img, .gal-all__tile:focus-visible img { transform: scale(1.05); }
+  .gal-all__tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(16,24,40,0.85) 0%, transparent 58%); }
+  .gal-all__tile b {
+    position: absolute; left: 0.7rem; right: 0.7rem; bottom: 0.55rem; z-index: 1;
+    font-size: var(--text-caption); font-weight: 600; text-align: left; line-height: 1.25;
+  }
+  .gal-all__tile b span { display: block; font-weight: 400; font-size: var(--text-micro); color: rgba(245,235,221,0.72); }
+
   /* Kresba, no longer its own chapter, lives below the fold on Galerie —
      .chapter-first-screen above is what guarantees that structurally now,
      so this is just the visual gap before the section break, matching
@@ -1395,10 +1425,12 @@
         <span class="kicker">Aikido</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; cesta harmonie.</h2>
         <div class="origin-block__grid">
-          <p class="lede" style="margin:0;">Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Jeho název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
+          <div>
+            <p class="lede" style="margin:0;">Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Jeho název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
+            <p class="lede" style="margin-top:1em;">Založil ho Morihei Ueshiba (1883&ndash;1969) jako umění, které klade důraz na mentální i fyzický rozvoj a odmítá soutěžní pojetí. Pro mnohé praktikující se tak aikido stává jakousi životní filosofií.</p>
+          </div>
           <div class="photo-placeholder">fotka bude doplněna</div>
         </div>
-        <p class="lede" style="margin-top:1em; max-width:34rem;">Založil ho Morihei Ueshiba (1883&ndash;1969) jako umění, které klade důraz na mentální i fyzický rozvoj a odmítá soutěžní pojetí. Pro mnohé praktikující se tak aikido stává jakousi životní filosofií.</p>
       </div>
 
       <div class="origin-block" data-down-label="Jóga">
@@ -1563,6 +1595,7 @@
           </div>
         </div>
         <p class="deck__hint"><span class="deck__count" id="galDeckCount" aria-hidden="true"></span>Kolečkem nebo tažením listuješ sbírkami. Klikni na sbírku pro všechny fotky.</p>
+        <button class="deck__all" id="galAllBtn" type="button">Všechny sbírky &rarr;</button>
 
         <div class="videa">
           <h3>Videa</h3>
@@ -1674,6 +1707,14 @@
     <h3 class="gal-modal__title" id="galModalTitle"></h3>
     <p class="gal-modal__sub" id="galModalSub"></p>
     <div class="gal-modal__bento" id="galModalBento"></div>
+  </div>
+</div>
+
+<div class="gal-modal" id="galAllModal" aria-hidden="true">
+  <div class="gal-modal__card" role="dialog" aria-modal="true" aria-labelledby="galAllTitle">
+    <button class="gal-modal__close" id="galAllClose" type="button" aria-label="Zavřít">&times;</button>
+    <h3 class="gal-modal__title" id="galAllTitle">Všechny sbírky</h3>
+    <div class="gal-all__grid" id="galAllGrid"></div>
   </div>
 </div>
 
@@ -2308,6 +2349,19 @@
     var countEl = document.getElementById('galDeckCount');
     var current = 0;
 
+    /* One record per collection, read off the deck cards. Both the deck and
+       the "all collections" grid open a collection from these. */
+    var COLLECTIONS = cards.map(function (c) {
+      return {
+        slug: c.getAttribute('data-slug'),
+        n: parseInt(c.getAttribute('data-n'), 10) || 0,
+        ext: c.getAttribute('data-ext') || 'jpg',
+        title: c.querySelector('.deck__cap b').textContent,
+        count: c.querySelector('.deck__cap span').textContent,
+        cover: c.querySelector('img').getAttribute('src')
+      };
+    });
+
     function place(card, off, deckW) {
       var cardW = card.offsetWidth || deckW * 0.52;
       /* Spread factor: full when there's plenty of slack beside the front
@@ -2396,37 +2450,35 @@
     }, { passive: false });
     deck.addEventListener('touchend', function () { taxis = null; });
 
-    /* --- mouse drag (desktop only; touch is handled above) --- */
+    /* --- mouse drag (desktop only; touch is handled above) ---
+       No setPointerCapture: it redirects the trailing `click` event's
+       target to the deck, so `closest('.deck__card')` came back null and
+       clicking a card did nothing. pointerup is caught on window instead
+       so a drag that ends off the deck still resets. */
     var mx = null, macc = 0;
     deck.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'touch') return;
       mx = e.clientX; macc = 0; moved = false;
-      try { deck.setPointerCapture(e.pointerId); } catch (err) {}
     });
-    deck.addEventListener('pointermove', function (e) {
+    window.addEventListener('pointermove', function (e) {
       if (mx === null || e.pointerType === 'touch') return;
       var dx = e.clientX - mx;
       if (Math.abs(dx) > 6) moved = true;
       if (dx - macc <= -70) { macc -= 70; advance(1); }
       else if (dx - macc >= 70) { macc += 70; advance(-1); }
     });
-    function endMouseDrag(e) {
-      if (mx === null) return;
-      mx = null;
-      try { deck.releasePointerCapture(e.pointerId); } catch (err) {}
-    }
-    deck.addEventListener('pointerup', endMouseDrag);
-    deck.addEventListener('pointercancel', endMouseDrag);
+    window.addEventListener('pointerup', function () { mx = null; });
+    window.addEventListener('pointercancel', function () { mx = null; });
 
     deck.addEventListener('click', function (e) {
       if (moved) return;
       var card = e.target.closest('.deck__card');
-      if (card && (cards.indexOf(card) - current + N) % N === 0) openCollection(card);
+      if (card && (cards.indexOf(card) - current + N) % N === 0) openCollection(COLLECTIONS[current]);
     });
     deck.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); advance(1); }
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); advance(-1); }
-      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCollection(cards[current]); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCollection(COLLECTIONS[current]); }
     });
 
     window.addEventListener('resize', render);
@@ -2441,20 +2493,17 @@
     var modalReturn = null;
 
     function plural(n) { return n === 1 ? ' fotografie' : (n >= 2 && n <= 4 ? ' fotografie' : ' fotografií'); }
-    function openCollection(card) {
-      var slug = card.getAttribute('data-slug');
-      var n = parseInt(card.getAttribute('data-n'), 10) || 0;
-      var ext = card.getAttribute('data-ext') || 'jpg';
-      var title = card.querySelector('.deck__cap b').textContent;
+    function openCollection(coll) {
+      if (!coll) return;
       var items = [];
-      for (var k = 1; k <= n; k++) {
+      for (var k = 1; k <= coll.n; k++) {
         items.push({
-          src: '../../../images/gallery/' + slug + '-' + (k < 10 ? '0' + k : k) + '.' + ext,
-          alt: title + ' — fotka ' + k
+          src: '../../../images/gallery/' + coll.slug + '-' + (k < 10 ? '0' + k : k) + '.' + coll.ext,
+          alt: coll.title + ' — fotka ' + k
         });
       }
-      modalTitle.textContent = title;
-      modalSub.textContent = n + plural(n);
+      modalTitle.textContent = coll.title;
+      modalSub.textContent = coll.n + plural(coll.n);
       modalBento.innerHTML = items.map(function (it) {
         return '<img src="' + it.src + '" alt="' + it.alt.replace(/"/g, '&quot;') + '" loading="lazy">';
       }).join('');
@@ -2478,6 +2527,42 @@
       if (e.key !== 'Escape' || !modal.classList.contains('is-open')) return;
       if (!document.getElementById('lightbox').classList.contains('is-open')) closeCollection();
     });
+
+    /* ---- "all collections" grid ---- */
+    var allModal = document.getElementById('galAllModal');
+    var allGrid = document.getElementById('galAllGrid');
+    var allClose = document.getElementById('galAllClose');
+    var allBtn = document.getElementById('galAllBtn');
+    var allReturn = null;
+    if (allModal && allGrid) {
+      allGrid.innerHTML = COLLECTIONS.map(function (c) {
+        return '<button class="gal-all__tile" type="button">' +
+                 '<img src="' + c.cover + '" alt="" loading="lazy">' +
+                 '<b>' + c.title + '<span>' + c.count + '</span></b>' +
+               '</button>';
+      }).join('');
+      Array.prototype.forEach.call(allGrid.children, function (tile, i) {
+        tile.addEventListener('click', function () { closeAll(); openCollection(COLLECTIONS[i]); });
+      });
+      function openAll() {
+        allReturn = document.activeElement;
+        allModal.classList.add('is-open');
+        allModal.setAttribute('aria-hidden', 'false');
+        allClose.focus();
+      }
+      function closeAll() {
+        allModal.classList.remove('is-open');
+        allModal.setAttribute('aria-hidden', 'true');
+        if (allReturn && allReturn.focus) allReturn.focus();
+      }
+      if (allBtn) allBtn.addEventListener('click', openAll);
+      allClose.addEventListener('click', closeAll);
+      allModal.addEventListener('click', function (e) { if (e.target === allModal) closeAll(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' || !allModal.classList.contains('is-open')) return;
+        if (!modal.classList.contains('is-open')) closeAll();
+      });
+    }
   })();
 
   })();
