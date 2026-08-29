@@ -580,6 +580,12 @@
      height each card gets, which combined with min-height above is enough
      for a real card shape instead of a flattened strip. */
   @media (max-width: 900px) { .courses { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Phone: the 1/2.4 portrait shape makes a very tall card once it's 2-up
+     on a narrow screen — shorten it. */
+  @media (max-width: 600px) {
+    .course { aspect-ratio: 3 / 4; min-height: 0; border-radius: 22px; }
+    .courses { gap: 1rem; }
+  }
   .course__age { display: inline-block; font-size: var(--text-micro); letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
   .course h3 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--paper); }
   /* Hidden on the card face; the popup reads this same text directly off
@@ -646,6 +652,16 @@
   .btn--ghost { border: 1.5px solid currentColor; color: var(--ink); }
   .btn--ghost:hover { background: rgba(0,0,0,0.05); }
   [data-ground="navy"] .btn--ghost:hover, [data-ground="navy-deep"] .btn--ghost:hover { background: rgba(255,255,255,0.08); }
+  .fb-btn {
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    width: 2.9rem; height: 2.9rem; border-radius: 50%; border: 1.5px solid currentColor;
+    color: inherit; text-decoration: none;
+    transition: transform 160ms var(--ease), background 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .fb-btn svg { width: 1.15rem; height: 1.15rem; }
+  .fb-btn:hover, .fb-btn:focus-visible {
+    transform: translateY(-1px); background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+  }
 
   /* ---------------------------------------------------------------------
      Slide 3 · Kdy přijít — two columns: rozpis hodin, then the pay-what-
@@ -752,30 +768,19 @@
   .gal-modal__title { font-size: var(--text-heading); margin: 0 0 0.2rem; }
   .gal-modal__sub { font-size: var(--text-caption); color: var(--ink-soft); margin: 0 0 1.3rem; }
   .gal-modal__close { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; }
-  /* Real bento grid: a 4-column (2 on a phone) grid whose tiles span 1-3
-     columns / 1-2 rows from each photo's own aspect ratio (set in the JS,
-     .b-* classes — only genuinely wide or tall shots get a span, the rest
-     stay 1x1). Every tile is object-fit:cover'd so the rows keep a uniform
-     height; grid-auto-flow:dense backfills the gaps. */
+  /* Bento grid, 4 columns everywhere, fixed row height so every span is a
+     whole number of cells. tileBento() assigns every image an explicit
+     grid-row / grid-column, so the rendered grid is exactly its zero-gap
+     packing — a wide shot spans 2-4 columns, a pair of portraits makes a
+     2x2 block of tall tiles, the rest are squares. cover fills each cell. */
   .gal-modal__bento {
     display: grid; gap: 0.5rem;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-flow: row dense;
+    grid-auto-rows: clamp(4.75rem, 22vw, 12rem);
   }
-  @media (max-width: 560px) { .gal-modal__bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .gal-modal__bento img {
-    width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1;
+    width: 100%; height: 100%; object-fit: cover;
     border-radius: 8px; display: block; cursor: zoom-in;
-  }
-  .gal-modal__bento img.b-w2  { grid-column: span 2; aspect-ratio: 2 / 1; }
-  .gal-modal__bento img.b-w3  { grid-column: span 3; aspect-ratio: 5 / 2; }
-  .gal-modal__bento img.b-w4  { grid-column: 1 / -1; aspect-ratio: 16 / 5; }
-  .gal-modal__bento img.b-h2  { grid-row: span 2; aspect-ratio: 1 / 2; }
-  .gal-modal__bento img.b-big { grid-column: span 2; grid-row: span 2; aspect-ratio: 1; }
-  @media (max-width: 560px) {
-    .gal-modal__bento img.b-w3  { grid-column: span 2; aspect-ratio: 2 / 1; }
-    .gal-modal__bento img.b-w4  { aspect-ratio: 2 / 1; }
-    .gal-modal__bento img.b-big { grid-column: span 2; }
   }
 
   /* "Všechny sbírky" — a plain grid of all collection covers. */
@@ -1689,10 +1694,12 @@
           <div class="kontakt__rows">
             <div class="kontakt__row"><b>Telefon</b><a href="tel:+420603841852">603 841 852</a></div>
             <div class="kontakt__row"><b>E-mail</b><a href="mailto:pida.aikido@seznam.cz">pida.aikido@seznam.cz</a></div>
-            <div class="kontakt__row"><b>Sociální sítě</b><span><a href="https://www.facebook.com/AikidoDojoNaCeste" target="_blank" rel="noopener">Facebook</a> &middot; <a href="https://www.instagram.com/aikidodojoricany/" target="_blank" rel="noopener">Instagram</a></span></div>
           </div>
           <div class="cta-row">
             <a class="btn btn--solid" href="mailto:pida.aikido@seznam.cz">Napsat nám</a>
+            <a class="fb-btn" href="https://www.facebook.com/AikidoDojoNaCeste" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.3 0-1.3-.13-2.46-.13-2.43 0-4.09 1.48-4.09 4.21v2.35H7.7V13h2.75v8h3.05z"/></svg>
+            </a>
           </div>
         </div>
       </div>
@@ -2379,29 +2386,31 @@
 
     function place(card, off, deckW) {
       var cardW = card.offsetWidth || deckW * 0.52;
-      /* Spread factor: full when there's plenty of slack beside the front
-         card, scaled down when the deck is narrow — so the fanned stack and
-         the left pile always stay inside deckW instead of poking past the
-         chapter edge on a phone. */
-      var s = Math.max(0.42, Math.min(1, (deckW - cardW) / 250));
-      var fan1 = 15 * s, fan2 = 28 * s, fanBuf = 40 * s;
-      var lead = 18 * s;                          // front card nudged right, leaving room for the pile
-      var Sx = deckW - cardW - 6 - fan2;          // deepest visible stack card (off 3) ends at deckW - 6
+      /* The whole assembly is centred in deckW: the front card sits just
+         left of centre and the stack (right) + pile (left) peek out
+         roughly symmetrically. `side` is the free space either side of a
+         centred card; every offset is a fraction of it, so it scales with
+         the deck and nothing pokes past the chapter edge on a phone. */
+      var side = Math.max(1, (deckW - cardW) / 2);
+      var s = Math.max(0.5, Math.min(1, side / 135));   // rotation intensity
+      var frontX = side * 0.86;
+      var peek = side * 0.60;
+      var fan = side * 0.26;
       var t, o = 1, f = 'none', z = 1, buffer = false;
       if (off === 0) {                            // front, being read
-        t = 'translate(' + lead + 'px,0px) rotate(0deg) scale(1)'; z = 100;
+        t = 'translate(' + frontX + 'px,0px) rotate(0deg) scale(1)'; z = 100;
       } else if (off === 1) {                     // top of the stack
-        t = 'translate(' + Sx + 'px,' + (9 * s) + 'px) rotate(' + (3 * s) + 'deg) scale(0.955)'; z = 60;
+        t = 'translate(' + (frontX + peek) + 'px,' + (9 * s) + 'px) rotate(' + (3 * s) + 'deg) scale(0.955)'; z = 60;
       } else if (off === 2) {
-        t = 'translate(' + (Sx + fan1) + 'px,' + (22 * s) + 'px) rotate(' + (6 * s) + 'deg) scale(0.905)'; z = 55; o = 0.9;
+        t = 'translate(' + (frontX + peek + fan) + 'px,' + (22 * s) + 'px) rotate(' + (6 * s) + 'deg) scale(0.905)'; z = 55; o = 0.9;
       } else if (off === 3) {                     // faint 3rd card, back of stack
-        t = 'translate(' + (Sx + fan2) + 'px,' + (34 * s) + 'px) rotate(' + (9 * s) + 'deg) scale(0.85)'; z = 50; o = 0.42;
+        t = 'translate(' + (frontX + peek + fan * 1.5) + 'px,' + (34 * s) + 'px) rotate(' + (9 * s) + 'deg) scale(0.85)'; z = 50; o = 0.42;
       } else if (off === N - 1) {                 // just-viewed, on the left pile
-        t = 'translate(' + (lead - 22 * s) + 'px,16px) rotate(' + (-4.5 * s) + 'deg) scale(0.92)'; z = 40; f = 'brightness(0.72)';
+        t = 'translate(' + (frontX - peek) + 'px,16px) rotate(' + (-4.5 * s) + 'deg) scale(0.92)'; z = 40; f = 'brightness(0.72)';
       } else if (off === N - 2) {                 // parked (left) — carries round the loop unseen
-        t = 'translate(' + (lead - 40 * s) + 'px,28px) rotate(' + (-7.5 * s) + 'deg) scale(0.86)'; z = 8; o = 0; buffer = true;
+        t = 'translate(' + (frontX - peek - fan) + 'px,28px) rotate(' + (-7.5 * s) + 'deg) scale(0.86)'; z = 8; o = 0; buffer = true;
       } else {                                    // parked (right)
-        t = 'translate(' + (Sx + fanBuf) + 'px,40px) rotate(' + (11 * s) + 'deg) scale(0.8)'; z = 5; o = 0; buffer = true;
+        t = 'translate(' + (frontX + peek + fan * 3) + 'px,40px) rotate(' + (11 * s) + 'deg) scale(0.8)'; z = 5; o = 0; buffer = true;
       }
       card.classList.toggle('deck__card--buffer', buffer);
       card.classList.toggle('deck__card--front', off === 0);
@@ -2508,24 +2517,80 @@
     var modalReturn = null;
 
     function plural(n) { return n === 1 ? ' fotografie' : (n >= 2 && n <= 4 ? ' fotografie' : ' fotografií'); }
-    /* Give a bento tile a span class from the photo's real aspect ratio.
-       The lead tile always gets a shape; after that, up to st.max more, so
-       a set that happens to be all one ratio still tiles cleanly. */
-    function shapeFor(r) {
-      if (r >= 3) return 'b-w4';
-      if (r >= 2) return 'b-w3';
-      if (r >= 1.5) return 'b-w2';
-      if (r <= 0.8) return 'b-h2';
-      return '';
-    }
-    function bentoShape(img, index, st) {
-      if (!img.naturalWidth) return;
-      img.classList.remove('b-w2', 'b-w3', 'b-w4', 'b-h2', 'b-big');
-      var r = img.naturalWidth / img.naturalHeight;
-      if (index === 0) { img.classList.add(shapeFor(r) || 'b-big'); st.used++; return; }
-      if (st.used >= st.max) return;
-      var c = shapeFor(r);
-      if (c) { img.classList.add(c); st.used++; }
+    var COLS = 4;
+    function ratioOf(im) { return im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 1; }
+
+    /* Pack the photos into a 4-column bento with no gaps. A clearly wide
+       shot spans 2-4 columns from its ratio; a pair of consecutive
+       portraits becomes a 2x2 block of half-width, double-height tiles (so
+       tall tiles always tessellate); everything else is a square. A ragged
+       final row is closed by widening its last tile. */
+    function tileBento(imgs) {
+      /* Explicit placement — every tile gets grid-row/column lines, not
+         just a span — so the rendered grid IS this computed packing. A
+         final sweep stretches border tiles over any leftover cell, so the
+         result is always a solid rectangle with no gaps. */
+      var occ = {}, own = {}, row = 0, col = 0, i, skip = -1, maxRow = 0;
+      var wideBudget = Math.ceil(imgs.length / 2.5);
+      var spans = [];   // per placed tile: {im, r, c, w, h}
+      function key(r, c) { return r + ',' + c; }
+      function free(r, c, w, h) {
+        if (c + w > COLS) return false;
+        for (var rr = r; rr < r + h; rr++) for (var cc = c; cc < c + w; cc++) if (occ[key(rr, cc)]) return false;
+        return true;
+      }
+      function seek() {
+        while (col >= COLS || occ[key(row, col)]) {
+          if (col >= COLS) { col = 0; row++; } else col++;
+        }
+      }
+      function rowClear(r, c, w) { for (var cc = c; cc < c + w; cc++) if (occ[key(r, cc)]) return false; return true; }
+      function put(im, r0, c0, w, h) {
+        var t = { im: im, r: r0, c: c0, w: w, h: h };
+        spans.push(t);
+        for (var rr = r0; rr < r0 + h; rr++) for (var cc = c0; cc < c0 + w; cc++) { occ[key(rr, cc)] = true; own[key(rr, cc)] = t; }
+        if (r0 + h > maxRow) maxRow = r0 + h;
+      }
+      imgs.forEach(function (im) { im.style.gridColumn = ''; im.style.gridRow = ''; });
+      for (i = 0; i < imgs.length; i++) {
+        if (i === skip) continue;
+        seek();
+        var im = imgs[i], r = ratioOf(im), w = 1, h = 1, paired = false;
+        // pair this portrait with a nearby portrait -> a 2x2 block of tall tiles
+        if (r <= 0.8 && free(row, col, 2, 2)) {
+          for (var j = i + 1; j <= i + 2 && j < imgs.length; j++) {
+            if (j !== skip && ratioOf(imgs[j]) <= 0.9) {
+              put(im, row, col, 1, 2);
+              put(imgs[j], row, col + 1, 1, 2);
+              skip = j; col += 2; paired = true;
+              break;
+            }
+          }
+          if (paired) continue;
+        }
+        if (r >= 2.6 && free(row, col, 4, 1)) w = 4;
+        else if (r >= 1.9 && free(row, col, 3, 1)) w = 3;
+        else if (r >= 1.3 && wideBudget > 0 && free(row, col, 2, 1)) { w = 2; wideBudget--; }
+        put(im, row, col, w, h);
+        col += w;
+      }
+      // close any leftover cells: extend the tile to the left, else the one above
+      for (var rr = 0; rr < maxRow; rr++) {
+        for (var cc = 0; cc < COLS; cc++) {
+          if (occ[key(rr, cc)]) continue;
+          var lt = cc > 0 && own[key(rr, cc - 1)];
+          var at = own[key(rr - 1, cc)];
+          var t;
+          if (lt && lt.r === rr && cc === lt.c + lt.w) { lt.w += 1; t = lt; }
+          else if (at && at.r + at.h === rr && rowClear(rr, at.c, at.w)) { at.h += 1; t = at; }
+          else continue;
+          for (var r2 = t.r; r2 < t.r + t.h; r2++) for (var c2 = t.c; c2 < t.c + t.w; c2++) { occ[key(r2, c2)] = true; own[key(r2, c2)] = t; }
+        }
+      }
+      spans.forEach(function (t) {
+        t.im.style.gridColumn = (t.c + 1) + ' / span ' + t.w;
+        t.im.style.gridRow = (t.r + 1) + ' / span ' + t.h;
+      });
     }
     function openCollection(coll) {
       if (!coll) return;
@@ -2541,11 +2606,13 @@
       modalBento.innerHTML = items.map(function (it) {
         return '<img src="' + it.src + '" alt="' + it.alt.replace(/"/g, '&quot;') + '">';
       }).join('');
-      var st = { used: 0, max: Math.max(3, Math.round(coll.n / 2.4)) };
-      Array.prototype.forEach.call(modalBento.querySelectorAll('img'), function (im, i) {
-        im.addEventListener('click', function () { openLightbox(items, i); });
-        if (im.complete && im.naturalWidth) bentoShape(im, i, st);
-        else im.addEventListener('load', function () { bentoShape(im, i, st); });
+      var imgs = Array.prototype.slice.call(modalBento.querySelectorAll('img'));
+      imgs.forEach(function (im, i) { im.addEventListener('click', function () { openLightbox(items, i); }); });
+      var pending = imgs.length;
+      function done() { if (--pending <= 0) tileBento(imgs); }
+      imgs.forEach(function (im) {
+        if (im.complete && im.naturalWidth) done();
+        else { im.addEventListener('load', done); im.addEventListener('error', done); }
       });
       modalReturn = document.activeElement;
       modal.classList.add('is-open');
