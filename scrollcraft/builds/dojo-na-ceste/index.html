@@ -193,6 +193,13 @@
     color: inherit; opacity: 0.5;
     transition: opacity 200ms var(--ease), transform 200ms var(--ease);
   }
+  /* --halo is set from JS to the current chapter's ground colour. A soft
+     blur of that colour around the glyphs and the label lets them stay
+     legible over whatever content scrolls under them, without a visible
+     box (a chip/pill would read as decoration, which these aren't). */
+  .side-arrow svg, .down-arrow svg {
+    filter: drop-shadow(0 0 3px var(--halo, transparent)) drop-shadow(0 0 3px var(--halo, transparent));
+  }
   .side-arrow:hover { opacity: 1; }
   .side-arrow:active { transform: translateY(-50%) scale(0.9); }
   .side-arrow--left { left: clamp(0.4rem, 1.8vw, 1.5rem); }
@@ -201,10 +208,6 @@
   .side-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
   .side-arrow-zone { position: fixed; top: 0; bottom: 0; width: 12vw; z-index: 54; }
   .side-arrow-zone--left { left: 0; } .side-arrow-zone--right { right: 0; }
-  /* Touch already has swipe + the chapter dots; bare edge arrows just clutter. */
-  @media (max-width: 760px) {
-    .side-arrow, .side-arrow-zone { display: none; }
-  }
 
   /* Bottom indicator: a hairline that brightens near the pointer or when
      there's more of the chapter below the fold, plus a down-arrow that's
@@ -225,8 +228,16 @@
   .down-arrow__label {
     font-size: var(--text-micro); letter-spacing: 0.09em; text-transform: uppercase;
     font-weight: 600; line-height: 1; white-space: nowrap;
+    text-shadow:
+      0 0 4px var(--halo, transparent), 0 0 4px var(--halo, transparent),
+      0 0 8px var(--halo, transparent), 0 0 8px var(--halo, transparent);
+    transition: opacity 200ms var(--ease);
   }
   .down-arrow__label:empty { display: none; }
+  /* Once you've scrolled into the chapter the label has done its job
+     (it names what's coming); drop it so it stops fighting the content,
+     leaving just the arrow. It reappears at the top of the next chapter. */
+  .down-arrow--scrolled .down-arrow__label { opacity: 0; }
   .bottom-line {
     position: fixed; left: 0; right: 0; bottom: 0; height: 2px; z-index: 53;
     background: currentColor; opacity: 0.12; transform: scaleX(0.3); transform-origin: center;
@@ -1653,7 +1664,12 @@
     var s = slides[i];
     var ground = s.getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
-    [arrowLeft, arrowRight, arrowDown, bottomLine].forEach(function (el) { if (el) el.style.color = ink; });
+    var bg = groundBg[ground] || '#F7F4EC';
+    [arrowLeft, arrowRight, arrowDown, bottomLine].forEach(function (el) {
+      if (!el) return;
+      el.style.color = ink;
+      el.style.setProperty('--halo', bg);
+    });
     navlinks.forEach(function (n) { n.classList.toggle('is-active', parseInt(n.getAttribute('data-goto'), 10) === i); });
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
@@ -1698,7 +1714,24 @@
   /* The label above the down-arrow: the next [data-down-label] section in
      this chapter that hasn't yet reached the upper half of the screen, i.e.
      the one you're about to scroll into. Empty (label hidden) when there's
-     no named section ahead. */
+     no named section ahead.
+
+     Visibility: shown at the top of a chapter (where it answers "what's
+     below?"), then hidden once you scroll in so it stops sitting on top of
+     the content — except it flashes back for ~1.8s whenever you cross into
+     a new named section, so the updating name is still seen. */
+  var labelFlashing = false;
+  var labelFlashTimer = null;
+  function flashDownLabel() {
+    labelFlashing = true;
+    arrowDown.classList.remove('down-arrow--scrolled');
+    clearTimeout(labelFlashTimer);
+    labelFlashTimer = setTimeout(function () {
+      labelFlashing = false;
+      var a = slides[activeIndex()];
+      arrowDown.classList.toggle('down-arrow--scrolled', a.scrollTop > 48);
+    }, 1800);
+  }
   function updateDownLabel(s, hasMore) {
     var next = '';
     if (hasMore) {
@@ -1708,7 +1741,11 @@
         if (marks[i].getBoundingClientRect().top > line) { next = marks[i].getAttribute('data-down-label'); break; }
       }
     }
-    if (arrowDownLabel.textContent !== next) arrowDownLabel.textContent = next;
+    var scrolled = s.scrollTop > 48;
+    var changed = arrowDownLabel.textContent !== next;
+    if (changed) arrowDownLabel.textContent = next;
+    if (changed && scrolled && next) { flashDownLabel(); return; }
+    if (!labelFlashing) arrowDown.classList.toggle('down-arrow--scrolled', scrolled);
   }
 
   /* Native scrollIntoView({behavior:'smooth'}) runs at a roughly fixed
