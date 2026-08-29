@@ -66,10 +66,10 @@
   a { color: inherit; }
   ::selection { background: var(--red); color: var(--paper); }
 
-  [data-ground="paper"]      { background: var(--paper);     --ink: #182338; --ink-soft: #4A5163; --accent: #A63D2C; --accent-ink: #F7F4EC; color: var(--ink); }
-  [data-ground="paper-alt"]  { background: var(--paper-alt); --ink: #182338; --ink-soft: #4A5163; --accent: #A63D2C; --accent-ink: #F7F4EC; color: var(--ink); }
-  [data-ground="navy"]       { background: var(--navy);      --ink: #F5EBDD; --ink-soft: #B9AE9C; --accent: #E9C9A0; --accent-ink: #101828; color: var(--ink); }
-  [data-ground="navy-deep"]  { background: var(--navy-deep); --ink: #F5EBDD; --ink-soft: #A79C8A; --accent: #E9C9A0; --accent-ink: #08090b; color: var(--ink); }
+  [data-ground="paper"]      { background: var(--paper);     --ground: #F7F4EC; --ink: #182338; --ink-soft: #4A5163; --accent: #A63D2C; --accent-ink: #F7F4EC; color: var(--ink); }
+  [data-ground="paper-alt"]  { background: var(--paper-alt); --ground: #EFE8D9; --ink: #182338; --ink-soft: #4A5163; --accent: #A63D2C; --accent-ink: #F7F4EC; color: var(--ink); }
+  [data-ground="navy"]       { background: var(--navy);      --ground: #182338; --ink: #F5EBDD; --ink-soft: #B9AE9C; --accent: #E9C9A0; --accent-ink: #101828; color: var(--ink); }
+  [data-ground="navy-deep"]  { background: var(--navy-deep); --ground: #101828; --ink: #F5EBDD; --ink-soft: #A79C8A; --accent: #E9C9A0; --accent-ink: #08090b; color: var(--ink); }
 
   h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
   em { font-style: italic; color: var(--accent); }
@@ -162,19 +162,22 @@
        every frame of a scroll, so a transition here only lags behind the
        moving chapter boundary and smears the text during a chapter change. */
   }
-  /* Scrim: a short fade of the CURRENT chapter's own ground colour under
-     the bar so the nav stays legible over whatever scrolls past. Two
-     dedicated fixed layers (not a ::before — WebKit doesn't reliably
-     clip-path a pseudo), mirroring the topnav's own base+overlay split:
-     --scrim is set per layer and the overlay copy carries the same
-     clip-path, so the colour break runs through the whole top strip at
-     the exact chapter boundary, pixel for pixel, like the ink. */
-  .topnav-scrim {
-    position: fixed; left: 0; right: 0; top: 0; z-index: 59; pointer-events: none;
+  /* Legibility scrim under the top bar: a short fade of the chapter's own
+     ground colour. It lives INSIDE each slide (one per slide, injected by
+     JS) and is position:sticky to the top — so it rides along with its
+     slide during the horizontal chapter scroll and is therefore split at
+     the exact chapter boundary for the very same reason the chapter
+     backgrounds are: it's part of the slide, not a fixed overlay that has
+     to be clip-pathed to catch up (which WebKit doesn't do reliably while
+     a momentum fling is in flight). */
+  .chapter-topscrim {
+    position: sticky; top: 0; z-index: 6; pointer-events: none;
     height: clamp(4.5rem, 11vh, 7.5rem);
+    margin-bottom: calc(-1 * clamp(4.5rem, 11vh, 7.5rem));
+    background: linear-gradient(to bottom, var(--ground, transparent), transparent 100%);
     background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--scrim, transparent) 74%, transparent) 0%,
-      color-mix(in srgb, var(--scrim, transparent) 34%, transparent) 45%,
+      color-mix(in srgb, var(--ground, transparent) 82%, transparent) 0%,
+      color-mix(in srgb, var(--ground, transparent) 38%, transparent) 46%,
       transparent 100%);
   }
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
@@ -1700,14 +1703,16 @@
      active at page load and you get two highlights (a ghost) mid-transition. */
   var overlayNavlinks = Array.prototype.slice.call(topnavOverlay.querySelectorAll('.navlink'));
 
-  /* Legibility scrim, same base+overlay split as the bar itself. */
-  var scrimBase = document.createElement('div');
-  scrimBase.className = 'topnav-scrim';
-  scrimBase.setAttribute('aria-hidden', 'true');
-  var scrimOverlay = scrimBase.cloneNode(true);
-  scrimOverlay.classList.add('topnav-scrim--overlay');
-  topnav.parentNode.insertBefore(scrimBase, topnav);
-  topnav.parentNode.insertBefore(scrimOverlay, topnav);
+  /* One legibility scrim per slide, sticky to the slide's top — it rides
+     with its own chapter during the horizontal scroll, so it splits at the
+     chapter boundary by pure geometry (no clip-path, nothing to keep in
+     sync). --ground comes from the slide's [data-ground] rule. */
+  slides.forEach(function (s) {
+    var scrim = document.createElement('div');
+    scrim.className = 'chapter-topscrim';
+    scrim.setAttribute('aria-hidden', 'true');
+    s.insertBefore(scrim, s.firstChild);
+  });
 
   function activeIndex() {
     var mid = hub.scrollLeft + hub.clientWidth / 2;
@@ -1767,7 +1772,6 @@
     var ink = groundInk[ground] || '#182338';
     topnav.style.color = ink;
     topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
-    scrimBase.style.setProperty('--scrim', groundBg[ground] || '#F7F4EC');
 
     var nextIdx = Math.min(slides.length - 1, idx + 1);
     var nextGround = slides[nextIdx].getAttribute('data-ground');
@@ -1775,8 +1779,6 @@
     topnavOverlay.style.color = nextInk;
     topnavOverlay.classList.toggle('topnav--dark', nextGround === 'navy' || nextGround === 'navy-deep');
     topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
-    scrimOverlay.style.setProperty('--scrim', groundBg[nextGround] || '#F7F4EC');
-    scrimOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
   }
 
   function syncSlideEdges(s) {
@@ -1893,18 +1895,24 @@
     s.scrollBy({ top: s.clientHeight * 0.82, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
   });
 
-  var hubTicking = false;
   hub.addEventListener('scroll', function () {
     if (hint && !hint.classList.contains('is-hidden')) hint.classList.add('is-hidden');
-    /* Run the colour split on EVERY scroll event, not behind the rAF gate:
-       it's a handful of style writes and it must stay pixel-locked to the
-       moving chapter boundary. Routed through rAF (as it was, via
-       syncChrome) it lagged a frame or more during a momentum scroll — the
-       bar kept the outgoing chapter's ink/scrim over the incoming chapter
-       for the first part of the transition, then snapped mid-way. */
-    updateTopnavSplit();
-    if (!hubTicking) { hubTicking = true; requestAnimationFrame(function () { syncChrome(); hubTicking = false; }); }
   }, { passive: true });
+
+  /* The chapter-boundary split is driven by a permanent rAF poll of
+     hub.scrollLeft, NOT the scroll event: iOS Safari fires next to no
+     scroll events during a momentum fling (which is exactly a chapter
+     swipe), so an event-driven update leaves the bar frozen on the old
+     chapter's ink for the whole transition and only snaps when it settles.
+     rAF keeps running through the fling. Idle cost is one read + compare. */
+  var lastHubScroll = -1;
+  (function splitPoll() {
+    requestAnimationFrame(splitPoll);
+    var sl = hub.scrollLeft;
+    if (sl === lastHubScroll) return;
+    lastHubScroll = sl;
+    syncChrome();
+  })();
   slides.forEach(function (s) {
     s.addEventListener('scroll', function () {
       syncSlideEdges(s);
