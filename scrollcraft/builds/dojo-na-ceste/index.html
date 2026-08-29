@@ -163,17 +163,18 @@
        moving chapter boundary and smears the text during a chapter change. */
   }
   /* Scrim: a short fade of the CURRENT chapter's own ground colour under
-     the bar so the nav stays legible over whatever scrolls past. It lives
-     on ::before of both layers and --scrim is set per layer in the JS, so
-     the overlay's clip-path splits the scrim at the exact chapter boundary
-     too — the colour break runs through the whole top strip, not just the
-     glyphs, which is what keeps it from fighting the pixel-split effect. */
-  .topnav::before {
-    content: ""; position: absolute; left: 0; right: 0; top: 0;
-    height: clamp(5rem, 13vh, 8.5rem); z-index: -1; pointer-events: none;
+     the bar so the nav stays legible over whatever scrolls past. Two
+     dedicated fixed layers (not a ::before — WebKit doesn't reliably
+     clip-path a pseudo), mirroring the topnav's own base+overlay split:
+     --scrim is set per layer and the overlay copy carries the same
+     clip-path, so the colour break runs through the whole top strip at
+     the exact chapter boundary, pixel for pixel, like the ink. */
+  .topnav-scrim {
+    position: fixed; left: 0; right: 0; top: 0; z-index: 59; pointer-events: none;
+    height: clamp(4.5rem, 11vh, 7.5rem);
     background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--scrim, transparent) 90%, transparent) 0%,
-      color-mix(in srgb, var(--scrim, transparent) 46%, transparent) 42%,
+      color-mix(in srgb, var(--scrim, transparent) 74%, transparent) 0%,
+      color-mix(in srgb, var(--scrim, transparent) 34%, transparent) 45%,
       transparent 100%);
   }
   .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
@@ -1699,6 +1700,15 @@
      active at page load and you get two highlights (a ghost) mid-transition. */
   var overlayNavlinks = Array.prototype.slice.call(topnavOverlay.querySelectorAll('.navlink'));
 
+  /* Legibility scrim, same base+overlay split as the bar itself. */
+  var scrimBase = document.createElement('div');
+  scrimBase.className = 'topnav-scrim';
+  scrimBase.setAttribute('aria-hidden', 'true');
+  var scrimOverlay = scrimBase.cloneNode(true);
+  scrimOverlay.classList.add('topnav-scrim--overlay');
+  topnav.parentNode.insertBefore(scrimBase, topnav);
+  topnav.parentNode.insertBefore(scrimOverlay, topnav);
+
   function activeIndex() {
     var mid = hub.scrollLeft + hub.clientWidth / 2;
     var best = 0, bestDist = Infinity;
@@ -1756,16 +1766,17 @@
     var ground = slides[idx].getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
     topnav.style.color = ink;
-    topnav.style.setProperty('--scrim', groundBg[ground] || '#F7F4EC');
     topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
+    scrimBase.style.setProperty('--scrim', groundBg[ground] || '#F7F4EC');
 
     var nextIdx = Math.min(slides.length - 1, idx + 1);
     var nextGround = slides[nextIdx].getAttribute('data-ground');
     var nextInk = groundInk[nextGround] || '#182338';
     topnavOverlay.style.color = nextInk;
-    topnavOverlay.style.setProperty('--scrim', groundBg[nextGround] || '#F7F4EC');
     topnavOverlay.classList.toggle('topnav--dark', nextGround === 'navy' || nextGround === 'navy-deep');
     topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
+    scrimOverlay.style.setProperty('--scrim', groundBg[nextGround] || '#F7F4EC');
+    scrimOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
   }
 
   function syncSlideEdges(s) {
