@@ -2007,7 +2007,15 @@
   document.querySelectorAll('[data-goto]').forEach(function (el) {
     el.addEventListener('click', function (e) {
       e.preventDefault();
-      goto(parseInt(el.getAttribute('data-goto'), 10));
+      var i = parseInt(el.getAttribute('data-goto'), 10);
+      /* Tapping the numeral / name (or the wordmark) of the chapter you're
+         already on scrolls that chapter back to its top. */
+      if (i === activeIndex()) {
+        var cur = slides[i];
+        if (cur.scrollTop > 0) cur.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        return;
+      }
+      goto(i);
     });
   });
   arrowLeft.addEventListener('click', function () { goto(activeIndex() - 1); });
