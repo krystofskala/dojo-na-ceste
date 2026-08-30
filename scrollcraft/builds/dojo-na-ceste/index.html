@@ -376,6 +376,14 @@
     .lightbox__nav svg { width: 1.5rem; height: 1.5rem; }
     .lightbox__thumb { width: 3.6rem; height: 3.6rem; }
   }
+  /* Mobile: drop the full-screen backdrop-filter blur on the modal
+     overlays. When the browser is pinch-zoomed, iOS/Android re-rasterise
+     a viewport-sized blur layer at the zoomed scale every frame — a
+     documented way to spike GPU memory and get the tab killed and
+     reloaded mid-gesture. A more opaque flat wash reads the same. */
+  @media (max-width: 760px) {
+    .lightbox, .gal-modal { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(13,19,33,0.95); }
+  }
 
   .navlinks {
     display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 1.9rem); pointer-events: auto;
@@ -587,9 +595,9 @@
   /* > direct child only: the avatar below lives inside .komiks-piece__meta,
      one level deeper, so this can never re-catch it and blow it up to full
      card width again (that was the whole bug last time). */
-  .komiks-piece > img { width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 40px rgba(16,24,40,0.3); }
+  .komiks-piece > img { width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 40px rgba(16,24,40,0.3); cursor: zoom-in; }
   .komiks-piece__meta { display: flex; align-items: flex-start; gap: 0.8rem; margin-top: var(--sp-3); }
-  .komiks-piece__meta img.komiks-piece__avatar { flex: none; width: 2.8rem; height: 2.8rem; border-radius: 50%; object-fit: cover; box-shadow: 0 1px 4px rgba(0,0,0,0.3); border: 2px solid var(--paper); }
+  .komiks-piece__meta img.komiks-piece__avatar { flex: none; width: 2.8rem; height: 2.8rem; border-radius: 50%; object-fit: cover; box-shadow: 0 1px 4px rgba(0,0,0,0.3); border: 2px solid var(--paper); cursor: zoom-in; }
   .komiks-piece__meta figcaption { font-size: var(--text-caption); color: var(--ink-soft); line-height: 1.5; padding-top: 0.15rem; }
 
   /* ---------------------------------------------------------------------
@@ -1581,7 +1589,9 @@
             <p class="lede">Náš klub je organizován pod Českou Federací Aikido (ČFAI) a na nákup tatami nám tehdy přispělo město Říčany formou grantu.</p>
             <p class="lede">Největší dík ale patří našemu prvnímu učiteli Michalu Lachimu Šípovi, tehdy 2. dan Hombu Dojo, který nás vedl od samého začátku. Na jeho práci později navázal Radek Růžička a dnes nás vede Miroslav Skala, také 2. dan Hombu Dojo. Bez nich a všech, kteří se kolem dójó za ta léta vystřídali, by dnes nebylo tím, čím je.</p>
           </div>
-          <div class="photo-placeholder">fotka bude doplněna</div>
+          <figure class="cesta__figure">
+            <img src="assets/cesta-onas.jpg" width="1024" height="683" alt="Skupina cvičenců v kimonech na tatami při společném cvičení" loading="lazy">
+          </figure>
         </div>
       </div>
 
@@ -1714,7 +1724,7 @@
       <div class="kdy-columns">
         <div>
           <span class="kicker" style="margin-bottom:0.5rem;">Rozpis</span>
-          <h3 class="kdy-subhead">Cvičíme v pondělí a ve čtvrtek.</h3>
+          <h3 class="kdy-subhead">Dva dny v týdnu mimo období školních prázdnin.</h3>
           <div class="mini-schedule">
             <div class="mini-schedule__day">
               <h4>Pondělí</h4>
@@ -2444,7 +2454,7 @@
         b.className = 'lightbox__thumb';
         b.setAttribute('aria-label', 'Fotka ' + (i + 1));
         var t = document.createElement('img');
-        t.src = it.src;
+        t.src = it.thumb || it.src;
         t.alt = '';
         b.appendChild(t);
         b.addEventListener('click', function () { lbIndex = i; lbShow(); });
@@ -2521,6 +2531,29 @@
       im.addEventListener('click', function () { openLightbox(items, i); });
     });
   });
+
+  /* Kresba: the four komiks pages open in the same lightbox. The strip
+     carries each character's portrait (not a crop of the tall page), and
+     either the page or its portrait opens the viewer at that page. This
+     is also what spares mobile the pinch-zoom that was crashing the tab. */
+  (function () {
+    var pieces = Array.prototype.slice.call(document.querySelectorAll('.komiks-stack .komiks-piece'));
+    if (!pieces.length) return;
+    var kitems = pieces.map(function (fig) {
+      var page = fig.querySelector(':scope > img');
+      var av = fig.querySelector('.komiks-piece__avatar');
+      return {
+        src: page.getAttribute('src'),
+        alt: page.getAttribute('alt') || '',
+        thumb: av ? av.getAttribute('src') : page.getAttribute('src')
+      };
+    });
+    pieces.forEach(function (fig, i) {
+      Array.prototype.forEach.call(fig.querySelectorAll(':scope > img, .komiks-piece__avatar'), function (im) {
+        im.addEventListener('click', function () { openLightbox(kitems, i); });
+      });
+    });
+  })();
 
   lbPrev.addEventListener('click', function () { lbStep(-1); });
   lbNext.addEventListener('click', function () { lbStep(1); });
