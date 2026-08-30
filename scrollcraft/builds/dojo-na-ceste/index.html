@@ -276,7 +276,7 @@
     background: currentColor; opacity: 0.12; transform: scaleX(0.3); transform-origin: center;
     transition: opacity 260ms var(--ease), transform 260ms var(--ease);
   }
-  .bottom-line.is-lit { opacity: 0.6; transform: scaleX(1); }
+  .bottom-line.is-lit { opacity: 0.9; transform: scaleX(1); }
 
   /* Content rises and fades in the first time it's actually scrolled to,
      rather than just sitting there already-rendered. */
@@ -370,7 +370,11 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: var(--text-kicker); letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; opacity: 0.6; transition: opacity 180ms var(--ease);
+    padding: 0.3rem 0.1rem; opacity: 0.6;
+    /* NO opacity transition: at the moment a transition settles, dressFace
+       re-flags the active numeral on faceA (it was being carried by faceB
+       until then), and a 0.6->1 ease made it visibly dip-then-brighten
+       once. Snapping is instant and matches the hard seam. */
   }
   .navlink__kanji { font-family: var(--font-kanji); font-size: 1rem; line-height: 1; flex: none; }
   /* NO transform on hover/focus. faceB (the inert clone used for the seam
@@ -1823,11 +1827,15 @@
     var ground = s.getAttribute('data-ground');
     var ink = groundInk[ground] || '#182338';
     var bg = groundBg[ground] || '#F7F4EC';
-    [arrowLeft, arrowRight, arrowDown, bottomLine].forEach(function (el) {
+    [arrowLeft, arrowRight, arrowDown].forEach(function (el) {
       if (!el) return;
       el.style.color = ink;
       el.style.setProperty('--halo', bg);
     });
+    /* Bottom hairline: tinted to the chapter's own GROUND, not its ink, so
+       it reads as part of the page edge rather than a contrasting bar
+       across the top of Safari's toolbar. */
+    if (bottomLine) bottomLine.style.color = bg;
     /* The numerals belong to paintTopbar() — it's the only thing that
        touches the two faces. */
     arrowLeft.toggleAttribute('disabled', i === 0);
