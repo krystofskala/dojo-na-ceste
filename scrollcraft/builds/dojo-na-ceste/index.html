@@ -700,8 +700,8 @@
   /* Solid, always-legible: this close button sits over the photo, not the
      paper card like the other two, so the faint shared background left it
      invisible against dark parts of the image (worst on mobile). */
-  .course-popup__close { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 2; background: rgba(255,255,255,0.94); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-  .course-popup__close:hover, .course-popup__close:focus-visible { background: #fff; }
+  .course-popup__close { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 2; background: rgba(239, 232, 217, 0.9); box-shadow: 0 2px 12px rgba(16,24,40,0.28); }
+  .course-popup__close:hover, .course-popup__close:focus-visible { background: var(--paper-alt); }
   .cta-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-1); }
   .btn {
     display: inline-block; font-size: var(--text-caption); font-weight: 600; padding: 0.75em 1.4em;
@@ -807,17 +807,19 @@
     aspect-ratio: 4 / 3; background: var(--navy-deep); transition: transform 200ms var(--ease);
   }
   .videa__tile:hover, .videa__tile:focus-visible { transform: translateY(-3px); }
-  .videa__thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 300ms var(--ease); }
+  .videa__thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; transition: transform 300ms var(--ease); }
   .videa__tile:hover .videa__thumb, .videa__tile:focus-visible .videa__thumb { transform: scale(1.05); }
-  .videa__tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(16,24,40,0.9) 0%, rgba(16,24,40,0.14) 52%, rgba(16,24,40,0.04) 100%); }
+  /* z-index: the <img> is a real child painted after this pseudo, so the
+     navy gradient has to sit explicitly above it (caption above both). */
+  .videa__tile::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(16,24,40,0.97) 0%, rgba(16,24,40,0.78) 30%, rgba(16,24,40,0.32) 60%, rgba(16,24,40,0) 100%); }
   .videa__play {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;
     width: 2.6rem; height: 2.6rem; border-radius: 50%; background: rgba(255,255,255,0.92); color: var(--navy-deep);
     display: flex; align-items: center; justify-content: center; transition: transform 200ms var(--ease);
   }
   .videa__play svg { width: 1.05rem; height: 1.05rem; margin-left: 2px; }
   .videa__tile:hover .videa__play, .videa__tile:focus-visible .videa__play { transform: translate(-50%, -50%) scale(1.09); }
-  .videa__cap { position: absolute; left: 0.85rem; right: 0.85rem; bottom: 0.7rem; z-index: 1; }
+  .videa__cap { position: absolute; left: 0.85rem; right: 0.85rem; bottom: 0.7rem; z-index: 2; }
   .videa__tile b { display: block; font-weight: 600; font-size: var(--text-caption); color: #fff; }
   .videa__cap span { display: block; font-size: var(--text-micro); color: rgba(245,235,221,0.82); }
 
