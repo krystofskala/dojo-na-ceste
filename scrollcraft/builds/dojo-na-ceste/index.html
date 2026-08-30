@@ -172,12 +172,26 @@
   .topbar__face {
     position: absolute; top: 0; left: 0; right: 0;
     display: flex; align-items: flex-start; justify-content: space-between;
-    /* the bottom padding is the scrim's fade runway: the gradient (set
-       inline per face) spans the padding box then stops, so the dimming
-       reaches just below the text, not down into the page content */
-    padding: 1rem var(--gutter) 2.3rem;
+    padding: 1rem var(--gutter) 0;
     color: var(--face-ink, #182338);
-    background-repeat: no-repeat;
+  }
+  /* Legibility scrim: NOT part of the clipped faces. A JS-driven clip-path
+     can't stay glued to a native iOS finger-drag (hub.scrollLeft reads a
+     frame or more stale on the main thread while the scroll runs on the
+     compositor) — so the clipped scrim visibly lagged the real chapter
+     border, worse the faster the drag. Instead one sticky scrim lives
+     INSIDE each slide: it rides with its own chapter's background on the
+     compositor, so slide A's scrim meets slide B's exactly on the border,
+     at any speed, with zero JS in the loop. --ground is the slide's own. */
+  .chapter-topscrim {
+    --scrim-h: clamp(3.25rem, 8vh, 4.75rem);
+    position: sticky; top: 0; z-index: 6; pointer-events: none;
+    height: var(--scrim-h);
+    margin-bottom: calc(-1 * var(--scrim-h));
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--ground, transparent) 88%, transparent) 0%,
+      color-mix(in srgb, var(--ground, transparent) 55%, transparent) 40%,
+      transparent 100%);
   }
   .topbar__face--a .topbar__mark,
   .topbar__face--a .navlink { pointer-events: auto; }
@@ -1742,11 +1756,12 @@
   var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
-  /* Top bar: two faces in one container. Face A (authored, interactive)
-     wears the chapter left of the seam; face B (a clone, inert) wears the
-     one on its right. paintTopbar() clips them into complementary halves
-     at the moving seam — see the .topbar CSS comment. Each face's scrim is
-     a short fade of its own ground colour so it splits at the same seam. */
+  /* Top bar: two text faces in one fixed container. Face A (authored,
+     interactive) wears the chapter left of the seam; face B (a clone,
+     inert) wears the one on its right. paintTopbar() clips them into
+     complementary halves at the moving seam. The scrim is NOT here — it's
+     one sticky element per slide (see .chapter-topscrim), so it rides the
+     compositor and never lags a finger-drag. */
   var topbar = document.querySelector('.topbar');
   var faceA = topbar.querySelector('.topbar__face--a');
   var faceB = faceA.cloneNode(true);
@@ -1759,12 +1774,13 @@
   var faceLinksA = Array.prototype.slice.call(faceA.querySelectorAll('.navlink'));
   var faceLinksB = Array.prototype.slice.call(faceB.querySelectorAll('.navlink'));
 
-  var scrimByGround = {
-    paper:       'linear-gradient(180deg, rgba(247,244,236,0.95), rgba(247,244,236,0.62) 42%, rgba(247,244,236,0) 100%)',
-    'paper-alt': 'linear-gradient(180deg, rgba(239,232,217,0.95), rgba(239,232,217,0.62) 42%, rgba(239,232,217,0) 100%)',
-    navy:        'linear-gradient(180deg, rgba(24,35,56,0.92), rgba(24,35,56,0.56) 42%, rgba(24,35,56,0) 100%)',
-    'navy-deep': 'linear-gradient(180deg, rgba(16,24,40,0.94), rgba(16,24,40,0.58) 42%, rgba(16,24,40,0) 100%)'
-  };
+  slides.forEach(function (s) {
+    var scrim = document.createElement('div');
+    scrim.className = 'chapter-topscrim';
+    scrim.setAttribute('aria-hidden', 'true');
+    s.insertBefore(scrim, s.firstChild);
+  });
+
   var accentByGround = { paper: 'var(--red)', 'paper-alt': 'var(--red)', navy: 'var(--gold)', 'navy-deep': 'var(--gold)' };
 
   /* Restyle a whole face for one chapter — done only when the on-screen
@@ -1773,7 +1789,6 @@
     var g = slides[ci].getAttribute('data-ground');
     face.style.setProperty('--face-ink', groundInk[g] || '#182338');
     face.style.setProperty('--face-accent', accentByGround[g] || 'var(--red)');
-    face.style.backgroundImage = scrimByGround[g] || 'none';
     links.forEach(function (n, k) { n.classList.toggle('is-active', k === ci); });
   }
 
