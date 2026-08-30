@@ -382,7 +382,7 @@
      documented way to spike GPU memory and get the tab killed and
      reloaded mid-gesture. A more opaque flat wash reads the same. */
   @media (max-width: 760px) {
-    .lightbox, .gal-modal { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(13,19,33,0.95); }
+    .lightbox, .gal-modal, .course-popup.is-open { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(13,19,33,0.95); }
   }
 
   .navlinks {
@@ -664,49 +664,34 @@
   /* Hidden on the card face; the popup reads this same text directly off
      the card's own DOM, so nothing is duplicated in JS. */
   .course p { display: none; }
-  /* max-width/margin here match .courses, not .courses-wrap: the popup is
-     positioned (inset:0) relative to courses-wrap, which stretches to the
-     full chapter-body width now that the container cap lives on .courses
-     itself (see .courses-wrap's own comment) -- without repeating that cap
-     here, the popup spanned that full width instead of the visible card
-     grid's, pushing its close button out toward the actual screen edge. */
+  /* Same shape and behaviour as the photo lightbox: a near-fullscreen
+     paper card on a dark wash, fixed to the viewport, fading + scaling in.
+     (Was a FLIP animation confined to the card grid; that never matched
+     the rest of the site's modals.) */
   .course-popup {
-    display: none; position: absolute; inset: 0; z-index: 5; align-items: center; justify-content: center;
-    max-width: var(--container); margin: 0 auto;
-    background: rgba(24,35,56,0); border-radius: 16px; transition: background 320ms ease;
+    display: none; position: fixed; inset: 0; z-index: 200;
+    align-items: center; justify-content: center; padding: clamp(0.75rem, 3vw, 2rem);
+    background: rgba(16,24,40,0); backdrop-filter: blur(0px);
+    transition: background 260ms var(--ease), backdrop-filter 260ms var(--ease);
   }
   .course-popup.is-visible { display: flex; }
-  .course-popup.is-open { background: rgba(24,35,56,0.4); }
+  .course-popup.is-open { background: rgba(16,24,40,0.82); backdrop-filter: blur(4px); }
   .course-popup__card {
-    width: 100%; height: 100%; background: var(--paper); color: var(--navy); border-radius: 16px; overflow: hidden;
-    display: grid; grid-template-columns: 1fr 1fr; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.4);
-    transform-origin: top left;
+    width: min(96vw, 1200px); height: min(94vh, 800px);
+    background: var(--paper); color: var(--navy); border-radius: 16px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr; position: relative;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.5);
+    transform: scale(0.965); opacity: 0;
+    transition: transform 260ms var(--ease), opacity 260ms var(--ease);
   }
+  .course-popup.is-open .course-popup__card { transform: none; opacity: 1; }
   .course-popup__media { background-size: cover; background-position: center; }
-  /* min-height:0 is load-bearing: a grid item defaults to min-height:auto,
-     refusing to shrink below its content's natural size -- so a long
-     description didn't get clipped in place, it forced the whole grid row
-     (and the card riding along with it) to balloon to fit, and only THEN
-     did the card's own overflow:hidden chop off everything past its fixed
-     height. With min-height:0 the body actually shrinks to its row and
-     scrolls its own overflow instead. safe center leaves short
-     descriptions centered but lets a long one start from the top and
-     scroll down, rather than opening already scrolled to its middle. */
-  .course-popup__body { padding: 2.75rem; display: flex; flex-direction: column; justify-content: safe center; min-height: 0; overflow-y: auto; }
-  /* On a phone, .courses-wrap itself is only as tall as the small card grid
-     above it -- confining the popup there forces a scroll to reach the
-     buttons on anything but the shortest description, and on a very small
-     or square screen (a flip phone's cover display, say) even full-screen
-     can't rule that out entirely -- but full-screen at least fits every
-     normal case without one. Stacking media above body (instead of the
-     desktop side-by-side split), weighted toward the text since that's the
-     part actually being read, uses that room well. No ancestor between
-     here and the viewport sets a transform, so position:fixed genuinely
-     escapes to it. */
+  /* min-height:0 lets the body shrink to its grid track and scroll its own
+     overflow instead of ballooning the card; safe center keeps a short
+     description centred but lets a long one start at the top. */
+  .course-popup__body { padding: clamp(1.75rem, 4vw, 3rem); display: flex; flex-direction: column; justify-content: safe center; min-height: 0; overflow-y: auto; }
   @media (max-width: 700px) {
-    .course-popup { position: fixed; z-index: 100; }
-    .course-popup__card { grid-template-columns: 1fr; grid-template-rows: 1fr 2fr; border-radius: 0; max-height: 100vh; max-height: 100svh; }
-    .course-popup__body { padding: 1.75rem; }
+    .course-popup__card { grid-template-columns: 1fr; grid-template-rows: 1fr 1.7fr; height: min(92vh, 760px); }
   }
   .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: var(--navy); }
   .course-popup__body p { display: block; font-size: var(--text-caption); line-height: 1.7; color: #4A5163; margin: 0 0 1.2rem; }
@@ -1009,7 +994,7 @@
   <section class="slide" id="slide-0" data-ground="paper" data-label="Domů">
     <div class="slide__inner">
       <img class="home__mark d1" src="assets/mark.gif" alt="Dójó Na Cestě">
-      <p class="home__kicker d2">Aikido a jóga v Říčanech, od roku 2004</p>
+      <p class="home__kicker d2">Aikidó a jóga v Říčanech, od roku 2004</p>
       <h1 class="home__h1 d3">Dójó Na Cestě</h1>
       <p class="home__lede d4">nenásilná cesta</p>
     </div>
@@ -1091,7 +1076,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">31. ledna 2022</span>
-            <div class="post__text"><p><strong>NOVÝ ROZPIS CVIČENÍ OD 31. 1. 2022</strong> — pondělí: 8:15–9:35 jóga, 16:00–17:20 děti aikido, 17:45–19:05 jóga, 19:15–21:00 aikido. Čtvrtek: 8:15–9:35 jóga, 16:00–17:00 píďata, 17:30–18:50 aikido děti, 19:15–21:00 aikido.</p></div>
+            <div class="post__text"><p><strong>NOVÝ ROZPIS CVIČENÍ OD 31. 1. 2022</strong> — pondělí: 8:15–9:35 jóga, 16:00–17:20 děti aikidó, 17:45–19:05 jóga, 19:15–21:00 aikidó. Čtvrtek: 8:15–9:35 jóga, 16:00–17:00 píďata, 17:30–18:50 aikidó děti, 19:15–21:00 aikidó.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1156,13 +1141,13 @@
             </div>
           <div class="post__body">
             <span class="post__date">2019</span>
-            <div class="post__text"><p>Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikido výprava na dětský den.</p></div>
+            <div class="post__text"><p>Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikidó výprava na dětský den.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">10.–14. června 2019</span>
-            <div class="post__text"><p>Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikido oddílu na nový školní rok, nebo první pololetí se slevou 20 %.</p></div>
+            <div class="post__text"><p>Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikidó oddílu na nový školní rok, nebo první pololetí se slevou 20 %.</p></div>
             <a class="post__doc" href="assets/letak-tyden.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Leták (PDF)</a>
           </div>
         </article>
@@ -1238,7 +1223,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">2017</span>
-            <div class="post__text"><p><strong>TÝDNY OTEVŘENÝCH DVEŘÍ.</strong> Nábor nových žáků na druhé pololetí začíná. První i druhý týden v únoru se můžete vy i vaše děti přijít podívat, a třeba si i na zkoušku zacvičit aikido nebo jógu.</p></div>
+            <div class="post__text"><p><strong>TÝDNY OTEVŘENÝCH DVEŘÍ.</strong> Nábor nových žáků na druhé pololetí začíná. První i druhý týden v únoru se můžete vy i vaše děti přijít podívat, a třeba si i na zkoušku zacvičit aikidó nebo jógu.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1250,13 +1235,13 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">listopad 2016</span>
-            <div class="post__text"><p><strong>Nově</strong> zavádíme možnost pro všechny dospělé cvičence Aikido i Jógy platit měsíčně. <strong>Měsíční poplatek je 800,- Kč.</strong> <strong>PROGRAM START NA CESTĚ -20 %</strong> — <em>Pro koho je program určen?</em> Pro lidi ve věku cca 20–30 let, kteří většinou v tomto věku startují do samostatného života. Tento program se týká také všech nově příchozích nad třicet let, po dobu jejich prvního roku cvičení Aikido i Jógy. <em>Co tento program obsahuje?</em> <strong>20 %</strong> slevu na kurzovném, viz ceník.</p></div>
+            <div class="post__text"><p><strong>Nově</strong> zavádíme možnost pro všechny dospělé cvičence Aikidó i Jógy platit měsíčně. <strong>Měsíční poplatek je 800,- Kč.</strong> <strong>PROGRAM START NA CESTĚ -20 %</strong> — <em>Pro koho je program určen?</em> Pro lidi ve věku cca 20–30 let, kteří většinou v tomto věku startují do samostatného života. Tento program se týká také všech nově příchozích nad třicet let, po dobu jejich prvního roku cvičení Aikidó i Jógy. <em>Co tento program obsahuje?</em> <strong>20 %</strong> slevu na kurzovném, viz ceník.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">podzim 2016</span>
-            <div class="post__text"><p><strong>Nábor nových cvičenců Aikido pro dospělé: každé úterý v září a říjnu od 19.15 h.</strong></p></div>
+            <div class="post__text"><p><strong>Nábor nových cvičenců Aikidó pro dospělé: každé úterý v září a říjnu od 19.15 h.</strong></p></div>
           </div>
         </article>
         <article class="post">
@@ -1313,7 +1298,7 @@
             </div>
           <div class="post__body">
             <span class="post__date">23. října 2014</span>
-            <div class="post__text"><p><strong>OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH</strong> proběhla ve <strong>čtvrtek 23. 10. 2014</strong> i s cvičením aikida pod vedením našeho tehdejšího učitele <strong>Michala Lachima Šípa</strong> (3. dan aikikai).</p></div>
+            <div class="post__text"><p><strong>OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH</strong> proběhla ve <strong>čtvrtek 23. 10. 2014</strong> i s cvičením aikidó pod vedením našeho tehdejšího učitele <strong>Michala Lachima Šípa</strong> (3. dan aikikai).</p></div>
           </div>
         </article>
         <article class="post">
@@ -1341,7 +1326,7 @@
                       <img src="assets/tabor-komiks-origami.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">7.–11. července 2014</span>
-            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY</strong> Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: <strong>7. 7.–11. 7. 2014</strong>, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.</p></div>
+            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY</strong> Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikidó a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: <strong>7. 7.–11. 7. 2014</strong>, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1365,7 +1350,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">26.–30. srpna 2013</span>
-            <div class="post__text"><p>Poslední týden v srpnu (od 26. do 30. 8.) se opět koná <strong>Aikido tábor pro děti</strong>.</p></div>
+            <div class="post__text"><p>Poslední týden v srpnu (od 26. do 30. 8.) se opět koná <strong>Aikidó tábor pro děti</strong>.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1384,13 +1369,13 @@
                       <img src="assets/dite25.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">2012–2013</span>
-            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR</strong> pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: <strong>carol.ho@volny.cz</strong> (tel. 604 731 322).</p></div>
+            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR</strong> pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikidó a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: <strong>carol.ho@volny.cz</strong> (tel. 604 731 322).</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">2013</span>
-            <div class="post__text"><p>Aktuální stáže aikida v Praze a okolí: Ulli Kubetzek (6. dan) So 6. 4. – Ne 7. 4. 2013, ČFA, Lublaňská 20, Praha 2. Bernard Caloz (6. dan) So 11. 5. – Ne 12. 5. 2013, ČAA, Na Balkáně 812, Praha 3.</p></div>
+            <div class="post__text"><p>Aktuální stáže aikidó v Praze a okolí: Ulli Kubetzek (6. dan) So 6. 4. – Ne 7. 4. 2013, ČFA, Lublaňská 20, Praha 2. Bernard Caloz (6. dan) So 11. 5. – Ne 12. 5. 2013, ČAA, Na Balkáně 812, Praha 3.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1407,7 +1392,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">2012</span>
-            <div class="post__text"><p>Cvičení <strong>Aikido pro předškolní děti a prvňáčky</strong> (cca 4–7 let) <strong>PÍĎATA</strong> opět začíná. Každé <strong>úterý nebo čtvrtek</strong> od září, vždy <strong>od 16:00 do 17:00 h</strong>.</p></div>
+            <div class="post__text"><p>Cvičení <strong>Aikidó pro předškolní děti a prvňáčky</strong> (cca 4–7 let) <strong>PÍĎATA</strong> opět začíná. Každé <strong>úterý nebo čtvrtek</strong> od září, vždy <strong>od 16:00 do 17:00 h</strong>.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1419,7 +1404,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">13.–31. srpna 2012</span>
-            <div class="post__text"><p>V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal <strong>Aikido tábor pro děti</strong>.</p></div>
+            <div class="post__text"><p>V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal <strong>Aikidó tábor pro děti</strong>.</p></div>
             <a class="post__doc" href="assets/prazdniny-2012.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Příměstský tábor 2012 (PDF)</a>
           </div>
         </article>
@@ -1434,19 +1419,19 @@
             </div>
           <div class="post__body">
             <span class="post__date">leden 2012</span>
-            <div class="post__text"><p>V sobotu 21. ledna 2012 proběhla na Balkáně <strong>dětská stáž Aikido</strong>.</p></div>
+            <div class="post__text"><p>V sobotu 21. ledna 2012 proběhla na Balkáně <strong>dětská stáž Aikidó</strong>.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">listopad 2011</span>
-            <div class="post__text"><p>Aikido Říčany a Dojo Na Cestě Vás srdečně zvou na <strong>PIKNIK NA CESTĚ v pátek 9. listopadu 2011</strong> (předvečer úplňku) <strong>od 19.30</strong>. Večerem Vás budou provázet Miroslav Píďa Skala (kytara, zpěv) a Štěpán Holoubek (rytmika). Vezměte si s sebou piknikové košíky (plné), deky na sezení a pestrobarevné oblečení. Vstupné dobrovolné. Výtěžek bude použit na zřízení tematické knihovny — filozofie, spiritualita, jóga, aikido, tchaj-ťi. Hodně štěstí a zdraví Vám přeje občanské sdružení Aikido Kenkyukai Říčany.</p></div>
+            <div class="post__text"><p>Aikidó Říčany a Dojo Na Cestě Vás srdečně zvou na <strong>PIKNIK NA CESTĚ v pátek 9. listopadu 2011</strong> (předvečer úplňku) <strong>od 19.30</strong>. Večerem Vás budou provázet Miroslav Píďa Skala (kytara, zpěv) a Štěpán Holoubek (rytmika). Vezměte si s sebou piknikové košíky (plné), deky na sezení a pestrobarevné oblečení. Vstupné dobrovolné. Výtěžek bude použit na zřízení tematické knihovny — filozofie, spiritualita, jóga, aikidó, tchaj-ťi. Hodně štěstí a zdraví Vám přeje občanské sdružení Aikidó Kenkyukai Říčany.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">1. listopadu 2011</span>
-            <div class="post__text"><p><strong>Cvičení Aikido pro předškolní děti začíná.</strong> Od prvního úterý v listopadu, tj. 1. 11., začínáme cvičení na téma Aikido a Jóga pro předškolní děti cca 4–6 let, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Cvičení bude probíhat zatím jednou týdně, <strong>každé úterý</strong>, vždy <strong>od 15.00 do 16.00 h</strong>. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky, a také se zbavovat strachu a získávat větší sebejistotu. Cena: 2 200,- do konce školního roku, nebo 150,- jedno cvičení.</p></div>
+            <div class="post__text"><p><strong>Cvičení Aikidó pro předškolní děti začíná.</strong> Od prvního úterý v listopadu, tj. 1. 11., začínáme cvičení na téma Aikidó a Jóga pro předškolní děti cca 4–6 let, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Cvičení bude probíhat zatím jednou týdně, <strong>každé úterý</strong>, vždy <strong>od 15.00 do 16.00 h</strong>. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky, a také se zbavovat strachu a získávat větší sebejistotu. Cena: 2 200,- do konce školního roku, nebo 150,- jedno cvičení.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1458,7 +1443,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">červen 2011</span>
-            <div class="post__text"><p>V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikido, tchaj-ťi čchüan, jóga a aikido dětí), a ty byly umístěny na příslušné podstránky.</p></div>
+            <div class="post__text"><p>V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikidó, tchaj-ťi čchüan, jóga a aikidó dětí), a ty byly umístěny na příslušné podstránky.</p></div>
             <a class="post__doc" href="#slide-4" data-goto="4"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>Videa v Galerii</a>
           </div>
         </article>
@@ -1503,7 +1488,7 @@
                       <img src="assets/2010-seminar-5let.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">20.–21. března 2010</span>
-            <div class="post__text"><p>O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikido v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.</p></div>
+            <div class="post__text"><p>O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikidó v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1532,7 +1517,7 @@
           <div class="post__body">
             <span class="post__marker" aria-hidden="true"></span>
             <span class="post__date">Září 2004</span>
-            <div class="post__text"><p>Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikido i jóga představují.</p></div>
+            <div class="post__text"><p>Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikidó i jóga představují.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1564,12 +1549,12 @@
         <h2 class="h2">Cvičení jako cesta, ne závod.</h2>
         <div class="cesta-hero__grid">
           <div>
-            <p class="lede" style="margin-bottom:1em;">Už více než 20 let se v Říčanech věnujeme aikidu a józe na dójó, kde společně cvičíme a potkáváme se.</p>
+            <p class="lede" style="margin-bottom:1em;">Už více než 20 let se v Říčanech věnujeme aikidó a józe na dójó, kde společně cvičíme a potkáváme se.</p>
             <p class="lede">Nejde nám o soupeření ani výkon. Cvičíme pro radost z pohybu, soustředění, rovnováhu a klid &mdash; každý svým tempem.</p>
           </div>
           <figure class="cesta__figure">
             <!-- user noted they may swap this photo later -->
-            <img src="assets/01-cesta.jpg" width="1024" height="683" alt="Hod během tréninku aikida na tatami, zachycený v pohybu">
+            <img src="assets/01-cesta.jpg" width="1024" height="683" alt="Hod během tréninku aikidó na tatami, zachycený v pohybu">
             <figcaption>Trénink na tatami, Říčany.</figcaption>
           </figure>
         </div>
@@ -1582,10 +1567,10 @@
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Parta lidí, kteří rádi cvičí nenásilnou cestou.</h2>
         <div class="origin-block__grid">
           <div>
-            <p class="lede" style="margin:0;">Jsme parta lidí, co rádi cvičí nenásilnou cestou. Dójó Na Cestě je místo pro každého, kdo si chce zacvičit, zastavit se a být chvíli s ostatními. Cvičíme tu jógu a aikido.</p>
-            <p class="lede">Co tomu ale předcházelo? Vraťme se na chvíli do roku 2004. Několik nadšenců pro aikido se tehdy rozhodlo přetvořit halu bývalé tiskárny SKALA v Říčanech na místo pro cvičení. Několik měsíců se prostor upravoval a zveleboval, až se v prosinci 2004 uskutečnil první slavnostní trénink.</p>
-            <p class="lede">Velké díky patří všem, kteří se na vzniku dójó podíleli, mnozí z nich cvičí aikido dodnes.</p>
-            <p class="lede">Náš klub je organizován pod Českou Federací Aikido (ČFAI) a na nákup tatami nám tehdy přispělo město Říčany formou grantu.</p>
+            <p class="lede" style="margin:0;">Dójó Na Cestě je místo pro každého, kdo si chce zacvičit, zastavit se a být chvíli s ostatními. Cvičíme tu jógu a aikidó.</p>
+            <p class="lede">Co tomu ale předcházelo? Vraťme se na chvíli do roku 2004. Několik nadšenců pro aikidó se tehdy rozhodlo přetvořit halu bývalé tiskárny SKALA v Říčanech na místo pro cvičení. Několik měsíců se prostor upravoval a zveleboval, až se v prosinci 2004 uskutečnil první slavnostní trénink.</p>
+            <p class="lede">Velké díky patří všem, kteří se na vzniku dójó podíleli, mnozí z nich cvičí aikidó dodnes.</p>
+            <p class="lede">Náš klub je organizován pod Českou Federací Aikidó (ČFAI) a na nákup tatami nám tehdy přispělo město Říčany formou grantu.</p>
             <p class="lede">Největší dík ale patří našemu prvnímu učiteli Michalu Lachimu Šípovi, tehdy 2. dan Hombu Dojo, který nás vedl od samého začátku. Na jeho práci později navázal Radek Růžička a dnes nás vede Miroslav Skala, také 2. dan Hombu Dojo. Bez nich a všech, kteří se kolem dójó za ta léta vystřídali, by dnes nebylo tím, čím je.</p>
           </div>
           <figure class="cesta__figure">
@@ -1594,17 +1579,17 @@
         </div>
       </div>
 
-      <div class="origin-block" data-section data-down-label="Aikido">
-        <span class="kicker">Aikido</span>
+      <div class="origin-block" data-section data-down-label="Aikidó">
+        <span class="kicker">Aikidó</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; umění harmonie.</h2>
         <div class="origin-block__grid">
           <div>
-            <p class="lede" style="margin:0;">Aikido je moderní japonské bojové umění, které spojuje pohyb, techniku a práci s tělem i myslí. Nejde v něm o poražení soupeře, ale o hledání způsobu, jak využít jeho pohyb a sílu bez zbytečného násilí.</p>
-            <p class="lede" style="margin-top:1em;">Aikido založil Morihei Ueshiba (1883&ndash;1969). Od začátku v něm nebylo místo pro soutěžení ani poměřování výkonu. Důležitá je cesta samotného cvičení &mdash; učit se vnímat sebe, druhého i prostor kolem sebe.</p>
+            <p class="lede" style="margin:0;">Aikidó je moderní japonské bojové umění, které spojuje pohyb, techniku a práci s tělem i myslí. Nejde v něm o poražení soupeře, ale o hledání způsobu, jak využít jeho pohyb a sílu bez zbytečného násilí.</p>
+            <p class="lede" style="margin-top:1em;">Aikidó založil Morihei Ueshiba (1883&ndash;1969). Od začátku v něm nebylo místo pro soutěžení ani poměřování výkonu. Důležitá je cesta samotného cvičení &mdash; učit se vnímat sebe, druhého i prostor kolem sebe.</p>
             <p class="lede" style="margin-top:1em;">Název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
           </div>
           <figure class="cesta__figure">
-            <img src="assets/cesta-aikido.jpg" width="1024" height="683" alt="Trénink aikida pro dospělé na tatami" loading="lazy">
+            <img src="assets/cesta-aikido.jpg" width="1024" height="683" alt="Trénink aikidó pro dospělé na tatami" loading="lazy">
           </figure>
         </div>
       </div>
@@ -1647,7 +1632,7 @@
             <div>
               <span class="course__age">4&ndash;8 let</span>
               <h3>Píďata</h3>
-              <p>Cvičení pro předškoláky a prvňáčky, které propojuje aikido a jógu. Děti se hravou formou učí vnímat své tělo, pracovat s dechem, soustředit se a spolupracovat s ostatními. Postupně získávají větší jistotu a učí se zvládat nové situace bez zbytečného tlaku na výkon.</p>
+              <p>Cvičení pro předškoláky a prvňáčky, které propojuje aikidó a jógu. Děti se hravou formou učí vnímat své tělo, pracovat s dechem, soustředit se a spolupracovat s ostatními. Postupně získávají větší jistotu a učí se zvládat nové situace bez zbytečného tlaku na výkon.</p>
               <div class="course__detail" hidden>
                 <div class="course__meta"><b>Kdy cvičíme</b><p>Čtvrtek &middot; 16:00&ndash;17:00</p></div>
                 <div class="course__meta"><b>Na první trénink</b><p>Stačí pohodlné oblečení.</p></div>
@@ -1656,11 +1641,11 @@
             </div>
           </div>
           <div class="course" data-id="deti" tabindex="0" role="button" aria-haspopup="dialog">
-            <img src="assets/aikido-deti.jpg" width="1024" height="683" alt="Aikido pro děti">
+            <img src="assets/aikido-deti.jpg" width="1024" height="683" alt="Aikidó pro děti">
             <div>
               <span class="course__age">8&ndash;14 let</span>
-              <h3>Aikido děti</h3>
-              <p>Cvičí spolu děti školního věku i mládež, začátečníci i pokročilí, kluci i holky. K aikidu patří také dechová cvičení a práce se soustředěním. Začít můžete kdykoli během roku. Na první trénink stačí tepláky, tričko s dlouhým rukávem a chuť cvičit.</p>
+              <h3>Aikidó děti</h3>
+              <p>Cvičí spolu děti školního věku i mládež, začátečníci i pokročilí, kluci i holky. K aikidó patří také dechová cvičení a práce se soustředěním. Začít můžete kdykoli během roku.</p>
               <div class="course__detail" hidden>
                 <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 17:30&ndash;18:50<br>Čtvrtek &middot; 17:30&ndash;18:50</p></div>
                 <div class="course__meta"><b>Na první trénink</b><p>Tepláky bez zipu a tričko s dlouhým rukávem.</p></div>
@@ -1669,15 +1654,15 @@
             </div>
           </div>
           <div class="course" data-id="dospeli" tabindex="0" role="button" aria-haspopup="dialog">
-            <img src="assets/aikido-dospeli.jpg" width="1024" height="683" alt="Aikido pro dospělé">
+            <img src="assets/aikido-dospeli.jpg" width="1024" height="683" alt="Aikidó pro dospělé">
             <div>
               <span class="course__age">dospělí</span>
-              <h3>Aikido dospělí</h3>
-              <p>Aikido pro dospělé bez ohledu na věk nebo předchozí zkušenosti. Začátečníci cvičí společně s pokročilými a každý postupuje vlastním tempem. Učíme se pracovat s pohybem, rovnováhou a silou &mdash; svou i partnerovou. Nejde o soutěž ani o to být nejsilnější.</p>
+              <h3>Aikidó dospělí</h3>
+              <p>Aikidó pro dospělé bez ohledu na věk nebo předchozí zkušenosti. Začátečníci cvičí společně s pokročilými a každý postupuje vlastním tempem. Učíme se pracovat s pohybem, rovnováhou a silou &mdash; svou i partnerovou. Nejde o soutěž ani o to být nejsilnější.</p>
               <div class="course__detail" hidden>
                 <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 19:15&ndash;21:00<br>Čtvrtek &middot; 19:15&ndash;21:00</p></div>
                 <div class="course__meta"><b>Na první trénink</b><p>Tepláky bez zipu a tričko s dlouhým rukávem.</p></div>
-                <p class="course__nb">Myslíte si, že už jste na aikido příliš staří? Přijďte se přesvědčit, že nejste.</p>
+                <p class="course__nb">Myslíte si, že už jste na aikidó příliš staří? Přijďte se přesvědčit, že nejste.</p>
               </div>
               <span class="course__more">Zjistit více &rarr;</span>
             </div>
@@ -1687,7 +1672,7 @@
             <div>
               <span class="course__age">pro každého</span>
               <h3>Jóga</h3>
-              <p>Cvičíme Rádža jógu, která je vhodná pro každého bez ohledu na věk nebo zkušenosti. Nepotřebujete žádné speciální vybavení &mdash; stačí pohodlné oblečení a chuť cvičit.</p>
+              <p>Cvičíme Rádža jógu, tradiční systém jógy zaměřený na práci s tělem, dechem a myslí. Cvičení je vhodné pro každého, bez ohledu na věk nebo předchozí zkušenosti. Pravidelná praxe pomáhá zlepšovat kondici, pohyblivost, soustředění i schopnost odpočívat.</p>
               <div class="course__detail" hidden>
                 <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 8:15&ndash;9:40<br>Pondělí &middot; 16:30&ndash;17:30<br>Čtvrtek &middot; 8:15&ndash;9:40</p></div>
                 <div class="course__meta"><b>Na první trénink</b><p>Pohodlné oblečení a chuť cvičit.</p></div>
@@ -1729,15 +1714,15 @@
               <h4>Pondělí</h4>
               <p>Jóga 8:15&ndash;9:40</p>
               <p>Jóga 16:30&ndash;17:30</p>
-              <p>Aikido děti 17:30&ndash;18:50</p>
-              <p>Aikido dospělí 19:15&ndash;21:00</p>
+              <p>Aikidó děti 17:30&ndash;18:50</p>
+              <p>Aikidó dospělí 19:15&ndash;21:00</p>
             </div>
             <div class="mini-schedule__day">
               <h4>Čtvrtek</h4>
               <p>Jóga 8:15&ndash;9:40</p>
               <p>Píďata 16:00&ndash;17:00</p>
-              <p>Aikido děti 17:30&ndash;18:50</p>
-              <p>Aikido dospělí 19:15&ndash;21:00</p>
+              <p>Aikidó děti 17:30&ndash;18:50</p>
+              <p>Aikidó dospělí 19:15&ndash;21:00</p>
             </div>
           </div>
         </div>
@@ -1798,8 +1783,8 @@
             <div class="deck__cap"><b>Čaj</b><span>9 fotografií</span></div>
           </div>
           <div class="deck__card" data-slug="aikido-dospeli" data-n="9" data-ext="jpg">
-            <img src="assets/gal-aikido-dospeli.jpg" alt="Aikido dospělí" loading="lazy">
-            <div class="deck__cap"><b>Aikido dospělí</b><span>9 fotografií</span></div>
+            <img src="assets/gal-aikido-dospeli.jpg" alt="Aikidó dospělí" loading="lazy">
+            <div class="deck__cap"><b>Aikidó dospělí</b><span>9 fotografií</span></div>
           </div>
         </div>
         <p class="deck__hint"><span class="deck__count" id="galDeckCount" aria-hidden="true"></span>Kolečkem nebo tažením listuješ sbírkami. Klikni na sbírku pro všechny fotky.</p>
@@ -1809,9 +1794,9 @@
           <h3>Videa</h3>
           <div class="videa__row">
             <a class="videa__tile" href="https://www.youtube.com/watch?v=2adHCm2pe0w" target="_blank" rel="noopener"><b>Dobré Říčany</b><span>Reportáž o dójó Na Cestě</span></a>
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=8YUmP_NH7Rs" target="_blank" rel="noopener"><b>Aikido děti</b><span>Ukázka tréninku dětského aikida</span></a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=8YUmP_NH7Rs" target="_blank" rel="noopener"><b>Aikidó děti</b><span>Ukázka tréninku dětského aikidó</span></a>
             <a class="videa__tile" href="https://www.youtube.com/watch?v=Nz6oTxLYgWg" target="_blank" rel="noopener"><b>Jóga</b><span>Ukázka hodiny jógy na dójó</span></a>
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=XEHJ3qUY4aA" target="_blank" rel="noopener"><b>Aikido dospělí</b><span>Ukázka tréninku aikida pro dospělé</span></a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=XEHJ3qUY4aA" target="_blank" rel="noopener"><b>Aikidó dospělí</b><span>Ukázka tréninku aikidó pro dospělé</span></a>
           </div>
         </div>
       </div>
@@ -1825,7 +1810,7 @@
       <div class="gal-kresba" data-down-label="Kresba">
         <span class="kicker">Kresba</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Nenásilná cesta, nakreslená.</h2>
-        <p class="lede" style="max-width:46rem;">Čtyři postavy od kamaráda dójó, nakreslené v roce 2003, ještě dřív než klub měl vlastní web.</p>
+        <p class="lede" style="max-width:46rem;">Čtyři postavy od kamaráda dójó <strong>Petra Friedla</strong>, nakreslené v roce 2003, ještě dřív než klub měl vlastní web.</p>
         <div class="komiks-stack">
           <figure class="komiks-piece">
             <img src="assets/komiks-zluty.jpg" width="835" height="1300" alt="Komiks: chlapec skládá origami, rozzlobený samuraj útočí, chlapec uhýbá a nakonec mu podá jen složený papír">
@@ -1871,7 +1856,7 @@
             <iframe src="https://maps.google.com/maps?q=Marie+Pujmanov%C3%A9+2046%2C+251+01+%C5%98%C3%AD%C4%8Dany&z=15&output=embed" loading="lazy" title="Mapa - Dójó Na Cestě Říčany"></iframe>
           </div>
           <div class="kontakt__row" style="margin-top:1.25rem;"><b>Adresa</b><span>Tělocvična v Domově Pod Kavčí Skálou<br>Marie Pujmanové 2046, 251 01 Říčany</span></div>
-          <p class="kontakt__small">Dójó Na Cestě, Říčany. Aikido a jóga od roku 2004.</p>
+          <p class="kontakt__small">Dójó Na Cestě, Říčany. Aikidó a jóga od roku 2004.</p>
         </div>
         <div>
           <div class="kontakt__person">
@@ -2280,9 +2265,7 @@
   var coursePopupClose = document.getElementById('coursePopupClose');
   var openCourseEl = null;
 
-  var coursesEl = document.querySelector('.courses');
-  var COURSE_OPEN_MS = 700;
-  var COURSE_CLOSE_MS = 550;
+  var COURSE_CLOSE_MS = 300;
 
   /* The tilt itself stays (it's the hover feedback the cards are built
      around) -- only the very first frame after the cursor arrives eased
@@ -2317,82 +2300,30 @@
     var detail = card.querySelector('.course__detail');
     coursePopupDetail.innerHTML = detail ? detail.innerHTML : '';
 
-    /* Clear the hover tilt before measuring: clicking necessarily happens
-       while hovering, so without this the FLIP animation's start point was
-       the card's tilted rect (scaled 1.03x, shifted up 6px) rather than
-       its true resting one -- read together with an already-mid-transition
-       tilt, that's what looked like the card visibly enlarging a second
-       time right as the popup animation began. */
+    /* Clear the hover tilt (a click necessarily lands mid-hover) so the
+       card is back at rest behind the wash. */
     card.style.transition = 'none';
     card.style.transform = '';
     delete card.dataset.tilting;
-    void card.offsetWidth;
 
-    /* .course-popup is display:none until is-visible is added -- measuring
-       its rect any earlier than this returns an all-zero box, which is
-       exactly what was breaking the animation (dividing by a zero width
-       silently produces an Infinity scale). Reading it straight off the
-       element, now that it actually has a box, keeps the FLIP math correct
-       regardless of which layout mode is active (confined to the card grid
-       on desktop, full-viewport on mobile) instead of hard-coding one
-       target rect. */
+    var body = coursePopup.querySelector('.course-popup__body');
+    if (body) body.scrollTop = 0;
     coursePopup.classList.add('is-visible');
-    var origin = card.getBoundingClientRect();
-    /* .courses is forced to height:100% of courses-wrap so .course's own
-       max-height:100% has something definite to clamp against on short
-       viewports -- but on a tall one, the card's aspect-ratio caps it
-       *below* that 100%, so the container ends up taller than the card
-       actually is. The popup was matching the container's height, not the
-       card's, so on any viewport tall enough for that gap to open up, it
-       extended past the visible cards' real bottom edge. Explicitly
-       sizing it to the card's own height (only in the confined desktop
-       layout -- mobile's fixed full-viewport mode overrides this) fixes
-       that regardless of viewport height. */
-    var isFixed = getComputedStyle(coursePopup).position === 'fixed';
-    coursePopup.style.height = isFixed ? '' : origin.height + 'px';
-    var target = coursePopup.getBoundingClientRect();
-    var dx = origin.left - target.left;
-    var dy = origin.top - target.top;
-    var sx = origin.width / target.width;
-    var sy = origin.height / target.height;
-    coursePopupCard.style.transition = 'none';
-    coursePopupCard.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
-    coursePopupCard.style.opacity = '0.55';
-    /* The other three cards fade out together with the popup opening,
-       instead of just sitting there fully visible underneath/around it
-       until the popup happens to grow large enough to cover them. */
-    coursesEl.style.transition = 'opacity ' + COURSE_OPEN_MS + 'ms var(--ease)';
-    coursesEl.style.opacity = '0';
-    coursesEl.style.pointerEvents = 'none';
-    void coursePopupCard.offsetWidth;
+    /* two frames: one to flush display:flex, one for the transition to
+       take from the .is-open class (same pattern as the photo lightbox). */
     requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        coursePopup.classList.add('is-open');
-        coursePopupCard.style.transition = 'transform ' + COURSE_OPEN_MS + 'ms var(--ease), opacity ' + COURSE_OPEN_MS + 'ms var(--ease)';
-        coursePopupCard.style.transform = 'translate(0px,0px) scale(1,1)';
-        coursePopupCard.style.opacity = '1';
-      });
+      requestAnimationFrame(function () { coursePopup.classList.add('is-open'); });
     });
     coursePopupClose.focus();
   }
   function closeCourse() {
-    if (!openCourseEl) { coursePopup.classList.remove('is-visible', 'is-open'); return; }
-    var origin = openCourseEl.getBoundingClientRect();
-    var target = coursePopup.getBoundingClientRect();
-    var dx = origin.left - target.left;
-    var dy = origin.top - target.top;
-    var sx = origin.width / target.width;
-    var sy = origin.height / target.height;
     var closedCard = openCourseEl;
-    coursePopup.classList.remove('is-open');
-    coursePopupCard.style.transition = 'transform ' + COURSE_CLOSE_MS + 'ms var(--ease), opacity ' + COURSE_CLOSE_MS + 'ms var(--ease)';
-    coursePopupCard.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
-    coursePopupCard.style.opacity = '0';
-    coursesEl.style.transition = 'opacity ' + COURSE_CLOSE_MS + 'ms var(--ease)';
-    coursesEl.style.opacity = '1';
-    coursesEl.style.pointerEvents = '';
     openCourseEl = null;
-    setTimeout(function () { coursePopup.classList.remove('is-visible'); coursePopup.style.height = ''; closedCard.focus(); }, COURSE_CLOSE_MS);
+    coursePopup.classList.remove('is-open');
+    setTimeout(function () {
+      coursePopup.classList.remove('is-visible');
+      if (closedCard && closedCard.focus) closedCard.focus();
+    }, COURSE_CLOSE_MS);
   }
   document.querySelectorAll('.course').forEach(function (c) {
     c.addEventListener('mousemove', tiltCourse);
@@ -2531,26 +2462,29 @@
     });
   });
 
-  /* Kresba: the four komiks pages open in the same lightbox. The strip
-     carries each character's portrait (not a crop of the tall page), and
-     either the page or its portrait opens the viewer at that page. This
-     is also what spares mobile the pinch-zoom that was crashing the tab. */
+  /* Kresba: the portraits are finished drawings too, so the viewer carries
+     all eight images — for each character its portrait, then its page —
+     and the strip shows every one. Clicking a portrait opens on that
+     portrait; clicking a page opens on that page. This is also what
+     spares mobile the pinch-zoom that was crashing the tab. */
   (function () {
     var pieces = Array.prototype.slice.call(document.querySelectorAll('.komiks-stack .komiks-piece'));
     if (!pieces.length) return;
-    var kitems = pieces.map(function (fig) {
+    var kitems = [];
+    pieces.forEach(function (fig) {
       var page = fig.querySelector(':scope > img');
       var av = fig.querySelector('.komiks-piece__avatar');
-      return {
-        src: page.getAttribute('src'),
-        alt: page.getAttribute('alt') || '',
-        thumb: av ? av.getAttribute('src') : page.getAttribute('src')
-      };
+      var cap = fig.querySelector('figcaption');
+      var label = cap ? cap.textContent.trim() : '';
+      if (av) kitems.push({ src: av.getAttribute('src'), alt: label ? 'Portrét — ' + label : 'Portrét postavy' });
+      kitems.push({ src: page.getAttribute('src'), alt: page.getAttribute('alt') || label });
     });
     pieces.forEach(function (fig, i) {
-      Array.prototype.forEach.call(fig.querySelectorAll(':scope > img, .komiks-piece__avatar'), function (im) {
-        im.addEventListener('click', function () { openLightbox(kitems, i); });
-      });
+      var base = i * 2;
+      var av = fig.querySelector('.komiks-piece__avatar');
+      var page = fig.querySelector(':scope > img');
+      if (av) av.addEventListener('click', function () { openLightbox(kitems, base); });
+      page.addEventListener('click', function () { openLightbox(kitems, base + 1); });
     });
   })();
 
