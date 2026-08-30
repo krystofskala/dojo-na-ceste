@@ -253,6 +253,12 @@
   .down-arrow:hover { opacity: 1; }
   .down-arrow svg { width: 1.1rem; height: 1.1rem; }
   .down-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
+  /* Phones: sit it right down at the edge (clear of the top bar, the
+     bottom hairline and the content padding it was floating over) and
+     dial it back so it stops pulling the eye. */
+  @media (max-width: 760px) {
+    .down-arrow { bottom: max(0.25rem, env(safe-area-inset-bottom)); opacity: 0.45; }
+  }
   /* Name of the next named section the current chapter reveals as you scroll
      down (set from [data-down-label] in the JS); empty on chapters whose
      overflow is just more of the same, and then it collapses to nothing. */
@@ -446,6 +452,24 @@
   }
   .yoga-benefits li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
   @media (max-width: 860px) { .cesta-hero__grid { grid-template-columns: minmax(0, 1fr); } .cesta-hero__grid > *:first-child { order: 2; } .cesta-hero__grid > *:last-child { order: 1; } }
+
+  /* Desktop only: Cesta's four parts (hero + O nás + Aikido + Jóga) each
+     become their own full screen with the two columns vertically centred,
+     so the down-arrow can step cleanly from one to the next. On mobile
+     they just flow — sections don't fit a phone screen anyway. */
+  @media (min-width: 761px) {
+    #slide-1 .slide__inner { padding-top: 0; padding-bottom: 0; }
+    #slide-1 [data-section] {
+      min-height: 100vh; min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: safe center;
+      padding: clamp(4.75rem, 11vh, 7.5rem) 0 clamp(3.5rem, 8vh, 5.5rem);
+      margin: 0 auto;
+    }
+    /* let the hero shrink-wrap so the [data-section] flex can centre it,
+       instead of .chapter-body stretching and top-pinning it */
+    #slide-1 .chapter-body { flex: 0 0 auto; }
+    #slide-1 .origin-block { margin-top: 0; border-top: 0; padding-top: clamp(4.75rem, 11vh, 7.5rem); }
+  }
 
   /* ---------------------------------------------------------------------
      Slide 0 · Domů — Aktuality feed, merged below the hero. One real
@@ -1425,8 +1449,10 @@
   <section class="slide" id="slide-1" data-ground="navy-deep" data-label="Cesta">
     <div class="slide__inner">
       <!-- Reserves a guaranteed full screen so O nás/Aikido/Jóga below
-           never bleed into this first screen — see .chapter-first-screen. -->
-      <div class="chapter-first-screen">
+           never bleed into this first screen — see .chapter-first-screen.
+           data-section: on desktop each of these is its own centred screen
+           and the down-arrow steps between them (see the click handler). -->
+      <div class="chapter-first-screen" data-section>
       <div class="chapter-body">
       <div class="cesta-hero">
         <span class="kicker">二 &middot; Cesta</span>
@@ -1446,7 +1472,7 @@
       </div>
       </div>
 
-      <div class="origin-block" data-down-label="O nás">
+      <div class="origin-block" data-section data-down-label="O nás">
         <span class="kicker">O nás</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Parta lidí, kteří rádi cvičí nenásilnou cestou.</h2>
         <div class="origin-block__grid">
@@ -1459,7 +1485,7 @@
         </div>
       </div>
 
-      <div class="origin-block" data-down-label="Aikido">
+      <div class="origin-block" data-section data-down-label="Aikido">
         <span class="kicker">Aikido</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; cesta harmonie.</h2>
         <div class="origin-block__grid">
@@ -1471,7 +1497,7 @@
         </div>
       </div>
 
-      <div class="origin-block" data-down-label="Jóga">
+      <div class="origin-block" data-section data-down-label="Jóga">
         <span class="kicker">Jóga</span>
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Rádža jóga pro každého.</h2>
         <div class="origin-block__grid">
@@ -1988,7 +2014,21 @@
   arrowRight.addEventListener('click', function () { goto(activeIndex() + 1); });
   arrowDown.addEventListener('click', function () {
     var s = slides[activeIndex()];
-    s.scrollBy({ top: s.clientHeight * 0.82, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    var behavior = prefersReducedMotion ? 'auto' : 'smooth';
+    /* If the chapter is laid out as full-screen [data-section] blocks
+       (Cesta, on desktop), step to the top of the next one. Otherwise —
+       mobile, or a chapter without sections — just page down. */
+    var secs = window.innerWidth > 760 && s.querySelectorAll('[data-section]');
+    if (secs && secs.length) {
+      var base = s.getBoundingClientRect().top - s.scrollTop;
+      for (var i = 0; i < secs.length; i++) {
+        var top = Math.round(secs[i].getBoundingClientRect().top - base);
+        if (top > s.scrollTop + 8) { s.scrollTo({ top: top, behavior: behavior }); return; }
+      }
+      s.scrollTo({ top: s.scrollHeight, behavior: behavior });
+      return;
+    }
+    s.scrollBy({ top: s.clientHeight * 0.82, behavior: behavior });
   });
 
   hub.addEventListener('scroll', function () {
