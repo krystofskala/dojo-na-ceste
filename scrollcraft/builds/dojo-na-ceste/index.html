@@ -135,6 +135,11 @@
      distance below its heading at every viewport height; extra room on a
      tall screen shows up at the bottom instead. */
   .chapter-body { flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; }
+  /* Kdy přijít + Kontakt: fixed-size content, nothing below the fold —
+     centre it vertically in the room left under the heading (per user).
+     safe center so content taller than that room still spills downward
+     instead of clipping off the top on short viewports. */
+  #slide-3 .chapter-body, #slide-5 .chapter-body { justify-content: safe center; }
   /* Only for chapters with real content below the fold (Cesta -> O nás,
      Galerie -> Kresba): reserves a guaranteed full screen for the heading
      + .chapter-body pair so the next part can never bleed into view
@@ -1589,7 +1594,9 @@
             <p class="lede" style="margin-top:1em;">Aikido založil Morihei Ueshiba (1883&ndash;1969). Od začátku v něm nebylo místo pro soutěžení ani poměřování výkonu. Důležitá je cesta samotného cvičení &mdash; učit se vnímat sebe, druhého i prostor kolem sebe.</p>
             <p class="lede" style="margin-top:1em;">Název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
           </div>
-          <div class="photo-placeholder">fotka bude doplněna</div>
+          <figure class="cesta__figure">
+            <img src="assets/cesta-aikido.jpg" width="1024" height="683" alt="Trénink aikida pro dospělé na tatami" loading="lazy">
+          </figure>
         </div>
       </div>
 
@@ -1607,7 +1614,9 @@
               <li>lepší vnímání vlastního těla</li>
             </ul>
           </div>
-          <div class="photo-placeholder">fotka bude doplněna</div>
+          <figure class="cesta__figure">
+            <img src="assets/cesta-joga.jpg" width="1500" height="844" alt="Hodina jógy na dójó" loading="lazy">
+          </figure>
         </div>
       </div>
     </div>
@@ -1775,9 +1784,9 @@
             <img src="assets/gal-aikivandr-na-chate.jpg" alt="Aikivandr na chatě" loading="lazy">
             <div class="deck__cap"><b>Aikivandr na chatě</b><span>5 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="vanocni-caj" data-n="9" data-ext="jpg">
-            <img src="assets/gal-vanocni-caj.jpg" alt="Vánoční čaj" loading="lazy">
-            <div class="deck__cap"><b>Vánoční čaj</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="caj" data-n="9" data-ext="jpg" data-sections="Vánoční čaj:3,Červnový čaj:6">
+            <img src="assets/gal-caj.jpg" alt="Čaj" loading="lazy">
+            <div class="deck__cap"><b>Čaj</b><span>9 fotografií</span></div>
           </div>
           <div class="deck__card" data-slug="aikido-dospeli" data-n="9" data-ext="jpg">
             <img src="assets/gal-aikido-dospeli.jpg" alt="Aikido dospělí" loading="lazy">
@@ -1824,14 +1833,14 @@
             </div>
           </figure>
           <figure class="komiks-piece">
-            <img src="assets/komiks-sedy.jpg" width="1300" height="919" alt="Komiks: stařec s motýly a samuraj, klidná scéna v šedé">
+            <img src="assets/komiks-sedy.jpg" width="1061" height="1500" alt="Komiks: stařec s motýly a samuraj, klidná scéna v šedé">
             <div class="komiks-piece__meta">
               <img class="komiks-piece__avatar" src="assets/profil-sedy.jpg" width="700" height="360" alt="">
               <figcaption>Děda s motýlem. I samuraj u něj jen na chvíli usedne.</figcaption>
             </div>
           </figure>
           <figure class="komiks-piece">
-            <img src="assets/komiks-modry.jpg" width="919" height="1300" alt="Komiks: modrý samuraj v klidu sedí na rohoži s mečem">
+            <img src="assets/komiks-modry.jpg" width="1052" height="1500" alt="Komiks: modrý samuraj v klidu sedí na rohoži s mečem">
             <div class="komiks-piece__meta">
               <img class="komiks-piece__avatar" src="assets/profil-modry.jpg" width="691" height="700" alt="">
               <figcaption>Samuraj v modré. Meč u boku, ale v klidu.</figcaption>
