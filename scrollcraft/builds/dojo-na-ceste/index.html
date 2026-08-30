@@ -367,18 +367,23 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: var(--text-kicker); letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; opacity: 0.6; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+    padding: 0.3rem 0.1rem; opacity: 0.6; transition: opacity 180ms var(--ease);
   }
   .navlink__kanji { font-family: var(--font-kanji); font-size: 1rem; line-height: 1; flex: none; }
-  .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
-  /* Hover + "you are here" both use the face's own accent (red on a light
-     chapter, gold on a dark one) — set on the face from JS as --face-accent
-     so it splits at the seam like everything else. No font-weight change on
-     active: the two faces must stay metric-identical or a glyph the seam
-     crosses would jump. */
-  .navlink:hover .navlink__kanji, .navlink:focus-visible .navlink__kanji,
-  .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
-    color: var(--face-accent, var(--red));
+  /* NO transform on hover/focus. faceB (the inert clone used for the seam
+     split) can't mirror an interactive state, so anything that moves the
+     real numeral makes it bob every time the seam sweeps across it during
+     a multi-chapter jump. Hover feedback is also gated to real-hover
+     devices so a sticky iOS tap-hover leaves nothing to flicker; the
+     "you are here" accent (mirrored onto both faces by dressFace) still
+     shows the current chapter on mobile. */
+  .navlink:focus-visible { opacity: 1; }
+  .navlink:focus-visible .navlink__kanji,
+  .navlink:focus-visible .navlink__label { color: var(--face-accent, var(--red)); }
+  @media (hover: hover) {
+    .navlink:hover { opacity: 1; }
+    .navlink:hover .navlink__kanji,
+    .navlink:hover .navlink__label { color: var(--face-accent, var(--red)); }
   }
   .navlink.is-active { opacity: 1; }
   .navlink.is-active .navlink__kanji { color: var(--face-accent, var(--red)); }
