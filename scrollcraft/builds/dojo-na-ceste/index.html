@@ -501,6 +501,15 @@
   .post__text p { margin: 0 0 0.65em; }
   .post__text p:last-child { margin-bottom: 0; }
   .post__text strong { font-weight: 700; }
+  /* Download pill for posts that link a PDF (flyers, camp programmes). */
+  .post__doc {
+    display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.7rem;
+    font-size: var(--text-caption); font-weight: 600; text-decoration: none;
+    color: var(--accent); border: 1px solid currentColor; border-radius: 999px;
+    padding: 0.35em 0.95em; transition: background 150ms var(--ease), color 150ms var(--ease);
+  }
+  .post__doc:hover, .post__doc:focus-visible { background: var(--accent); color: var(--accent-ink); }
+  .post__doc svg { flex: none; }
   .post[data-lost] { border-style: dashed; background: transparent; box-shadow: none; }
   .post[data-lost] .post__date { color: var(--accent); }
   .post[data-lost] .post__text { color: var(--ink-soft); }
@@ -1011,10 +1020,17 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-italia-25-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-italia-25-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-italia-25-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-italia-25-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-italia-25-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-italia-25-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">srpen 2025</span>
             <div class="post__text"><p>Nový školní rok, cvičit se začíná od 15. 9., k tomu pár fotek z letní školy v Itálii.</p></div>
-            <!-- media: [photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\italia25"] -->
           </div>
         </article>
         <article class="post">
@@ -1048,10 +1064,10 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery post__gallery--single"><a href="assets/nabor_pidata_plakat.jpg" target="_blank" rel="noopener"><img src="assets/nabor_pidata_plakat.jpg" alt="" loading="lazy"></a></div>
           <div class="post__body">
             <span class="post__date">jaro 2022</span>
             <div class="post__text"><p><strong>NÁBOR PÍĎAT NA NOVÉ POLOLETÍ:</strong></p></div>
-            <!-- media: [photos: nábor plakát] -->
           </div>
         </article>
         <article class="post">
@@ -1067,10 +1083,16 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-aikivandr-chata-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-chata-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-chata-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-chata-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-chata-05.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">podzim 2021</span>
             <div class="post__text"><p><strong>AIKIVANDR NA CHATĚ</strong> Bylo to supr. Díky.</p></div>
-            <!-- media: [photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\aikivandr na chate"] -->
           </div>
         </article>
         <article class="post">
@@ -1080,10 +1102,17 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-aikivandr-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-aikivandr-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">9.–13. srpna 2021</span>
             <div class="post__text"><p><strong>Letošní Aikivandr se bude konat od pondělí 9. do pátku 13. 8.</strong></p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\aikivandr"] -->
           </div>
         </article>
         <article class="post">
@@ -1105,17 +1134,24 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-detsky-den-19-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-detsky-den-19-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-detsky-den-19-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-detsky-den-19-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-detsky-den-19-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-detsky-den-19-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">2019</span>
             <div class="post__text"><p>Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikido výprava na dětský den.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\den deti vylet"] -->
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">10.–14. června 2019</span>
             <div class="post__text"><p>Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikido oddílu na nový školní rok, nebo první pololetí se slevou 20 %.</p></div>
-            <!-- media: [pdf:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\LETÁK TÝDEN.pdf"] -->
+            <a class="post__doc" href="assets/letak-tyden.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Leták (PDF)</a>
           </div>
         </article>
         <article class="post">
@@ -1131,24 +1167,28 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery post__gallery--single"><a href="assets/baionsomjo_plakat.jpg" target="_blank" rel="noopener"><img src="assets/baionsomjo_plakat.jpg" alt="" loading="lazy"></a></div>
           <div class="post__body">
             <span class="post__date">20. října 2018</span>
             <div class="post__text"><p>Baionšómjó v Libuši / OVERTONE — 20. 10. 2018 18:00. Přineste si polštář na sezení a pojeďte si s námi do Libuše zazpívat.</p></div>
-            <!-- media: [photos: baionšómjó plakát] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery post__gallery--single"><a href="assets/zimni-skola-2018-plakat.jpg" target="_blank" rel="noopener"><img src="assets/zimni-skola-2018-plakat.jpg" alt="" loading="lazy"></a></div>
           <div class="post__body">
             <span class="post__date">listopad 2018</span>
             <div class="post__text"><p>Pojeďte s námi na zimní školu 17. a 18. listopadu na Žižkově.</p></div>
-            <!-- media: [photos: zimní škola plakát] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-vanocni-caj-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-vanocni-caj-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-vanocni-caj-03.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">2018</span>
             <div class="post__text"><p>Jarní cvičení v přírodě — každé první pondělí v měsíci. Vánoční čaj o páté.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\vanocni caj"] -->
           </div>
         </article>
         <article class="post">
@@ -1158,10 +1198,17 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-cervnova-lekce-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-cervnova-lekce-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-cervnova-lekce-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-cervnova-lekce-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-cervnova-lekce-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-cervnova-lekce-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">11. září 2018</span>
             <div class="post__text"><p>Od 11. 9. začínáme cvičit v časech jako loni. Pár fotek z červnové lekce.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\cervnovy caj"] -->
           </div>
         </article>
         <article class="post">
@@ -1213,59 +1260,76 @@
           </div>
         </article>
         <article class="post">
+                      <img src="assets/post-rozvrh-16.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">2016</span>
             <div class="post__text"><p>Byl upraven rozpis hodin:</p></div>
-            <!-- media: [photo:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\rozvrhy\dfghjkl.gif"] -->
           </div>
         </article>
         <article class="post">
+                      <img src="assets/2015-kavci-skala.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">září 2015</span>
             <div class="post__text"><p><strong>OD ZÁŘÍ OPĚT NA NOVÉ ADRESE:</strong> Od 7. září začínáme cvičit v nové tělocvičně v Domově Pod Kavčí Skálou na adrese: Marie Pujmanové 2046, 251 01 Říčany.</p></div>
-            <!-- media: [photos: Kavčí Skála] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-svycarsko-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-svycarsko-02.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">5.–11. července 2015</span>
             <div class="post__text"><p>V červenci 5.–11. 7. 2015 se někteří z nás vypravili do Saignelegier ve Švýcarsku na stáž senseie Hiroshi Tady (9. dan). Česká výprava:</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\svycarsko"] -->
           </div>
         </article>
         <article class="post">
+                      <img src="assets/post-vyroci-sk.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">24.–26. října 2014</span>
             <div class="post__text"><p>O víkendu 24.–26. 10. 2014 se někteří z nás zúčastnili oslavy 20. výročí Slovenské asociace, kde stáž vedli Ueshiba Mitsuteru (Waka Sensei), Asai Katsuaki (8. dan) a Quaranta Michele (6. dan).</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\Vyroci20SK.jpg"] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-10let-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-10let-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-10let-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-10let-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-10let-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-10let-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">23. října 2014</span>
             <div class="post__text"><p><strong>OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH</strong> proběhla ve <strong>čtvrtek 23. 10. 2014</strong> i s cvičením aikida pod vedením našeho tehdejšího učitele <strong>Michala Lachima Šípa</strong> (3. dan aikikai).</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\10let"] -->
           </div>
         </article>
         <article class="post">
+                      <img src="assets/2014-olivovna.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">září 2014</span>
             <div class="post__text"><p><strong>VELKÉ RADOSTNÉ OZNÁMENÍ:</strong> Od září budeme cvičit ve všech našich pravidelných časech v krásné tělocvičně v Olivovně.</p></div>
-            <!-- media: [photos: Olivovna] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-kolace-2014-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2014-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2014-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2014-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2014-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2014-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">2014</span>
             <div class="post__text"><p>A zde jsou fotky ze soutěže o nejlepší koláč 2014:</p></div>
-            <!-- media: [photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2014"] -->
           </div>
         </article>
         <article class="post">
+                      <img src="assets/tabor-komiks-origami.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">7.–11. července 2014</span>
             <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY</strong> Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: <strong>7. 7.–11. 7. 2014</strong>, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.</p></div>
-            <!-- media: [photos: tábor — origami] -->
           </div>
         </article>
         <article class="post">
@@ -1293,17 +1357,22 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-kolace-2013-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2013-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2013-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2013-04.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">14. června 2013</span>
             <div class="post__text"><p>Soutěž o nejlepší koláč 2013 se konala v pátek 14. 6. Další fotky zde.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2013"] -->
           </div>
         </article>
         <article class="post">
+                      <img src="assets/dite25.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">2012–2013</span>
             <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR</strong> pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: <strong>carol.ho@volny.cz</strong> (tel. 604 731 322).</p></div>
-            <!-- media: [photos: dítě s origami] -->
           </div>
         </article>
         <article class="post">
@@ -1313,10 +1382,14 @@
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-kolace-2012-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2012-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2012-03.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">2012</span>
             <div class="post__text"><p>Před prázdninami proběhl čtvrtý ročník soutěže „O nejlepší… tentokráte opět koláč". A stejně jako minule byly připraveny ceny v podobě celoročních permanentek na cvičení pro dospělé i děti zdarma.</p></div>
-            <!-- media: [photos: koláč 2012 — 3] -->
           </div>
         </article>
         <article class="post">
@@ -1335,14 +1408,21 @@
           <div class="post__body">
             <span class="post__date">13.–31. srpna 2012</span>
             <div class="post__text"><p>V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal <strong>Aikido tábor pro děti</strong>.</p></div>
-            <!-- media: [pdf:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\prazdniny2012.pdf"] -->
+            <a class="post__doc" href="assets/prazdniny-2012.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Příměstský tábor 2012 (PDF)</a>
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-detska-staz-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-detska-staz-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-detska-staz-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-detska-staz-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-detska-staz-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-detska-staz-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">leden 2012</span>
             <div class="post__text"><p>V sobotu 21. ledna 2012 proběhla na Balkáně <strong>dětská stáž Aikido</strong>.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\detska staz"] -->
           </div>
         </article>
         <article class="post">
@@ -1367,28 +1447,31 @@
           <div class="post__body">
             <span class="post__date">červen 2011</span>
             <div class="post__text"><p>V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikido, tchaj-ťi čchüan, jóga a aikido dětí), a ty byly umístěny na příslušné podstránky.</p></div>
-            <!-- media: [3 videos ukazky z treninku] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-kolace-2011-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2011-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2011-03.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">27. května 2011</span>
             <div class="post__text"><p>V pátek 27. 5. 2011 proběhl třetí ročník soutěže „O nejlepší… tentokráte koláč". A stejně jako minule byly připraveny ceny v podobě celoročních permanentek na cvičení pro dospělé i děti zdarma. Nejpovedenější recepty (vítězné koláče jsou pod čísly 02 a 03).</p></div>
-            <!-- media: [photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2011"] -->
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">15.–19. a 22.–26. srpna 2011</span>
             <div class="post__text"><p>V srpnu se bude konat tradiční týdenní prázdninový program pro děti (dva termíny: 15.–19. 8. 2011 a 22.–26. 8. 2011).</p></div>
-            <!-- media: [pdf: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\prazdninovy_program.pdf"] -->
+            <a class="post__doc" href="assets/prazdninovy-program.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Prázdninový program (PDF)</a>
           </div>
         </article>
         <article class="post">
+                      <img src="assets/post-aikido-dospeli-11.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">červen 2011</span>
             <div class="post__text"><p>Začátkem června u nás probíhalo natáčení a nyní můžete shlédnout výsledek prezentující naše dojo: „Dojo na Cestě" from Tomáš Lénárd.</p></div>
-            <!-- media: [photo: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\aikidoDospeli.jpg"] -->
           </div>
         </article>
         <article class="post">
@@ -1404,17 +1487,24 @@
           </div>
         </article>
         <article class="post">
+                      <img src="assets/2010-seminar-5let.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">20.–21. března 2010</span>
             <div class="post__text"><p>O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikido v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.</p></div>
-            <!-- media: [photos: seminář 5 let] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/post-kolace-2009-01.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2009-02.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2009-03.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2009-04.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2009-05.jpg" alt="" loading="lazy">
+              <img src="assets/post-kolace-2009-06.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">22. května 2009</span>
             <div class="post__text"><p>V pátek 22. 5. 2009 proběhla soutěž O nejlepší koláč.</p></div>
-            <!-- media: [photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2009"] -->
           </div>
         </article>
         <article class="post post--origin">
@@ -1425,18 +1515,23 @@
           </div>
         </article>
         <article class="post post--origin">
+                      <img src="assets/post-sumostatue.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__marker" aria-hidden="true"></span>
             <span class="post__date">Září 2004</span>
             <div class="post__text"><p>Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikido i jóga představují.</p></div>
-            <!-- media: [photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\sumostatue.jpg"] -->
           </div>
         </article>
         <article class="post">
+                      <div class="post__gallery">
+              <img src="assets/komiks-zluty.jpg" alt="" loading="lazy">
+              <img src="assets/komiks-cerveny.jpg" alt="" loading="lazy">
+              <img src="assets/komiks-sedy.jpg" alt="" loading="lazy">
+              <img src="assets/komiks-modry.jpg" alt="" loading="lazy">
+            </div>
           <div class="post__body">
             <span class="post__date">2003</span>
             <div class="post__text"><p>Nejstarší kousek v celé kronice: kamarád nakreslil čtyři postavy pro naše dójó, ještě dřív než měl klub vlastní web. Všechny čtyři jsou v kapitole Kresba.</p></div>
-            <!-- media: [photos: komiksy-all4] -->
           </div>
         </article>
       </div>
