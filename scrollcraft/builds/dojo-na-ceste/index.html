@@ -153,61 +153,51 @@
      Top chrome: mark + dots. Fixed over the whole hub, colour follows
      whichever slide is currently active (see JS).
   --------------------------------------------------------------------- */
-  .topnav {
+  /* Two identical faces in one fixed container. As the hub scrolls between
+     two chapters their real backgrounds meet at a vertical seam travelling
+     across the viewport; the bar is painted as if that seam cut through
+     it. Face A wears the chapter LEFT of the seam, face B the one on its
+     RIGHT (ink, accent hue, active numeral, scrim colour, all set from JS,
+     only when the chapter pair changes). paintTopbar() clips them into
+     COMPLEMENTARY halves at the seam (A keeps [0..seam], B keeps
+     [seam..100%]) so their visible areas never overlap: transparent glyphs
+     have nothing behind them to ghost against, and a glyph the seam is
+     crossing is exactly half each chapter. Settled = seam at 100%: face A
+     is the whole bar, face B clipped to nothing. Only the seam moves per
+     frame. */
+  .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem var(--gutter); pointer-events: none;
-    color: var(--nav-ink, var(--navy));
-    /* No colour transition: updateTopnavSplit() sets the exact-correct ink
-       every frame of a scroll, so a transition here only lags behind the
-       moving chapter boundary and smears the text during a chapter change. */
+    height: 3.9rem; pointer-events: none;
   }
-  /* Legibility scrim under the top bar: a short fade of the chapter's own
-     ground colour. It lives INSIDE each slide (one per slide, injected by
-     JS) and is position:sticky to the top — so it rides along with its
-     slide during the horizontal chapter scroll and is therefore split at
-     the exact chapter boundary for the very same reason the chapter
-     backgrounds are: it's part of the slide, not a fixed overlay that has
-     to be clip-pathed to catch up (which WebKit doesn't do reliably while
-     a momentum fling is in flight). */
-  .chapter-topscrim {
-    --scrim-h: clamp(6rem, 16vh, 11rem);
-    position: sticky; top: 0; z-index: 6; pointer-events: none;
-    height: var(--scrim-h);
-    margin-bottom: calc(-1 * var(--scrim-h));
-    background: linear-gradient(to bottom, var(--ground, transparent), transparent 100%);
-    background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ground, transparent) 86%, transparent) 0%,
-      color-mix(in srgb, var(--ground, transparent) 62%, transparent) 34%,
-      color-mix(in srgb, var(--ground, transparent) 30%, transparent) 66%,
-      transparent 100%);
+  .topbar__face {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    /* the bottom padding is the scrim's fade runway: the gradient (set
+       inline per face) spans the padding box then stops, so the dimming
+       reaches just below the text, not down into the page content */
+    padding: 1rem var(--gutter) 2.3rem;
+    color: var(--face-ink, #182338);
+    background-repeat: no-repeat;
   }
-  .topnav__mark { display: flex; align-items: center; gap: 0.6rem; pointer-events: auto; text-decoration: none; }
+  .topbar__face--a .topbar__mark,
+  .topbar__face--a .navlink { pointer-events: auto; }
+  .topbar__face--b,
+  .topbar__face--b .navlinks,
+  .topbar__face--b .navlink,
+  .topbar__face--b .topbar__mark { pointer-events: none; }
+  .topbar__mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: inherit; }
   /* Recolored via mask instead of filter: invert()/brightness() pushed the
      fine woodcut hatching to blown-out pure black/white with no tone left
      in it. Masking the artwork's own alpha with background:currentColor
-     paints it in the exact same ink as the wordmark next to it — inherited
-     automatically, so it also splits at the same pixel-exact boundary. */
-  .topnav__mark-icon {
+     paints it in the same ink as the wordmark, so it splits at the seam. */
+  .topbar__mark-icon {
     display: block; width: 26px; height: 26px; border-radius: 5px; background-color: currentColor;
     -webkit-mask-image: url('assets/mark.gif'); mask-image: url('assets/mark.gif');
     -webkit-mask-size: contain; mask-size: contain;
     -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     -webkit-mask-position: center; mask-position: center;
   }
-  .topnav__mark span { font-family: var(--font-text); font-size: var(--text-caption); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
-  /* Decorative color-matching layer (see topnavOverlay in the JS): never
-     receives input, and it must never carry its own scrim (there isn't
-     one) or a duplicate id. */
-  .topnav--overlay { pointer-events: none; }
-  .topnav--overlay .topnav__mark { pointer-events: none; }
-  /* The overlay clone exists only to split the WORDMARK ink pixel-exactly
-     at the moving chapter seam (identical geometry on both layers, so it
-     can't ghost). Its numerals are hidden: a transparent clone can't
-     occlude the bar underneath, so two copies of the cluster with
-     different active states would just show through each other. The one
-     real cluster is re-owned numeral-by-numeral in updateTopnavSplit(). */
-  .topnav--overlay .navlinks { visibility: hidden; }
+  .topbar__mark span { font-family: var(--font-text); font-size: var(--text-caption); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
   /* Side arrows: real navigation tools, not just a scroll hint. Click to
      move a chapter; hovering in their zone also redirects the wheel there
      even mid-way through reading a tall chapter (see the JS wheel handler). */
@@ -363,35 +353,21 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: var(--text-kicker); letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; opacity: 0.62; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+    padding: 0.3rem 0.1rem; opacity: 0.6; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
   }
   .navlink__kanji { font-family: var(--font-kanji); font-size: 1rem; line-height: 1; flex: none; }
   .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
-  /* Hover shows a deliberate brand color instead of the current ink — the
-     site's own light-chapter accent (red) or dark-chapter accent (gold).
-     .topnav--dark already tracks which one applies (see the JS). */
+  /* Hover + "you are here" both use the face's own accent (red on a light
+     chapter, gold on a dark one) — set on the face from JS as --face-accent
+     so it splits at the seam like everything else. No font-weight change on
+     active: the two faces must stay metric-identical or a glyph the seam
+     crosses would jump. */
   .navlink:hover .navlink__kanji, .navlink:focus-visible .navlink__kanji,
   .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
-    color: var(--red);
+    color: var(--face-accent, var(--red));
   }
-  /* Accent is red on a light chapter, gold on a dark one. Which chapter a
-     given numeral currently sits over is set per-numeral in the JS
-     (.navlink--dark), because during a chapter change different numerals
-     in the same bar can straddle the seam. .topnav--dark is kept as the
-     settled-state fallback. */
-  .topnav--dark .navlink:hover .navlink__kanji, .topnav--dark .navlink:focus-visible .navlink__kanji,
-  .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label,
-  .navlink--dark:hover .navlink__kanji, .navlink--dark:focus-visible .navlink__kanji,
-  .navlink--dark:hover .navlink__label, .navlink--dark:focus-visible .navlink__label {
-    color: var(--gold);
-  }
-  .navlink.is-active { opacity: 1; font-weight: 600; }
-  /* Current chapter: colour the numeral in the chapter's accent so the
-     top bar reads clearly as "you are here" — especially on mobile, where
-     the numerals are all that's left of the nav. */
-  .navlink.is-active .navlink__kanji { color: var(--red); }
-  .topnav--dark .navlink.is-active .navlink__kanji,
-  .navlink--dark.is-active .navlink__kanji { color: var(--gold); }
+  .navlink.is-active { opacity: 1; }
+  .navlink.is-active .navlink__kanji { color: var(--face-accent, var(--red)); }
   @media (max-width: 900px) {
     /* only the word, not the numeral — .navlink span used to hit both,
        which blanked the whole nav on phones. */
@@ -867,9 +843,10 @@
 </head>
 <body>
 
-<nav class="topnav" aria-label="Kapitoly">
-  <a class="topnav__mark" href="#slide-0" data-goto="0">
-    <span class="topnav__mark-icon" aria-hidden="true"></span>
+<div class="topbar">
+<nav class="topbar__face topbar__face--a" aria-label="Kapitoly">
+  <a class="topbar__mark" href="#slide-0" data-goto="0">
+    <span class="topbar__mark-icon" aria-hidden="true"></span>
     <span>Dójó Na Cestě</span>
   </a>
   <ul class="navlinks" role="tablist">
@@ -899,6 +876,7 @@
     </button></li>
   </ul>
 </nav>
+</div>
 
 
 <div class="side-arrow-zone side-arrow-zone--left" data-zone="left"></div>
@@ -1761,40 +1739,43 @@
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var navlinks = Array.prototype.slice.call(document.querySelectorAll('.navlink'));
   var hint = document.querySelector('[data-hint]');
-  var topnav = document.querySelector('.topnav');
   var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
-
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
-  /* A second copy of the bar, clipped to the moving chapter seam and
-     carrying the NEXT chapter's ink. As the hub scrolls across a boundary
-     the real background switches at whatever on-screen x the seam sits at,
-     so one global ink colour for the whole bar is wrong for half of every
-     light<->dark change. The overlay fixes that for the WORDMARK: same
-     geometry on both layers, so the split is pixel-exact and can't ghost.
-     Its numerals are hidden (see CSS) — a transparent clone can't occlude
-     the cluster underneath, so updateTopnavSplit() re-owns the one real
-     cluster numeral-by-numeral instead. */
-  var topnavOverlay = topnav.cloneNode(true);
-  topnavOverlay.classList.add('topnav--overlay');
-  topnavOverlay.setAttribute('aria-hidden', 'true');
-  topnavOverlay.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
-  topnavOverlay.querySelectorAll('[data-goto], button, a').forEach(function (el) {
-    el.removeAttribute('data-goto');
-    el.tabIndex = -1;
-  });
-  topnav.insertAdjacentElement('afterend', topnavOverlay);
+  /* Top bar: two faces in one container. Face A (authored, interactive)
+     wears the chapter left of the seam; face B (a clone, inert) wears the
+     one on its right. paintTopbar() clips them into complementary halves
+     at the moving seam — see the .topbar CSS comment. Each face's scrim is
+     a short fade of its own ground colour so it splits at the same seam. */
+  var topbar = document.querySelector('.topbar');
+  var faceA = topbar.querySelector('.topbar__face--a');
+  var faceB = faceA.cloneNode(true);
+  faceB.className = 'topbar__face topbar__face--b';
+  faceB.setAttribute('aria-hidden', 'true');
+  faceB.removeAttribute('aria-label');
+  faceB.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+  faceB.querySelectorAll('[data-goto]').forEach(function (el) { el.removeAttribute('data-goto'); el.tabIndex = -1; });
+  topbar.appendChild(faceB);
+  var faceLinksA = Array.prototype.slice.call(faceA.querySelectorAll('.navlink'));
+  var faceLinksB = Array.prototype.slice.call(faceB.querySelectorAll('.navlink'));
 
-  /* One legibility scrim per slide, sticky to the slide's top — it rides
-     with its own chapter during the horizontal scroll, so it splits at the
-     chapter boundary by pure geometry (no clip-path, nothing to keep in
-     sync). --ground comes from the slide's [data-ground] rule. */
-  slides.forEach(function (s) {
-    var scrim = document.createElement('div');
-    scrim.className = 'chapter-topscrim';
-    scrim.setAttribute('aria-hidden', 'true');
-    s.insertBefore(scrim, s.firstChild);
-  });
+  var scrimByGround = {
+    paper:       'linear-gradient(180deg, rgba(247,244,236,0.95), rgba(247,244,236,0.62) 42%, rgba(247,244,236,0) 100%)',
+    'paper-alt': 'linear-gradient(180deg, rgba(239,232,217,0.95), rgba(239,232,217,0.62) 42%, rgba(239,232,217,0) 100%)',
+    navy:        'linear-gradient(180deg, rgba(24,35,56,0.92), rgba(24,35,56,0.56) 42%, rgba(24,35,56,0) 100%)',
+    'navy-deep': 'linear-gradient(180deg, rgba(16,24,40,0.94), rgba(16,24,40,0.58) 42%, rgba(16,24,40,0) 100%)'
+  };
+  var accentByGround = { paper: 'var(--red)', 'paper-alt': 'var(--red)', navy: 'var(--gold)', 'navy-deep': 'var(--gold)' };
+
+  /* Restyle a whole face for one chapter — done only when the on-screen
+     chapter pair changes, never per frame. */
+  function dressFace(face, links, ci) {
+    var g = slides[ci].getAttribute('data-ground');
+    face.style.setProperty('--face-ink', groundInk[g] || '#182338');
+    face.style.setProperty('--face-accent', accentByGround[g] || 'var(--red)');
+    face.style.backgroundImage = scrimByGround[g] || 'none';
+    links.forEach(function (n, k) { n.classList.toggle('is-active', k === ci); });
+  }
 
   function activeIndex() {
     var mid = hub.scrollLeft + hub.clientWidth / 2;
@@ -1824,54 +1805,36 @@
       el.style.color = ink;
       el.style.setProperty('--halo', bg);
     });
-    /* The active-numeral highlight is NOT set here — updateTopnavSplit()
-       owns it, switching each numeral at the moving seam. Flipping it here
-       at the midpoint is what made the highlight jump mid-transition. */
+    /* The numerals belong to paintTopbar() — it's the only thing that
+       touches the two faces. */
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
-    updateTopnavSplit();
+    paintTopbar();
     document.body.style.backgroundColor = groundBg[ground] || '#F7F4EC';
   }
 
-  /* Splits the top bar along the real, continuously moving seam between the
-     two chapters currently on screen. idx is a floor (which chapter owns
-     the LEFT edge of the viewport); the seam sits fracIntoSlide of the way
-     across, i.e. at seamX px from the left. The clipped overlay paints the
-     next chapter's ink onto the WORDMARK right of that seam (pixel-exact,
-     same geometry so no ghost). Each NUMERAL, on the one real cluster,
-     just switches which chapter it belongs to — ink and "you are here"
-     accent — the moment the seam passes its centre. */
-  function updateTopnavSplit() {
-    var vw = hub.clientWidth || 1;
-    /* generous epsilon: sub-pixel scroll-snap rounding can leave scrollLeft
-       a fraction below an integer boundary, and a bare floor would then
-       pick the PREVIOUS chapter for a frame — a visible wrong-colour flash
-       right at the start/end of a jump. */
-    var idx = Math.floor(hub.scrollLeft / vw + 1e-3);
-    idx = Math.max(0, Math.min(slides.length - 1, idx));
-    var fracIntoSlide = Math.min(1, Math.max(0, (hub.scrollLeft - idx * vw) / vw));
-    var boundaryPct = (1 - fracIntoSlide) * 100;
-    var nextIdx = Math.min(slides.length - 1, idx + 1);
-    var isDark = function (g) { return g === 'navy' || g === 'navy-deep'; };
+  /* One job: find the seam and clip the two faces into complementary
+     halves at it. `pos` is the scroll position in chapter-widths; its
+     floor `a` is the chapter on the LEFT of the seam, `b = a + 1` the one
+     on the right, and `frac` how far between them (0 at a, 1 at b). The
+     seam sits at (1 - frac) of the viewport from the left. A sub-pixel
+     scroll error just nudges the seam a sub-pixel — still an exact
+     partition — so no epsilon fudge is needed. Faces are re-dressed only
+     when `a` or `b` changes. */
+  var dressedA = -1, dressedB = -1;
+  function paintTopbar() {
+    var pos = hub.scrollLeft / (hub.clientWidth || 1);
+    var a = Math.max(0, Math.min(slides.length - 1, Math.floor(pos)));
+    var b = Math.min(slides.length - 1, a + 1);
+    var frac = Math.min(1, Math.max(0, pos - a));
+    var seam = (1 - frac) * 100;
 
-    var ground = slides[idx].getAttribute('data-ground');
-    var nextGround = slides[nextIdx].getAttribute('data-ground');
-    topnav.style.color = groundInk[ground] || '#182338';
-    topnav.classList.toggle('topnav--dark', isDark(ground));
-    topnavOverlay.style.color = groundInk[nextGround] || '#182338';
-    topnavOverlay.classList.toggle('topnav--dark', isDark(nextGround));
-    topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
+    if (a !== dressedA) { dressFace(faceA, faceLinksA, a); dressedA = a; }
+    if (b !== dressedB) { dressFace(faceB, faceLinksB, b); dressedB = b; }
 
-    var seamX = boundaryPct / 100 * vw;
-    navlinks.forEach(function (n) {
-      var box = n.getBoundingClientRect();
-      var owner = (box.left + box.right) / 2 < seamX ? idx : nextIdx;
-      var og = slides[owner].getAttribute('data-ground');
-      n.classList.toggle('is-active', parseInt(n.getAttribute('data-goto'), 10) === owner);
-      n.classList.toggle('navlink--dark', isDark(og));
-      n.style.color = groundInk[og] || '#182338';
-    });
+    faceA.style.clipPath = 'inset(0 ' + (100 - seam) + '% 0 0)';
+    faceB.style.clipPath = 'inset(0 0 0 ' + seam + '%)';
   }
 
   function syncSlideEdges(s) {
@@ -1962,14 +1925,9 @@
       if (startTime === null) startTime = ts;
       var t = Math.min(1, (ts - startTime) / duration);
       hub.scrollLeft = start + distance * easeInOutCubic(t);
-      /* Recolour/re-split the bar in the SAME frame we moved the scroll,
-         not one frame later off the standalone rAF poll: during a fast
-         multi-chapter jump a one-frame lag leaves a ~100px band where the
-         background has already switched chapters but the overlay clip
-         hasn't caught up, so both layers' text paints at once and reads as
-         a doubled/ghosted bar. Reading scrollLeft straight back forces a
-         reflow, but it's one cheap read per frame and only while jumping. */
-      syncChrome();
+      /* keep the bar seam glued to the scroll in the same frame we move it,
+         so it can't visibly trail during a fast multi-chapter jump */
+      paintTopbar();
       if (t < 1) {
         slideScrollAnim = requestAnimationFrame(step);
       } else {
