@@ -200,8 +200,14 @@
      receives input, and it must never carry its own scrim (there isn't
      one) or a duplicate id. */
   .topnav--overlay { pointer-events: none; }
-  .topnav--overlay .topnav__mark,
-  .topnav--overlay .navlinks { pointer-events: none; }
+  .topnav--overlay .topnav__mark { pointer-events: none; }
+  /* The overlay clone exists only to split the WORDMARK ink pixel-exactly
+     at the moving chapter seam (identical geometry on both layers, so it
+     can't ghost). Its numerals are hidden: a transparent clone can't
+     occlude the bar underneath, so two copies of the cluster with
+     different active states would just show through each other. The one
+     real cluster is re-owned numeral-by-numeral in updateTopnavSplit(). */
+  .topnav--overlay .navlinks { visibility: hidden; }
   /* Side arrows: real navigation tools, not just a scroll hint. Click to
      move a chapter; hovering in their zone also redirects the wheel there
      even mid-way through reading a tall chapter (see the JS wheel handler). */
@@ -368,8 +374,15 @@
   .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
     color: var(--red);
   }
+  /* Accent is red on a light chapter, gold on a dark one. Which chapter a
+     given numeral currently sits over is set per-numeral in the JS
+     (.navlink--dark), because during a chapter change different numerals
+     in the same bar can straddle the seam. .topnav--dark is kept as the
+     settled-state fallback. */
   .topnav--dark .navlink:hover .navlink__kanji, .topnav--dark .navlink:focus-visible .navlink__kanji,
-  .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label {
+  .topnav--dark .navlink:hover .navlink__label, .topnav--dark .navlink:focus-visible .navlink__label,
+  .navlink--dark:hover .navlink__kanji, .navlink--dark:focus-visible .navlink__kanji,
+  .navlink--dark:hover .navlink__label, .navlink--dark:focus-visible .navlink__label {
     color: var(--gold);
   }
   .navlink.is-active { opacity: 1; font-weight: 600; }
@@ -377,7 +390,8 @@
      top bar reads clearly as "you are here" — especially on mobile, where
      the numerals are all that's left of the nav. */
   .navlink.is-active .navlink__kanji { color: var(--red); }
-  .topnav--dark .navlink.is-active .navlink__kanji { color: var(--gold); }
+  .topnav--dark .navlink.is-active .navlink__kanji,
+  .navlink--dark.is-active .navlink__kanji { color: var(--gold); }
   @media (max-width: 900px) {
     /* only the word, not the numeral — .navlink span used to hit both,
        which blanked the whole nav on phones. */
@@ -1752,17 +1766,15 @@
 
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
-  /* A second, purely decorative copy of the whole nav bar. As the hub
-     scrolls across a chapter boundary, the real background switches at
-     whatever x position that boundary currently sits on screen — not at
-     some fixed point — so a single global ink color for the whole bar is
-     wrong for roughly half of every light<->dark transition (mismatched
-     text over the incoming chapter until the color caught up). This
-     overlay is clipped to that same moving x position and carries the
-     NEXT chapter's ink, so the bar's color boundary always lines up,
-     pixel for pixel, with the real background boundary underneath it —
-     every glyph on either side of that line is always correct, not just
-     once the scroll settles. See updateTopnavSplit(). */
+  /* A second copy of the bar, clipped to the moving chapter seam and
+     carrying the NEXT chapter's ink. As the hub scrolls across a boundary
+     the real background switches at whatever on-screen x the seam sits at,
+     so one global ink colour for the whole bar is wrong for half of every
+     light<->dark change. The overlay fixes that for the WORDMARK: same
+     geometry on both layers, so the split is pixel-exact and can't ghost.
+     Its numerals are hidden (see CSS) — a transparent clone can't occlude
+     the cluster underneath, so updateTopnavSplit() re-owns the one real
+     cluster numeral-by-numeral instead. */
   var topnavOverlay = topnav.cloneNode(true);
   topnavOverlay.classList.add('topnav--overlay');
   topnavOverlay.setAttribute('aria-hidden', 'true');
@@ -1772,11 +1784,6 @@
     el.tabIndex = -1;
   });
   topnav.insertAdjacentElement('afterend', topnavOverlay);
-  /* The overlay is a frozen clone — its .navlink data-goto attrs were
-     stripped, so the active-chapter highlight has to be mirrored onto it
-     by index from syncChrome(), or it keeps lighting whichever numeral was
-     active at page load and you get two highlights (a ghost) mid-transition. */
-  var overlayNavlinks = Array.prototype.slice.call(topnavOverlay.querySelectorAll('.navlink'));
 
   /* One legibility scrim per slide, sticky to the slide's top — it rides
      with its own chapter during the horizontal scroll, so it splits at the
@@ -1817,11 +1824,9 @@
       el.style.color = ink;
       el.style.setProperty('--halo', bg);
     });
-    /* The active-numeral highlight is NOT set here: it splits at the moving
-       chapter boundary along with the ink, so updateTopnavSplit() owns
-       .is-active on both layers (base = chapter on the left of the seam,
-       overlay = chapter on its right). Flipping it here at the midpoint is
-       what produced the doubled/ghosted highlight during a nav jump. */
+    /* The active-numeral highlight is NOT set here — updateTopnavSplit()
+       owns it, switching each numeral at the moving seam. Flipping it here
+       at the midpoint is what made the highlight jump mid-transition. */
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
@@ -1829,36 +1834,43 @@
     document.body.style.backgroundColor = groundBg[ground] || '#F7F4EC';
   }
 
-  /* The two topnav layers are each a WHOLE nav bar for one chapter — its
-     ink AND its active-numeral highlight. The base carries the chapter
-     whose background occupies the left edge of the viewport (idx, a floor
-     not a round); the overlay carries the chapter to its right (idx+1) and
-     is clipped at boundaryPct — the exact on-screen x, as a % of bar
-     width, where the two real chapter backgrounds meet. So across a
-     chapter change the ink and the highlight are both wiped off the
-     outgoing numeral and painted onto the incoming one along that single
-     moving seam, pixel for pixel, with nothing shown twice. */
+  /* Splits the top bar along the real, continuously moving seam between the
+     two chapters currently on screen. idx is a floor (which chapter owns
+     the LEFT edge of the viewport); the seam sits fracIntoSlide of the way
+     across, i.e. at seamX px from the left. The clipped overlay paints the
+     next chapter's ink onto the WORDMARK right of that seam (pixel-exact,
+     same geometry so no ghost). Each NUMERAL, on the one real cluster,
+     just switches which chapter it belongs to — ink and "you are here"
+     accent — the moment the seam passes its centre. */
   function updateTopnavSplit() {
     var vw = hub.clientWidth || 1;
-    var idx = Math.floor(hub.scrollLeft / vw + 1e-6);
+    /* generous epsilon: sub-pixel scroll-snap rounding can leave scrollLeft
+       a fraction below an integer boundary, and a bare floor would then
+       pick the PREVIOUS chapter for a frame — a visible wrong-colour flash
+       right at the start/end of a jump. */
+    var idx = Math.floor(hub.scrollLeft / vw + 1e-3);
     idx = Math.max(0, Math.min(slides.length - 1, idx));
     var fracIntoSlide = Math.min(1, Math.max(0, (hub.scrollLeft - idx * vw) / vw));
     var boundaryPct = (1 - fracIntoSlide) * 100;
     var nextIdx = Math.min(slides.length - 1, idx + 1);
+    var isDark = function (g) { return g === 'navy' || g === 'navy-deep'; };
 
     var ground = slides[idx].getAttribute('data-ground');
-    topnav.style.color = groundInk[ground] || '#182338';
-    topnav.classList.toggle('topnav--dark', ground === 'navy' || ground === 'navy-deep');
-
     var nextGround = slides[nextIdx].getAttribute('data-ground');
+    topnav.style.color = groundInk[ground] || '#182338';
+    topnav.classList.toggle('topnav--dark', isDark(ground));
     topnavOverlay.style.color = groundInk[nextGround] || '#182338';
-    topnavOverlay.classList.toggle('topnav--dark', nextGround === 'navy' || nextGround === 'navy-deep');
+    topnavOverlay.classList.toggle('topnav--dark', isDark(nextGround));
     topnavOverlay.style.clipPath = 'inset(0 0 0 ' + boundaryPct + '%)';
 
-    navlinks.forEach(function (n, k) {
-      var g = parseInt(n.getAttribute('data-goto'), 10);
-      n.classList.toggle('is-active', g === idx);
-      if (overlayNavlinks[k]) overlayNavlinks[k].classList.toggle('is-active', g === nextIdx);
+    var seamX = boundaryPct / 100 * vw;
+    navlinks.forEach(function (n) {
+      var box = n.getBoundingClientRect();
+      var owner = (box.left + box.right) / 2 < seamX ? idx : nextIdx;
+      var og = slides[owner].getAttribute('data-ground');
+      n.classList.toggle('is-active', parseInt(n.getAttribute('data-goto'), 10) === owner);
+      n.classList.toggle('navlink--dark', isDark(og));
+      n.style.color = groundInk[og] || '#182338';
     });
   }
 
