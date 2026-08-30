@@ -253,11 +253,14 @@
   .down-arrow:hover { opacity: 1; }
   .down-arrow svg { width: 1.1rem; height: 1.1rem; }
   .down-arrow[disabled] { opacity: 0 !important; pointer-events: none; }
-  /* Phones: sit it right down at the edge (clear of the top bar, the
-     bottom hairline and the content padding it was floating over) and
-     dial it back so it stops pulling the eye. */
+  /* Phones: down at the edge, faint, no section-name label (sections
+     aren't a mobile concept and the label only ever fired on the first
+     chapter). It's just a "there's more below" hint now — so once you've
+     scrolled into a chapter it fades out of the way entirely. */
   @media (max-width: 760px) {
-    .down-arrow { bottom: max(0.25rem, env(safe-area-inset-bottom)); opacity: 0.45; }
+    .down-arrow { bottom: max(0.25rem, env(safe-area-inset-bottom)); opacity: 0.4; }
+    .down-arrow__label { display: none; }
+    .down-arrow--scrolled { opacity: 0; pointer-events: none; }
   }
   /* Name of the next named section the current chapter reveals as you scroll
      down (set from [data-down-label] in the JS); empty on chapters whose
@@ -1958,7 +1961,9 @@
     var scrolled = s.scrollTop > 48;
     var changed = arrowDownLabel.textContent !== next;
     if (changed) arrowDownLabel.textContent = next;
-    if (changed && scrolled && next) { flashDownLabel(); return; }
+    // no label on phones -> nothing to flash; just track scrolled so the
+    // arrow itself fades once you're into the chapter (see mobile CSS)
+    if (changed && scrolled && next && window.innerWidth > 760) { flashDownLabel(); return; }
     if (!labelFlashing) arrowDown.classList.toggle('down-arrow--scrolled', scrolled);
   }
 
