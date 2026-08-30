@@ -615,6 +615,15 @@
   .course > img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .course > div:last-child { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.2rem; z-index: 2; }
   .course__more { display: inline-block; font-size: var(--text-caption); font-weight: 600; color: var(--gold); margin-top: 0.3rem; }
+  /* .course__detail is [hidden] on the card face; its markup is lifted into
+     the pop-up (#coursePopupDetail) where these styles apply. */
+  .course-popup__detail .course__meta { margin: 0 0 1rem; }
+  .course-popup__detail .course__meta b {
+    display: block; font-size: var(--text-micro); letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--red); margin-bottom: 0.2rem;
+  }
+  .course-popup__detail .course__meta p { margin: 0; font-size: var(--text-caption); line-height: 1.6; color: #4A5163; }
+  .course-popup__detail .course__nb { margin: 0.2rem 0 0; font-size: var(--text-caption); font-style: italic; color: #4A5163; }
   /* Stays 2-up all the way down to phone width rather than collapsing to a
      single column: 4 stacked cards in the same one-screen-tall budget that
      fit a whole row of 4 on desktop left each one only ~90px tall once
@@ -987,7 +996,7 @@
     <div class="slide__inner slide__inner--top aktuality-in-home" data-down-label="Aktuality">
       <span class="kicker">Kompletní kronika</span>
       <h2 class="h2">Aktuality.</h2>
-      <p class="lede">2025–2003. Nejnovější nahoře, přesně jak to dřív dělal starý web — nic se nemaže. Všechny příspěvky verbatim, s dobovými fotkami a odkazy tam, kde se dochovaly.</p>
+      <p class="lede">Od roku 2003 až do dneška. Nic nemažeme &mdash; najdete tu staré příspěvky, fotografie i odkazy tak, jak na web postupně přibývaly.</p>
 <div class="posts">
         <article class="post post--photo post--gallery">
           <div class="post__photo-wrap">
@@ -1489,8 +1498,8 @@
         <h2 class="h2">Cvičení jako cesta, ne závod.</h2>
         <div class="cesta-hero__grid">
           <div>
-            <p class="lede" style="margin-bottom:1em;">Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Na našem dójó se mu věnujeme spolu s jógou už od roku 2004, kdy jsme původní tiskárnu přeměnili na cvičební prostor.</p>
-            <p class="lede">Nejde nám o soupeření ani výkon &mdash; cvičení u nás je spíše životní filosofií, která rozvíjí rovnováhu, sebedůvěru a klid.</p>
+            <p class="lede" style="margin-bottom:1em;">Už více než 20 let se v Říčanech věnujeme aikidu a józe na dójó, kde společně cvičíme a potkáváme se.</p>
+            <p class="lede">Nejde nám o soupeření ani výkon. Cvičíme pro radost z pohybu, soustředění, rovnováhu a klid &mdash; každý svým tempem.</p>
           </div>
           <figure class="cesta__figure">
             <!-- user noted they may swap this photo later -->
@@ -1507,9 +1516,11 @@
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Parta lidí, kteří rádi cvičí nenásilnou cestou.</h2>
         <div class="origin-block__grid">
           <div>
-            <p class="lede" style="margin:0;">Jsme parta lidí, co rádi cvičí nenásilnou cestou. Dójó Na Cestě je místo pro každého&hellip; Nebo, skoro každého&hellip; Nakonec vydrží málokdo. Cvičíme zde jógu a aikido.</p>
-            <p class="lede">Co tomu však předcházelo? Nahlédněme společně do krátké historie. Přibližně v září 2004 se několik nadšenců pro aikido rozhodlo přetvořit halu tehdejší tiskárny SKALA a zvelebit ji natolik, aby se v jejích prostorách o několik měsíců později mohl uskutečnit první trénink. Vše se zdárně podařilo a v prosinci jsme se tu společně sešli na zahajovacím slavnostním cvičení. Patří velké poděkování všem těm nadšencům, kteří ostatně dodnes téměř všichni aikido cvičí. Je třeba také zmínit Českou Federaci Aikido (ČFAI), pod kterou je náš klub organizován. Nemůžeme vynechat ani město Říčany, které nám formou grantu částečně přispělo na nákup tatami. Největší poděkování si ale zaslouží náš sensei (učitel) Michal Lachim Šíp &ndash; tehdejší 2. dan Hombu Dojo (mistrovský stupeň), který nás vyučoval aikido od samého začátku. V jeho stopách šel pak i Radek Růžička a v současné době je to Miroslav Skala, 2. dan Hombu Dojo. Velké poděkování všem.</p>
-            <p class="lede">Samotné jméno aikido spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
+            <p class="lede" style="margin:0;">Jsme parta lidí, co rádi cvičí nenásilnou cestou. Dójó Na Cestě je místo pro každého, kdo si chce zacvičit, zastavit se a být chvíli s ostatními. Cvičíme tu jógu a aikido.</p>
+            <p class="lede">Co tomu ale předcházelo? Vraťme se na chvíli do roku 2004. Několik nadšenců pro aikido se tehdy rozhodlo přetvořit halu bývalé tiskárny SKALA v Říčanech na místo pro cvičení. Několik měsíců se prostor upravoval a zveleboval, až se v prosinci 2004 uskutečnil první slavnostní trénink.</p>
+            <p class="lede">Velké díky patří všem, kteří se na vzniku dójó podíleli, mnozí z nich cvičí aikido dodnes.</p>
+            <p class="lede">Náš klub je organizován pod Českou Federací Aikido (ČFAI) a na nákup tatami nám tehdy přispělo město Říčany formou grantu.</p>
+            <p class="lede">Největší dík ale patří našemu prvnímu učiteli Michalu Lachimu Šípovi, tehdy 2. dan Hombu Dojo, který nás vedl od samého začátku. Na jeho práci později navázal Radek Růžička a dnes nás vede Miroslav Skala, také 2. dan Hombu Dojo. Bez nich a všech, kteří se kolem dójó za ta léta vystřídali, by dnes nebylo tím, čím je.</p>
           </div>
           <div class="photo-placeholder">fotka bude doplněna</div>
         </div>
@@ -1517,11 +1528,12 @@
 
       <div class="origin-block" data-section data-down-label="Aikido">
         <span class="kicker">Aikido</span>
-        <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; cesta harmonie.</h2>
+        <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">合気道 &mdash; umění harmonie.</h2>
         <div class="origin-block__grid">
           <div>
-            <p class="lede" style="margin:0;">Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Jeho název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
-            <p class="lede" style="margin-top:1em;">Založil ho Morihei Ueshiba (1883&ndash;1969) jako umění, které klade důraz na mentální i fyzický rozvoj a odmítá soutěžní pojetí. Pro mnohé praktikující se tak aikido stává jakousi životní filosofií.</p>
+            <p class="lede" style="margin:0;">Aikido je moderní japonské bojové umění, které spojuje pohyb, techniku a práci s tělem i myslí. Nejde v něm o poražení soupeře, ale o hledání způsobu, jak využít jeho pohyb a sílu bez zbytečného násilí.</p>
+            <p class="lede" style="margin-top:1em;">Aikido založil Morihei Ueshiba (1883&ndash;1969). Od začátku v něm nebylo místo pro soutěžení ani poměřování výkonu. Důležitá je cesta samotného cvičení &mdash; učit se vnímat sebe, druhého i prostor kolem sebe.</p>
+            <p class="lede" style="margin-top:1em;">Název spojuje tři znaky: <em>ai</em> (harmonie), <em>ki</em> (životní energie) a <em>dó</em> (cesta).</p>
           </div>
           <div class="photo-placeholder">fotka bude doplněna</div>
         </div>
@@ -1532,13 +1544,13 @@
         <h2 class="h2" style="font-size:clamp(1.5rem,3.5vw,2.1rem);">Rádža jóga pro každého.</h2>
         <div class="origin-block__grid">
           <div class="yoga-benefits">
-            <p class="lede" style="margin-bottom:0.9rem;">Na dójó Na Cestě cvičíme Rádža jógu. Cvičení je vhodné pro každého a nevyžaduje žádné speciální vybavení &mdash; stačí pohodlný oděv a trocha vůle cvičit. Pravidelná praxe přináší:</p>
+            <p class="lede" style="margin-bottom:0.9rem;">Na dójó Na Cestě cvičíme Rádža jógu, tradiční systém jógy zaměřený na práci s tělem, dechem a myslí. Cvičení je vhodné pro každého a nevyžaduje žádné speciální vybavení &mdash; stačí pohodlné oblečení a chuť cvičit. Pravidelná praxe přináší:</p>
             <ul>
-              <li>zlepšení kondice a svalové síly</li>
-              <li>lepší krevní oběh a paměť</li>
-              <li>kvalitnější spánek</li>
-              <li>menší nemocnost</li>
-              <li>citlivější vnímání smyslů</li>
+              <li>lepší kondici a sílu</li>
+              <li>lepší krevní oběh a soustředění</li>
+              <li>kvalitnější odpočinek a spánek</li>
+              <li>podporu imunity</li>
+              <li>lepší vnímání vlastního těla</li>
             </ul>
           </div>
           <div class="photo-placeholder">fotka bude doplněna</div>
@@ -1551,8 +1563,8 @@
     <div class="slide__inner slide__inner--top slide__inner--fill">
       <div class="prokoho-head">
         <span class="kicker">三 &middot; Pro koho</span>
-        <h2 class="h2">Vyberte si podle věku.</h2>
-        <p class="lede">Stejná cesta, čtyři vstupy. Nábor probíhá celý rok. Najeďte myší na kartu, klikněte pro detail.</p>
+        <h2 class="h2">Najděte si svou cestu.</h2>
+        <p class="lede">Každý začíná trochu jinak. Vyberte si, co je vám nejblíž. Nábor probíhá celý rok.</p>
       </div>
 
       <div class="chapter-body">
@@ -1563,7 +1575,11 @@
             <div>
               <span class="course__age">4&ndash;8 let</span>
               <h3>Píďata</h3>
-              <p>Cvičení na téma Aikido a Jóga pro předškolní děti a také prvňáčky, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky a také se zbavovat strachu a získávat větší sebejistotu.</p>
+              <p>Cvičení pro předškoláky a prvňáčky, které propojuje aikido a jógu. Děti se hravou formou učí vnímat své tělo, pracovat s dechem, soustředit se a spolupracovat s ostatními. Postupně získávají větší jistotu a učí se zvládat nové situace bez zbytečného tlaku na výkon.</p>
+              <div class="course__detail" hidden>
+                <div class="course__meta"><b>Kdy cvičíme</b><p>Čtvrtek &middot; 16:00&ndash;17:00</p></div>
+                <div class="course__meta"><b>Na první trénink</b><p>Stačí pohodlné oblečení.</p></div>
+              </div>
               <span class="course__more">Zjistit více &rarr;</span>
             </div>
           </div>
@@ -1572,7 +1588,11 @@
             <div>
               <span class="course__age">8&ndash;14 let</span>
               <h3>Aikido děti</h3>
-              <p>Náš oddíl je veden tak, aby v něm mohli spolu cvičit jak děti školního věku tak mládež, jak úplní začátečníci tak pokročilí, chlapci i děvčata. Praktikujeme i rozsáhlý program dechových cvičení. Zapojit se může každý kdykoli v průběhu roku. Stačí si přinést tepláky, tričko s dlouhým rukávem a začít.</p>
+              <p>Cvičí spolu děti školního věku i mládež, začátečníci i pokročilí, kluci i holky. K aikidu patří také dechová cvičení a práce se soustředěním. Začít můžete kdykoli během roku. Na první trénink stačí tepláky, tričko s dlouhým rukávem a chuť cvičit.</p>
+              <div class="course__detail" hidden>
+                <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 17:30&ndash;18:50<br>Čtvrtek &middot; 17:30&ndash;18:50</p></div>
+                <div class="course__meta"><b>Na první trénink</b><p>Tepláky bez zipu a tričko s dlouhým rukávem.</p></div>
+              </div>
               <span class="course__more">Zjistit více &rarr;</span>
             </div>
           </div>
@@ -1581,7 +1601,12 @@
             <div>
               <span class="course__age">dospělí</span>
               <h3>Aikido dospělí</h3>
-              <p>Nábor probíhá průběžně celý rok. Zpočátku nebudete potřebovat žádné speciální vybavení, na první trénink si doneste jen tepláky bez zipu a tričko s dlouhým rukávem. První trénink je zdarma. Pokud se bojíte, že jste na aikido už příliš staří, jsou vaše obavy zcela neopodstatněné.</p>
+              <p>Aikido pro dospělé bez ohledu na věk nebo předchozí zkušenosti. Začátečníci cvičí společně s pokročilými a každý postupuje vlastním tempem. Učíme se pracovat s pohybem, rovnováhou a silou &mdash; svou i partnerovou. Nejde o soutěž ani o to být nejsilnější.</p>
+              <div class="course__detail" hidden>
+                <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 19:15&ndash;21:00<br>Čtvrtek &middot; 19:15&ndash;21:00</p></div>
+                <div class="course__meta"><b>Na první trénink</b><p>Tepláky bez zipu a tričko s dlouhým rukávem.</p></div>
+                <p class="course__nb">Myslíte si, že už jste na aikido příliš staří? Přijďte se přesvědčit, že nejste.</p>
+              </div>
               <span class="course__more">Zjistit více &rarr;</span>
             </div>
           </div>
@@ -1590,7 +1615,11 @@
             <div>
               <span class="course__age">pro každého</span>
               <h3>Jóga</h3>
-              <p>Cvičíme Rádža jógu. Cvičení je vhodné pro každého a budeme rádi, když se k nám připojíte. Nebudete potřebovat žádné speciální vybavení, jen pohodlný oděv a trochu vůle cvičit.</p>
+              <p>Cvičíme Rádža jógu, která je vhodná pro každého bez ohledu na věk nebo zkušenosti. Nepotřebujete žádné speciální vybavení &mdash; stačí pohodlné oblečení a chuť cvičit.</p>
+              <div class="course__detail" hidden>
+                <div class="course__meta"><b>Kdy cvičíme</b><p>Pondělí &middot; 8:15&ndash;9:40<br>Pondělí &middot; 16:30&ndash;17:30<br>Čtvrtek &middot; 8:15&ndash;9:40</p></div>
+                <div class="course__meta"><b>Na první trénink</b><p>Pohodlné oblečení a chuť cvičit.</p></div>
+              </div>
               <span class="course__more">Zjistit více &rarr;</span>
             </div>
           </div>
@@ -1604,6 +1633,7 @@
               <span class="course__age" id="coursePopupAge"></span>
               <h3 id="coursePopupTitle"></h3>
               <p id="coursePopupDesc"></p>
+              <div class="course-popup__detail" id="coursePopupDetail"></div>
             </div>
           </div>
         </div>
@@ -1615,7 +1645,7 @@
   <section class="slide" id="slide-3" data-ground="paper" data-label="Kdy přijít">
     <div class="slide__inner slide__inner--top slide__inner--fill">
       <span class="kicker">四 &middot; Kdy přijít</span>
-      <h2 class="h2">Kdy a za kolik.</h2>
+      <h2 class="h2">Kdy cvičíme a jak je to s příspěvkem.</h2>
 
       <div class="chapter-body">
       <div class="kdy-columns">
@@ -1642,8 +1672,8 @@
 
         <div>
           <span class="kicker" style="margin-bottom:0.5rem;">Příspěvek</span>
-          <h3 class="kdy-subhead">Částku si určujete sami.</h3>
-          <p class="lede">Od 0 Kč výš. Je to na vás &mdash; kolik cvičení pro vás má hodnotu a kolik si zrovna můžete dovolit. Chceme, aby to bylo dostupné opravdu každému, bez výjimky a bez čísel, která by to za vás rozhodovala.</p>
+          <h3 class="kdy-subhead">Členský příspěvek je na vás.</h3>
+          <p class="lede">Nemáme pevně daný členský příspěvek. Každý přispívá podle svých možností a podle toho, jakou pro něj má cvičení hodnotu &mdash; od 0 Kč výše. Chceme, aby peníze nebyly důvodem, proč někdo nemůže cvičit.</p>
         </div>
       </div>
       </div>
@@ -2174,6 +2204,7 @@
   var coursePopupAge = document.getElementById('coursePopupAge');
   var coursePopupTitle = document.getElementById('coursePopupTitle');
   var coursePopupDesc = document.getElementById('coursePopupDesc');
+  var coursePopupDetail = document.getElementById('coursePopupDetail');
   var coursePopupClose = document.getElementById('coursePopupClose');
   var openCourseEl = null;
 
@@ -2210,7 +2241,9 @@
     coursePopupMedia.style.backgroundImage = img ? 'url(' + img.getAttribute('src') + ')' : '';
     coursePopupAge.textContent = card.querySelector('.course__age').textContent;
     coursePopupTitle.textContent = card.querySelector('h3').textContent;
-    coursePopupDesc.textContent = card.querySelector('p').textContent;
+    coursePopupDesc.textContent = card.querySelector(':scope > div > p').textContent;
+    var detail = card.querySelector('.course__detail');
+    coursePopupDetail.innerHTML = detail ? detail.innerHTML : '';
 
     /* Clear the hover tilt before measuring: clicking necessarily happens
        while hovering, so without this the FLIP animation's start point was

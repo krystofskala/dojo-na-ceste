@@ -34,19 +34,22 @@ SCROLL HINT (title screen only): → táhněte nebo scrollujte doprava mezi kapi
 
 KICKER: Kompletní kronika
 TITLE: Aktuality.
-LEDE: 2025–2003. Nejnovější nahoře, přesně jak to dřív dělal starý web — nic se nemaže. Všechny příspěvky verbatim, s dobovými fotkami a odkazy tam, kde se dochovaly.
+LEDE: Od roku 2003 až do dneška. Nic nemažeme — najdete tu staré příspěvky, fotografie i odkazy tak, jak na web postupně přibývaly.
 
 --- POSTS (newest first) ---
 
+[x] srpen 2026
+Nový školní rok je tu, první cvičení tentokrát vychází na **14. 9.** Těšíme se na vás.
+
+[x] srpen 2026
+Máme nové webové stránky :) Pokud narazíte na nějaké potíže, napište nám. Snad se vám nové stránky budou líbit.
+
 [1] srpen 2025
 Nový školní rok, cvičit se začíná od 15. 9., k tomu pár fotek z letní školy v Itálii.
-[photos: italia — 3]
+[photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\italia25"]
 
 [2] září 2024
 Nový školní rok od 16. 9. podle nového rozvrhu.
-
-[3] 2024
-Na hlavní stránce se poprvé objevuje dnešní plné znění filosofie dobrovolného poplatku — „od 0 Kč výše".
 
 [4] srpen 2023
 Nový školní rok od 11. 9., stejný rozvrh jako loni.
@@ -72,13 +75,14 @@ Tak už je to zase tady, poslední týden cvičení před letními prázdninami.
 
 [11] podzim 2021
 **AIKIVANDR NA CHATĚ** Bylo to supr. Díky.
-[photos: aikivandr na chatě]
+[photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\aikivandr na chate"]
 
 [12] podzim 2021
 **V omezeném režimu cvičení je poplatek za pololetí nyní jen 2 800,- Kč.** V rámci „Září otevřených dveří" je pro nově příchozí cvičení první měsíc zdarma a sleva 20 % na pololetní poplatek.
 
 [13] 9.–13. srpna 2021
 **Letošní Aikivandr se bude konat od pondělí 9. do pátku 13. 8.**
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\aikivandr"]
 
 [14] 7.–11. září 2020
 **Cvičit začínáme druhý týden v září.** Máme pro Vás a Vaše děti týden otevřených dveří od 7. 9. do 11. 9. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. Pro nové členy se slevou 20 %.
@@ -91,9 +95,11 @@ Tak už je to zase tady, poslední týden cvičení před letními prázdninami.
 
 [17] 2019
 Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikido výprava na dětský den.
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\den deti vylet"]
 
 [18] 10.–14. června 2019
 Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikido oddílu na nový školní rok, nebo první pololetí se slevou 20 %.
+[pdf:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\LETÁK TÝDEN.pdf"]
 
 [19] 10. dubna 2019
 **DĚKUJEME MĚSTU ŘÍČANY** Usnesením Zastupitelstva města Říčany ze dne 10. 4. 2019 nám byla přidělena finanční dotace na provoz naší organizace ve výši 95 700,- Kč.
@@ -111,18 +117,20 @@ Pojeďte s námi na zimní školu 17. a 18. listopadu na Žižkově.
 
 [23] 2018
 Jarní cvičení v přírodě — každé první pondělí v měsíci. Vánoční čaj o páté.
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\vanocni caj"]
 
 [24] 2018
 **DĚKUJEME MĚSTU ŘÍČANY.** V roce 2018 byl provoz naší organizace spolufinancován z grantu města Říčany, částkou ve výši 91 300,-. Celá částka byla použita na částečnou úhradu nájemného.
 
 [25] 11. září 2018
 Od 11. 9. začínáme cvičit v časech jako loni. Pár fotek z červnové lekce.
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\cervnovy caj"]
 
 [26] 2018
 **MÁME NOVÉ STRÁNKY!** (Kdyby se vám při prohlížení vyskytl jakýkoliv problém, neváhejte nás kontaktovat a my problém v nejbližší době odstraníme.)
 
 [27] září 2017
-Nastává opět stěhování — nyní pouze webové stránky :-) **NOVÉ STRÁNKY** jsou zde: http://www.aikidoricany.com
+Nastává opět stěhování — nyní pouze webové stránky :-) **NOVÉ STRÁNKY** jsou dočasně zde: http://www.aikidoricany.com
 
 [28] 2017
 **TÝDNY OTEVŘENÝCH DVEŘÍ.** Nábor nových žáků na druhé pololetí začíná. První i druhý týden v únoru se můžete vy i vaše děti přijít podívat, a třeba si i na zkoušku zacvičit aikido nebo jógu.
@@ -144,6 +152,7 @@ Nastává opět stěhování — nyní pouze webové stránky :-) **NOVÉ STRÁN
 
 [34] 2016
 Byl upraven rozpis hodin:
+[photo:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\rozvrhy\dfghjkl.gif"]
 
 [35] září 2015
 **OD ZÁŘÍ OPĚT NA NOVÉ ADRESE:** Od 7. září začínáme cvičit v nové tělocvičně v Domově Pod Kavčí Skálou na adrese: Marie Pujmanové 2046, 251 01 Říčany.
@@ -151,26 +160,23 @@ Byl upraven rozpis hodin:
 
 [36] 5.–11. července 2015
 V červenci 5.–11. 7. 2015 se někteří z nás vypravili do Saignelegier ve Švýcarsku na stáž senseie Hiroshi Tady (9. dan). Česká výprava:
-[photos: Švýcarsko]
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\svycarsko"]
 
 [37] 24.–26. října 2014
 O víkendu 24.–26. 10. 2014 se někteří z nás zúčastnili oslavy 20. výročí Slovenské asociace, kde stáž vedli Ueshiba Mitsuteru (Waka Sensei), Asai Katsuaki (8. dan) a Quaranta Michele (6. dan).
-[photos: Slovensko]
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\Vyroci20SK.jpg"]
 
 [38] 23. října 2014
 **OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH** proběhla ve **čtvrtek 23. 10. 2014** i s cvičením aikida pod vedením našeho tehdejšího učitele **Michala Lachima Šípa** (3. dan aikikai).
-[photos: 10 let]
-
-[39] září 2014
-Fotografie Olivovny:
-[photos: Olivovna]
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\10let"]
 
 [40] září 2014
 **VELKÉ RADOSTNÉ OZNÁMENÍ:** Od září budeme cvičit ve všech našich pravidelných časech v krásné tělocvičně v Olivovně.
+[photos: Olivovna]
 
 [41] 2014
 A zde jsou fotky ze soutěže o nejlepší koláč 2014:
-[photos: koláč 2014]
+[photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2014"]
 
 [42] 7.–11. července 2014
 **PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY** Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: **7. 7.–11. 7. 2014**, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.
@@ -190,7 +196,7 @@ Poslední týden v srpnu (od 26. do 30. 8.) se opět koná **Aikido tábor pro d
 
 [47] 14. června 2013
 Soutěž o nejlepší koláč 2013 se konala v pátek 14. 6. Další fotky zde.
-[photos: koláč 2013]
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2013"]
 
 [48] 2012–2013
 **PŘÍMĚSTSKÝ TÁBOR** pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: **carol.ho@volny.cz** (tel. 604 731 322).
@@ -199,9 +205,6 @@ Soutěž o nejlepší koláč 2013 se konala v pátek 14. 6. Další fotky zde.
 [49] 2013
 Aktuální stáže aikida v Praze a okolí: Ulli Kubetzek (6. dan) So 6. 4. – Ne 7. 4. 2013, ČFA, Lublaňská 20, Praha 2. Bernard Caloz (6. dan) So 11. 5. – Ne 12. 5. 2013, ČAA, Na Balkáně 812, Praha 3.
 
-[50] 2013
-Nový odkaz na fotky z dětské stáže.
-[photos: stáž 2013]
 
 [51] 2012
 Před prázdninami proběhl čtvrtý ročník soutěže „O nejlepší… tentokráte opět koláč". A stejně jako minule byly připraveny ceny v podobě celoročních permanentek na cvičení pro dospělé i děti zdarma.
@@ -214,10 +217,12 @@ Cvičení **Aikido pro předškolní děti a prvňáčky** (cca 4–7 let) **PÍ
 Na webové stránky byl umístěn aktuální ceník.
 
 [54] 13.–31. srpna 2012
-V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal **Aikido tábor pro děti**. Více informací je k dispozici na odkazu.
+V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal **Aikido tábor pro děti**. 
+[pdf:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\prazdniny2012.pdf"]
 
 [55] leden 2012
 V sobotu 21. ledna 2012 proběhla na Balkáně **dětská stáž Aikido**.
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\detska staz"]
 
 [56] listopad 2011
 Aikido Říčany a Dojo Na Cestě Vás srdečně zvou na **PIKNIK NA CESTĚ v pátek 9. listopadu 2011** (předvečer úplňku) **od 19.30**. Večerem Vás budou provázet Miroslav Píďa Skala (kytara, zpěv) a Štěpán Holoubek (rytmika). Vezměte si s sebou piknikové košíky (plné), deky na sezení a pestrobarevné oblečení. Vstupné dobrovolné. Výtěžek bude použit na zřízení tematické knihovny — filozofie, spiritualita, jóga, aikido, tchaj-ťi. Hodně štěstí a zdraví Vám přeje občanské sdružení Aikido Kenkyukai Říčany.
@@ -230,16 +235,19 @@ Na webové stránky byl také umístěn aktuální ceník.
 
 [59] červen 2011
 V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikido, tchaj-ťi čchüan, jóga a aikido dětí), a ty byly umístěny na příslušné podstránky.
+[3 videos ukazky z treninku]
 
 [60] 27. května 2011
 V pátek 27. 5. 2011 proběhl třetí ročník soutěže „O nejlepší… tentokráte koláč". A stejně jako minule byly připraveny ceny v podobě celoročních permanentek na cvičení pro dospělé i děti zdarma. Nejpovedenější recepty (vítězné koláče jsou pod čísly 02 a 03).
-[photos: koláč 2011]
+[photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2011"]
 
 [61] 15.–19. a 22.–26. srpna 2011
 V srpnu se bude konat tradiční týdenní prázdninový program pro děti (dva termíny: 15.–19. 8. 2011 a 22.–26. 8. 2011).
+[pdf: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\pdfs\prazdninovy_program.pdf"]
 
 [62] červen 2011
-Začátkem června u nás probíhalo natáčení a nyní můžete shlédnout výsledek prezentující naše dojo: „Dojo na Cestě" from Tomáš Lénárd on Vimeo.
+Začátkem června u nás probíhalo natáčení a nyní můžete shlédnout výsledek prezentující naše dojo: „Dojo na Cestě" from Tomáš Lénárd.
+[photo: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\aikidoDospeli.jpg"]
 
 [63] 28. května 2010
 V pátek 28. 5. 2010 proběhl již druhý ročník soutěže „O nejlepší…" — tentokrát „dort" :-) A stejně jako minule byly připraveny ceny v podobě celoročních permanentek pro dospělé i děti zdarma.
@@ -251,101 +259,120 @@ O víkendu 22.–23. 5. 2010 proběhla akce Prožitkové zpívání.
 O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikido v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.
 [photos: seminář 5 let]
 
-[66] 2007–2015  (marked "zmizelo z webu")
-Tchaj-ťi čchüan. Vedle aikida a jógy třetí pravidelná disciplína skoro celou první dekádu — v pondělí 17:40–19:00 a ve středu 19:30–20:50. „Umění, jak měkkostí zvládnout tvrdost, klidem agresivitu a jak jemností překonat hrubost." V červnu 2011 o něm vznikl krátký film. Beze zmínky o důvodu z webu zmizelo mezi lety 2015 a 2017.
-
-[67] 2012–2013  (marked "zmizelo z webu")
-Meditace, zpívání Óm a pránajáma. Měsíční setkání — vždy poslední neděli v měsíci od 19:00. Nejstručnější stránka celého archivu, ale reálná pravidelná aktivita, která z rozvrhu i menu zmizela už po roce či dvou.
-
-[68] 2006–2011  (marked "zmizelo z webu")
-Ha Tha Jóga. Předchůdkyně dnešní „Jógy" — stejná disciplína, jiné jméno a jiný ceník, ještě bez filosofie „kolik chcete". Ceník: 4 500 Kč/rok, 500 Kč/měsíc (2×), 300 Kč/měsíc (1×), 100 Kč/trénink. Kolem roku 2012 přejmenována na „Rádža Jógu" a dostala nový, jednodušší ceník.
 
 [69] 22. května 2009
 V pátek 22. 5. 2009 proběhla soutěž O nejlepší koláč.
+[photos:"C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\fotky\kolace\2009"]
 
-[70] 2003
-Nejstarší kousek v celé kronice: kamarád nakreslil čtyři postavy pro naše dójó, ještě dřív než měl klub vlastní web. Všechny čtyři jsou v kapitole Kresba.
-[photos: komiks — žlutý]
+[70] Prosinec 2004 
+Na nově otevřeném dójó proběhl první trénink. Prvním instruktorem byl sensei Michal „Lachim" Šíp (2. dan)
 
-[71] Prosinec 2004  (founding milestone)
-Na nově otevřeném dójó proběhl první trénink. Prvním instruktorem byl sensei Michal „Lachim" Šíp (2. dan), na organizaci se podílel také Radek Růžička.
-
-[72] Září 2004  (founding milestone)
+[71] Září 2004 
 Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikido i jóga představují.
+[photos: "C:\Users\Admin\web-projects\aikido-web\wixsite,pdfs,imgs\originalwebimgs\sumostatue.jpg"]
+
+[72] 2003
+Nejstarší kousek v celé kronice: kamarád nakreslil čtyři postavy pro naše dójó, ještě dřív než měl klub vlastní web. Všechny čtyři jsou v kapitole Kresba.
+[photos: komiksy-all4]
 
 ═══════════════════════════════════════════════════════════════════════
 1 · CESTA   (four full-screen sections)
 ═══════════════════════════════════════════════════════════════════════
 
 ── Hero ──
-KICKER: 二 · Cesta
+KICKER: 二  Cesta
 TITLE: Cvičení jako cesta, ne závod.
-PARA 1: Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Na našem dójó se mu věnujeme spolu s jógou už od roku 2004, kdy jsme původní tiskárnu přeměnili na cvičební prostor.
-PARA 2: Nejde nám o soupeření ani výkon — cvičení u nás je spíše životní filosofií, která rozvíjí rovnováhu, sebedůvěru a klid.
+PARA 1: Už více než 20 let se v Říčanech věnujeme aikidu a józe na dojo, kde společně cvičíme a potkáváme se.
+PARA 2: Nejde nám o soupeření ani výkon. Cvičíme pro radost z pohybu, soustředění, rovnováhu a klid — každý svým tempem.
 PHOTO CAPTION: Trénink na tatami, Říčany.
 
 ── O nás ──
 KICKER: O nás
 TITLE: Parta lidí, kteří rádi cvičí nenásilnou cestou.
-PARA 1: Jsme parta lidí, co rádi cvičí nenásilnou cestou. Dójó Na Cestě je místo pro každého… Nebo, skoro každého… Nakonec vydrží málokdo. Cvičíme zde jógu a aikido.
-PARA 2: Co tomu však předcházelo? Nahlédněme společně do krátké historie. Přibližně v září 2004 se několik nadšenců pro aikido rozhodlo přetvořit halu tehdejší tiskárny SKALA a zvelebit ji natolik, aby se v jejích prostorách o několik měsíců později mohl uskutečnit první trénink. Vše se zdárně podařilo a v prosinci jsme se tu společně sešli na zahajovacím slavnostním cvičení. Patří velké poděkování všem těm nadšencům, kteří ostatně dodnes téměř všichni aikido cvičí. Je třeba také zmínit Českou Federaci Aikido (ČFAI), pod kterou je náš klub organizován. Nemůžeme vynechat ani město Říčany, které nám formou grantu částečně přispělo na nákup tatami. Největší poděkování si ale zaslouží náš sensei (učitel) Michal Lachim Šíp – tehdejší 2. dan Hombu Dojo (mistrovský stupeň), který nás vyučoval aikido od samého začátku. V jeho stopách šel pak i Radek Růžička a v současné době je to Miroslav Skala, 2. dan Hombu Dojo. Velké poděkování všem.
-PARA 3: Samotné jméno aikido spojuje tři znaky: *ai* (harmonie), *ki* (životní energie) a *dó* (cesta).
+PARA 1: Jsme parta lidí, co rádi cvičí nenásilnou cestou. Dójó Na Cestě je místo pro každého, kdo si chce zacvičit, zastavit se a být chvíli s ostatními. Cvičíme tu jógu a aikido.
+PARA 2: Co tomu ale předcházelo? Vraťme se na chvíli do roku 2004. Několik nadšenců pro aikido se tehdy rozhodlo přetvořit halu bývalé tiskárny SKALA v Říčanech na místo pro cvičení. Několik měsíců se prostor upravoval a zveleboval, až se v prosinci 2004 uskutečnil první slavnostní trénink.
+Velké díky patří všem, kteří se na vzniku dójó podíleli, mnozí z nich cvičí aikido dodnes. 
+Náš klub je organizován pod Českou Federací Aikido (ČFAI) a na nákup tatami nám tehdy přispělo město Říčany formou grantu.
+Největší dík ale patří našemu prvnímu učiteli Michalu Lachimu Šípovi, tehdy 2. dan Hombu Dojo, který nás vedl od samého začátku. Na jeho práci později navázal Radek Růžička a dnes nás vede Miroslav Skala, také 2. dan Hombu Dojo. Bez nich a všech, kteří se kolem dójó za ta léta vystřídali, by dnes nebylo tím, čím je.
+
 [photo: cesta-onas.jpg — still a placeholder]
 
 ── Aikido ──
 KICKER: Aikido
-TITLE: 合気道 — cesta harmonie.
-PARA 1: Aikido je nenásilné moderní japonské bojové umění, které rozvíjí tělo i ducha. Jeho název spojuje tři znaky: *ai* (harmonie), *ki* (životní energie) a *dó* (cesta).
-PARA 2: Založil ho Morihei Ueshiba (1883–1969) jako umění, které klade důraz na mentální i fyzický rozvoj a odmítá soutěžní pojetí. Pro mnohé praktikující se tak aikido stává jakousi životní filosofií.
+TITLE: 合気道 — umění harmonie.
+PARA 1: Aikido je moderní japonské bojové umění, které spojuje pohyb, techniku a práci s tělem i myslí. Nejde v něm o poražení soupeře, ale o hledání způsobu, jak využít jeho pohyb a sílu bez zbytečného násilí.
+PARA 2: Aikido založil Morihei Ueshiba (1883–1969). Od začátku v něm nebylo místo pro soutěžení ani poměřování výkonu. Důležitá je cesta samotného cvičení — učit se vnímat sebe, druhého i prostor kolem sebe.
+PARA 3: Název spojuje tři znaky: *ai* (harmonie), *ki* (životní energie) a *dó* (cesta).
 [photo: cesta-aikido.jpg — still a placeholder]
 
 ── Jóga ──
 KICKER: Jóga
 TITLE: Rádža jóga pro každého.
-INTRO: Na dójó Na Cestě cvičíme Rádža jógu. Cvičení je vhodné pro každého a nevyžaduje žádné speciální vybavení — stačí pohodlný oděv a trocha vůle cvičit. Pravidelná praxe přináší:
+INTRO: Na dójó Na Cestě cvičíme Rádža jógu, tradiční systém jógy zaměřený na práci s tělem, dechem a myslí. Cvičení je vhodné pro každého a nevyžaduje žádné speciální vybavení — stačí pohodlné oblečení a chuť cvičit. Pravidelná praxe přináší:
 LIST:
- - zlepšení kondice a svalové síly
- - lepší krevní oběh a paměť
- - kvalitnější spánek
- - menší nemocnost
- - citlivější vnímání smyslů
+ - lepší kondici a sílu
+ - lepší krevní oběh a soustředění
+ - kvalitnější odpočinek a spánek
+ - podpora imunity
+ - lepší vnímání vlastního těla
 [photo: cesta-joga.jpg — still a placeholder]
 
 ═══════════════════════════════════════════════════════════════════════
 2 · PRO KOHO
 ═══════════════════════════════════════════════════════════════════════
 
-KICKER: 三 · Pro koho
-TITLE: Vyberte si podle věku.
-LEDE: Stejná cesta, čtyři vstupy. Nábor probíhá celý rok. Najeďte myší na kartu, klikněte pro detail.
+KICKER: 三  Pro koho
+TITLE: Najděte si svou cestu.
+LEDE: Každý začíná trochu jinak. Vyberte si, co je vám nejblíž. Nábor probíhá celý rok.
 BUTTON ON EACH CARD: Zjistit více →
 
 ── Card 1 ──
 AGE: 4–8 let
 TITLE: Píďata
-TEXT: Cvičení na téma Aikido a Jóga pro předškolní děti a také prvňáčky, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky a také se zbavovat strachu a získávat větší sebejistotu.
+TEXT: Cvičení pro předškoláky a prvňáčky, které propojuje aikido a jógu. Děti se hravou formou učí vnímat své tělo, pracovat s dechem, soustředit se a spolupracovat s ostatními. Postupně získávají větší jistotu a učí se zvládat nové situace bez zbytečného tlaku na výkon.
+**KDY CVIČÍME**  
+Čtvrtek · 16:00–17:00
+**NA PRVNÍ TRÉNINK**  
+Stačí pohodlné oblečení.
 
 ── Card 2 ──
 AGE: 8–14 let
 TITLE: Aikido děti
-TEXT: Náš oddíl je veden tak, aby v něm mohli spolu cvičit jak děti školního věku tak mládež, jak úplní začátečníci tak pokročilí, chlapci i děvčata. Praktikujeme i rozsáhlý program dechových cvičení. Zapojit se může každý kdykoli v průběhu roku. Stačí si přinést tepláky, tričko s dlouhým rukávem a začít.
+TEXT: Cvičí spolu děti školního věku i mládež, začátečníci i pokročilí, kluci i holky. K aikidu patří také dechová cvičení a práce se soustředěním. Začít můžete kdykoli během roku. Na první trénink stačí tepláky, tričko s dlouhým rukávem a chuť cvičit.
+**KDY CVIČÍME**  
+Pondělí · 17:30–18:50  
+Čtvrtek · 17:30–18:50
+**NA PRVNÍ TRÉNINK**  
+Tepláky bez zipu a tričko s dlouhým rukávem.
 
 ── Card 3 ──
 AGE: dospělí
 TITLE: Aikido dospělí
-TEXT: Nábor probíhá průběžně celý rok. Zpočátku nebudete potřebovat žádné speciální vybavení, na první trénink si doneste jen tepláky bez zipu a tričko s dlouhým rukávem. První trénink je zdarma. Pokud se bojíte, že jste na aikido už příliš staří, jsou vaše obavy zcela neopodstatněné.
+TEXT: Aikido pro dospělé bez ohledu na věk nebo předchozí zkušenosti. Začátečníci cvičí společně s pokročilými a každý postupuje vlastním tempem. Učíme se pracovat s pohybem, rovnováhou a silou — svou i partnerovou. Nejde o soutěž ani o to být nejsilnější. 
+**KDY CVIČÍME**  
+Pondělí · 19:15–21:00  
+Čtvrtek · 19:15–21:00
+**NA PRVNÍ TRÉNINK**  
+Tepláky bez zipu a tričko s dlouhým rukávem.
+Myslíte si, že už jste na aikido příliš staří? Přijďte se přesvědčit, že nejste.
 
 ── Card 4 ──
 AGE: pro každého
 TITLE: Jóga
-TEXT: Cvičíme Rádža jógu. Cvičení je vhodné pro každého a budeme rádi, když se k nám připojíte. Nebudete potřebovat žádné speciální vybavení, jen pohodlný oděv a trochu vůle cvičit.
+TEXT: Cvičíme Rádža jógu, která je vhodná pro každého bez ohledu na věk nebo zkušenosti. Nepotřebujete žádné speciální vybavení - stačí pohodlné oblečení a chuť cvičit.
+**KDY CVIČÍME**  
+Pondělí · 8:15–9:40  
+Pondělí · 16:30–17:30  
+Čtvrtek · 8:15–9:40
+**NA PRVNÍ TRÉNINK**  
+Pohodlné oblečení a chuť cvičit.
 
 ═══════════════════════════════════════════════════════════════════════
 3 · KDY PŘIJÍT
 ═══════════════════════════════════════════════════════════════════════
 
-KICKER: 四 · Kdy přijít
-TITLE: Kdy a za kolik.
+KICKER: 四  Kdy přijít
+TITLE: Kdy cvičíme a jak je to s příspěvkem.
 
 ── Left column ──
 SMALL KICKER: Rozpis
@@ -363,14 +390,14 @@ PONDĚLÍ:
 
 ── Right column ──
 SMALL KICKER: Příspěvek
-SUBHEAD: Částku si určujete sami.
-TEXT: Od 0 Kč výš. Je to na vás — kolik cvičení pro vás má hodnotu a kolik si zrovna můžete dovolit. Chceme, aby to bylo dostupné opravdu každému, bez výjimky a bez čísel, která by to za vás rozhodovala.
+SUBHEAD:  Členský příspěvek je na vás.
+TEXT: Nemáme pevně daný členský příspěvek. Každý přispívá podle svých možností a podle toho, jakou pro něj má cvičení hodnotu — od 0 Kč výše. Chceme, aby peníze nebyly důvodem, proč někdo nemůže cvičit.
 
 ═══════════════════════════════════════════════════════════════════════
 4 · GALERIE
 ═══════════════════════════════════════════════════════════════════════
 
-KICKER: 五 · Galerie
+KICKER: 五  Galerie
 TITLE: Ze života dójó.
 LEDE: Podívejte se, jak trénujeme.
 DECK HINT: Kolečkem nebo tažením listuješ sbírkami. Klikni na sbírku pro všechny fotky.
@@ -408,7 +435,7 @@ CAPTION 4 (modrý): Samuraj v modré. Meč u boku, ale v klidu.
 5 · KONTAKT
 ═══════════════════════════════════════════════════════════════════════
 
-KICKER: 六 · Kontakt
+KICKER: 六  Kontakt
 TITLE: Přijďte se podívat. Nezavazuje vás to.
 
 MAP PIN / ADDRESS LABEL: Adresa
