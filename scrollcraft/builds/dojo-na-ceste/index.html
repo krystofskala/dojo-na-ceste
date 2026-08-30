@@ -810,11 +810,23 @@
   .gal-modal__title { font-size: var(--text-heading); margin: 0 0 0.2rem; }
   .gal-modal__sub { font-size: var(--text-caption); color: var(--ink-soft); margin: 0 0 1.3rem; }
   .gal-modal__close { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; }
-  /* Bento grid, 4 columns everywhere, fixed row height so every span is a
-     whole number of cells. tileBento() assigns every image an explicit
-     grid-row / grid-column, so the rendered grid is exactly its zero-gap
-     packing — a wide shot spans 2-4 columns, a pair of portraits makes a
-     2x2 block of tall tiles, the rest are squares. cover fills each cell. */
+  /* Down-cue: only shown when the card actually overflows (bigger
+     collections); a sticky chevron at the bottom of the visible card that
+     fades the moment you scroll. */
+  .gal-modal__cue {
+    position: sticky; bottom: 0.4rem; z-index: 3;
+    width: 2.15rem; height: 2.15rem; margin: -0.4rem auto 0;
+    display: none; align-items: center; justify-content: center;
+    border-radius: 50%; background: rgba(24,35,56,0.10); color: var(--navy);
+    pointer-events: none; transition: opacity 200ms var(--ease);
+  }
+  .gal-modal__cue svg { width: 1rem; height: 1rem; }
+  .gal-modal__card.can-scroll .gal-modal__cue { display: flex; }
+  .gal-modal__card.can-scroll.is-scrolled .gal-modal__cue { opacity: 0; }
+  /* Bento grid, 4 columns everywhere. tileBento() gives every image an
+     explicit grid-row / grid-column (zero-gap packing); openCollection()
+     then sizes the rows so the whole grid fits the modal without a
+     scroll, only shrinking to a floor past which it lets the card scroll. */
   .gal-modal__bento {
     display: grid; gap: 0.5rem;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1775,6 +1787,9 @@
     <h3 class="gal-modal__title" id="galModalTitle"></h3>
     <p class="gal-modal__sub" id="galModalSub"></p>
     <div class="gal-modal__bento" id="galModalBento"></div>
+    <div class="gal-modal__cue" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
   </div>
 </div>
 
@@ -1783,6 +1798,9 @@
     <button class="gal-modal__close" id="galAllClose" type="button" aria-label="Zavřít">&times;</button>
     <h3 class="gal-modal__title" id="galAllTitle">Všechny sbírky</h3>
     <div class="gal-all__grid" id="galAllGrid"></div>
+    <div class="gal-modal__cue" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
   </div>
 </div>
 
@@ -2662,6 +2680,27 @@
         t.im.style.gridColumn = (t.c + 1) + ' / span ' + t.w;
         t.im.style.gridRow = (t.r + 1) + ' / span ' + t.h;
       });
+      return maxRow;
+    }
+    var modalCard = modal.querySelector('.gal-modal__card');
+    /* Size the bento rows so the whole grid fits the modal without a
+       scroll. Shrink only as far as a floor — past that (a big
+       collection) the card scrolls and the down-cue appears. */
+    function fitBento(rows) {
+      modalBento.style.gridAutoRows = '';
+      if (!rows) return;
+      var cs = getComputedStyle(modalCard);
+      var padB = parseFloat(cs.paddingBottom) || 24;
+      var gap = 8;                              // .gal-modal__bento gap: 0.5rem
+      var avail = window.innerHeight * 0.9 - modalBento.offsetTop - padB - 8;
+      var rowH = (avail - (rows - 1) * gap) / rows;
+      rowH = Math.max(76, Math.min(176, rowH)); // 4.75rem floor .. 11rem cap
+      modalBento.style.gridAutoRows = Math.round(rowH) + 'px';
+      requestAnimationFrame(function () {
+        modalCard.classList.remove('is-scrolled');
+        modalCard.scrollTop = 0;
+        modalCard.classList.toggle('can-scroll', modalCard.scrollHeight > modalCard.clientHeight + 4);
+      });
     }
     function openCollection(coll) {
       if (!coll) return;
@@ -2679,8 +2718,9 @@
       }).join('');
       var imgs = Array.prototype.slice.call(modalBento.querySelectorAll('img'));
       imgs.forEach(function (im, i) { im.addEventListener('click', function () { openLightbox(items, i); }); });
+      modalCard.classList.remove('can-scroll', 'is-scrolled');
       var pending = imgs.length;
-      function done() { if (--pending <= 0) tileBento(imgs); }
+      function done() { if (--pending <= 0) fitBento(tileBento(imgs)); }
       imgs.forEach(function (im) {
         if (im.complete && im.naturalWidth) done();
         else { im.addEventListener('load', done); im.addEventListener('error', done); }
@@ -2696,6 +2736,9 @@
       modalBento.innerHTML = '';
       if (modalReturn && modalReturn.focus) modalReturn.focus();
     }
+    modalCard.addEventListener('scroll', function () {
+      modalCard.classList.toggle('is-scrolled', modalCard.scrollTop > 8);
+    }, { passive: true });
     modalClose.addEventListener('click', closeCollection);
     modal.addEventListener('click', function (e) { if (e.target === modal) closeCollection(); });
     document.addEventListener('keydown', function (e) {
@@ -2719,11 +2762,20 @@
       Array.prototype.forEach.call(allGrid.children, function (tile, i) {
         tile.addEventListener('click', function () { closeAll(); openCollection(COLLECTIONS[i]); });
       });
+      var allCard = allModal.querySelector('.gal-modal__card');
+      allCard.addEventListener('scroll', function () {
+        allCard.classList.toggle('is-scrolled', allCard.scrollTop > 8);
+      }, { passive: true });
       function openAll() {
         allReturn = document.activeElement;
         allModal.classList.add('is-open');
         allModal.setAttribute('aria-hidden', 'false');
         allClose.focus();
+        allCard.classList.remove('is-scrolled');
+        allCard.scrollTop = 0;
+        requestAnimationFrame(function () {
+          allCard.classList.toggle('can-scroll', allCard.scrollHeight > allCard.clientHeight + 4);
+        });
       }
       function closeAll() {
         allModal.classList.remove('is-open');
