@@ -1814,27 +1814,37 @@
     document.body.style.backgroundColor = groundBg[ground] || '#F7F4EC';
   }
 
-  /* One job: find the seam and clip the two faces into complementary
-     halves at it. `pos` is the scroll position in chapter-widths; its
-     floor `a` is the chapter on the LEFT of the seam, `b = a + 1` the one
-     on the right, and `frac` how far between them (0 at a, 1 at b). The
-     seam sits at (1 - frac) of the viewport from the left. A sub-pixel
-     scroll error just nudges the seam a sub-pixel — still an exact
-     partition — so no epsilon fudge is needed. Faces are re-dressed only
-     when `a` or `b` changes. */
+  /* Find the seam, clip the two faces at it. `pos` is the scroll position
+     in chapter-widths; `a = floor(pos)` is the chapter left of the seam,
+     `b` the one on its right, `frac` how far between them. The seam sits
+     `seamPx` from the left edge.
+
+     - Anything within ~4% of a chapter is treated as settled ON that
+       chapter (one face, one highlight). Without this a fling that comes
+       to rest a hair off a snap point leaves the seam frozen mid-bar and
+       BOTH faces' active numerals showing.
+     - Face B's clip is pulled 2px LEFT of the seam so the two clip regions
+       overlap by 2px instead of meeting on a shared edge. Face B is on
+       top, its glyphs are opaque, so in that sliver face B wins cleanly —
+       no 1px shimmer from two animated clip edges landing on slightly
+       different device pixels. */
   var dressedA = -1, dressedB = -1;
   function paintTopbar() {
-    var pos = hub.scrollLeft / (hub.clientWidth || 1);
+    var vw = hub.clientWidth || 1;
+    var pos = hub.scrollLeft / vw;
     var a = Math.max(0, Math.min(slides.length - 1, Math.floor(pos)));
-    var b = Math.min(slides.length - 1, a + 1);
     var frac = Math.min(1, Math.max(0, pos - a));
-    var seam = (1 - frac) * 100;
+    if (frac >= 0.96) { a = Math.min(slides.length - 1, a + 1); frac = 0; }
+    else if (frac <= 0.04) { frac = 0; }
+    var b = Math.min(slides.length - 1, a + 1);
+    var seamPx = (1 - frac) * vw;
 
     if (a !== dressedA) { dressFace(faceA, faceLinksA, a); dressedA = a; }
     if (b !== dressedB) { dressFace(faceB, faceLinksB, b); dressedB = b; }
 
-    faceA.style.clipPath = 'inset(0 ' + (100 - seam) + '% 0 0)';
-    faceB.style.clipPath = 'inset(0 0 0 ' + seam + '%)';
+    faceA.style.clipPath = 'inset(0 ' + (vw - seamPx) + 'px 0 0)';
+    // settled: hide face B outright; transitioning: 2px overlap, B on top
+    faceB.style.clipPath = 'inset(0 0 0 ' + (frac === 0 ? vw : Math.max(0, seamPx - 2)) + 'px)';
   }
 
   function syncSlideEdges(s) {
@@ -1965,13 +1975,30 @@
      swipe), so an event-driven update leaves the bar frozen on the old
      chapter's ink for the whole transition and only snaps when it settles.
      rAF keeps running through the fling. Idle cost is one read + compare. */
-  var lastHubScroll = -1;
+  var lastHubScroll = -1, restFrames = 0, healed = false;
   (function splitPoll() {
     requestAnimationFrame(splitPoll);
     var sl = hub.scrollLeft;
-    if (sl === lastHubScroll) return;
-    lastHubScroll = sl;
-    syncChrome();
+    if (sl !== lastHubScroll) {
+      lastHubScroll = sl;
+      restFrames = 0;
+      healed = false;
+      syncChrome();
+      return;
+    }
+    /* Self-heal: a fling can occasionally come to rest between snap points
+       (a fresh swipe interrupting the previous snap, snap giving up under
+       rapid input). scroll-snap won't retry on its own, so the bar would
+       sit frozen mid-transition. Once the scroll has clearly stopped and
+       is more than a few px off a chapter, nudge it to the nearest one. */
+    if (healed || hub.classList.contains('hub--animating')) return;
+    if (++restFrames !== 8) return;
+    var vw = hub.clientWidth || 1;
+    var off = sl - Math.round(sl / vw) * vw;
+    if (Math.abs(off) > 3 && Math.abs(off) < vw - 3) {
+      healed = true;
+      hub.scrollTo({ left: Math.round(sl / vw) * vw, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    }
   })();
   slides.forEach(function (s) {
     s.addEventListener('scroll', function () {
