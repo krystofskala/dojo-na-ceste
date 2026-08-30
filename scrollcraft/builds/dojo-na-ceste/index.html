@@ -500,6 +500,19 @@
     max-width: clamp(32rem, 54vw, 60rem); width: 100%;
     margin: clamp(1.8rem, 4vw, 2.6rem) auto 0;
   }
+  /* Divider between the two current updates and the historical chronicle
+     below. Same visual language as .kicker (small-caps accent label). */
+  .posts__era {
+    display: flex; align-items: center; gap: 1rem;
+    margin: clamp(1rem, 3vw, 2rem) 0 clamp(0.25rem, 1vw, 0.5rem);
+  }
+  .posts__era::before, .posts__era::after {
+    content: ""; flex: 1; height: 1px; background: var(--hairline, rgba(24,35,56,0.16));
+  }
+  .posts__era span {
+    flex: none; font-size: var(--text-kicker); letter-spacing: 0.1em;
+    text-transform: uppercase; font-weight: 600; color: var(--accent);
+  }
   .post {
     display: block; padding: clamp(1.5rem, 2.6vw, 2.3rem) clamp(1.6rem, 3vw, 2.5rem);
     background: var(--surface, rgba(24,35,56,0.035)); border-radius: 16px;
@@ -1032,6 +1045,7 @@
             <div class="post__text"><p>Máme nové webové stránky :) Pokud narazíte na nějaké potíže, napište nám. Snad se vám nové stránky budou líbit.</p></div>
           </div>
         </article>
+        <div class="posts__era" role="separator" aria-label="Starší zápisy z kroniky dójó"><span>Z kroniky dójó</span></div>
         <article class="post">
                       <div class="post__gallery">
               <img src="assets/post-italia-25-01.jpg" alt="" loading="lazy">
@@ -1092,7 +1106,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">31. ledna 2022</span>
-            <div class="post__text"><p><strong>NOVÝ ROZPIS CVIČENÍ OD 31. 1. 2022</strong> — pondělí: 8:15–9:35 jóga, 16:00–17:20 děti aikidó, 17:45–19:05 jóga, 19:15–21:00 aikidó. Čtvrtek: 8:15–9:35 jóga, 16:00–17:00 píďata, 17:30–18:50 aikidó děti, 19:15–21:00 aikidó.</p></div>
+            <div class="post__text"><p><strong>NOVÝ ROZPIS CVIČENÍ OD 31. 1. 2022</strong> — pondělí: 8:15–9:35 jóga, 16:00–17:20 děti aikido, 17:45–19:05 jóga, 19:15–21:00 aikido. Čtvrtek: 8:15–9:35 jóga, 16:00–17:00 píďata, 17:30–18:50 aikido děti, 19:15–21:00 aikido.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1157,13 +1171,13 @@
             </div>
           <div class="post__body">
             <span class="post__date">2019</span>
-            <div class="post__text"><p>Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikidó výprava na dětský den.</p></div>
+            <div class="post__text"><p>Cvičit začínáme od 9. září podle stejného rozvrhu jako minulý rok. Aikido výprava na dětský den.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">10.–14. června 2019</span>
-            <div class="post__text"><p>Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikidó oddílu na nový školní rok, nebo první pololetí se slevou 20 %.</p></div>
+            <div class="post__text"><p>Máme pro Vás a Vaše děti týden otevřených dveří od 10. 6. do 14. 6. Přijďte se podívat, nejlépe i zacvičit kdykoli podle rozpisu hodin. V tomto týdnu bude možné i přihlásit děti do našeho aikido oddílu na nový školní rok, nebo první pololetí se slevou 20 %.</p></div>
             <a class="post__doc" href="assets/letak-tyden.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Leták (PDF)</a>
           </div>
         </article>
@@ -1239,7 +1253,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">2017</span>
-            <div class="post__text"><p><strong>TÝDNY OTEVŘENÝCH DVEŘÍ.</strong> Nábor nových žáků na druhé pololetí začíná. První i druhý týden v únoru se můžete vy i vaše děti přijít podívat, a třeba si i na zkoušku zacvičit aikidó nebo jógu.</p></div>
+            <div class="post__text"><p><strong>TÝDNY OTEVŘENÝCH DVEŘÍ.</strong> Nábor nových žáků na druhé pololetí začíná. První i druhý týden v únoru se můžete vy i vaše děti přijít podívat, a třeba si i na zkoušku zacvičit aikido nebo jógu.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1251,13 +1265,13 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">listopad 2016</span>
-            <div class="post__text"><p><strong>Nově</strong> zavádíme možnost pro všechny dospělé cvičence Aikidó i Jógy platit měsíčně. <strong>Měsíční poplatek je 800,- Kč.</strong> <strong>PROGRAM START NA CESTĚ -20 %</strong> — <em>Pro koho je program určen?</em> Pro lidi ve věku cca 20–30 let, kteří většinou v tomto věku startují do samostatného života. Tento program se týká také všech nově příchozích nad třicet let, po dobu jejich prvního roku cvičení Aikidó i Jógy. <em>Co tento program obsahuje?</em> <strong>20 %</strong> slevu na kurzovném, viz ceník.</p></div>
+            <div class="post__text"><p><strong>Nově</strong> zavádíme možnost pro všechny dospělé cvičence Aikido i Jógy platit měsíčně. <strong>Měsíční poplatek je 800,- Kč.</strong> <strong>PROGRAM START NA CESTĚ -20 %</strong> — <em>Pro koho je program určen?</em> Pro lidi ve věku cca 20–30 let, kteří většinou v tomto věku startují do samostatného života. Tento program se týká také všech nově příchozích nad třicet let, po dobu jejich prvního roku cvičení Aikido i Jógy. <em>Co tento program obsahuje?</em> <strong>20 %</strong> slevu na kurzovném, viz ceník.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">podzim 2016</span>
-            <div class="post__text"><p><strong>Nábor nových cvičenců Aikidó pro dospělé: každé úterý v září a říjnu od 19.15 h.</strong></p></div>
+            <div class="post__text"><p><strong>Nábor nových cvičenců Aikido pro dospělé: každé úterý v září a říjnu od 19.15 h.</strong></p></div>
           </div>
         </article>
         <article class="post">
@@ -1314,7 +1328,7 @@
             </div>
           <div class="post__body">
             <span class="post__date">23. října 2014</span>
-            <div class="post__text"><p><strong>OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH</strong> proběhla ve <strong>čtvrtek 23. 10. 2014</strong> i s cvičením aikidó pod vedením našeho tehdejšího učitele <strong>Michala Lachima Šípa</strong> (3. dan aikikai).</p></div>
+            <div class="post__text"><p><strong>OSLAVA VÝROČÍ 10 LET AIKIDA V ŘÍČANECH</strong> proběhla ve <strong>čtvrtek 23. 10. 2014</strong> i s cvičením aikida pod vedením našeho tehdejšího učitele <strong>Michala Lachima Šípa</strong> (3. dan aikikai).</p></div>
           </div>
         </article>
         <article class="post">
@@ -1342,7 +1356,7 @@
                       <img src="assets/tabor-komiks-origami.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">7.–11. července 2014</span>
-            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY</strong> Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikidó a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: <strong>7. 7.–11. 7. 2014</strong>, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.</p></div>
+            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR POŘÁDANÝ os. AIKIDO KENKYUKAI ŘÍČANY</strong> Letošní prázdniny budou mít děti znovu možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlety do okolní přírody a návštěva indiánského týpí, vaření na ohni, táborové hry a jiné tábornické dovednosti. Děti povede nejoblíbenější lektorka a dva asistenti z minulých prázdnin. Strava: oběd a dvě svačiny, pitný režim. Termín: <strong>7. 7.–11. 7. 2014</strong>, 8:30–9:00 odevzdání dětí na Dojo, 16:30–17:00 vyzvednutí. Ceny: celý týden do konce června 2 700,- Kč; záloha 1 700,- do konce května — sleva 200,- Kč, doplatek v pondělí. Jeden den: 800,- Kč. Koordinátorka: Karolína, tel. 604 731 322, e-mail carol.ho@volny.cz.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1366,7 +1380,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">26.–30. srpna 2013</span>
-            <div class="post__text"><p>Poslední týden v srpnu (od 26. do 30. 8.) se opět koná <strong>Aikidó tábor pro děti</strong>.</p></div>
+            <div class="post__text"><p>Poslední týden v srpnu (od 26. do 30. 8.) se opět koná <strong>Aikido tábor pro děti</strong>.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1385,13 +1399,13 @@
                       <img src="assets/dite25.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">2012–2013</span>
-            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR</strong> pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikidó a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: <strong>carol.ho@volny.cz</strong> (tel. 604 731 322).</p></div>
+            <div class="post__text"><p><strong>PŘÍMĚSTSKÝ TÁBOR</strong> pořádaný AIKIDO KENKYUKAI ŘÍČANY o.s. Letošní prázdniny budou mít děti poprvé možnost prožít volné dny u nás v DOJO NA CESTĚ při cvičení a hrách na téma Aikido a Jóga. Mohou se těšit např. na kaligrafii (na konci týdne každé dítě dostane tričko, na které si samo vytvoří kaligrafii AIKIDO), skládání origami, hry na téma telepatie a práce s energií. Také míčové hry, stolní tenis a bedminton u nás v DOJO. Za pěkného počasí výlet na kole cca 2 km a koupání v bazénu, návštěva indiánského týpí, vaření na ohni a jiné tábornické dovednosti. Kontakt s domácími zvířaty — ovce, koza, poník, oslík. Děti povedou lektoři a lektorky, kteří u nás pracují s dětmi již mnoho let. Strava: oběd a dvě svačiny, pitný režim. Termíny: všechny prázdninové týdny mimo prvního a posledního, vždy po–pá; 7:30–9:00 odevzdání, 16:00–17:00 vyzvednutí. Ceny: celý týden 2 500,- Kč; záloha 1 500,- do konce května — sleva 300,- Kč. Jeden den: 700,- Kč. Č. ú. pro zálohy: 2338507043/0800. Přihlášení: přihláškou nebo e-mailem koordinátorce Karolíně: <strong>carol.ho@volny.cz</strong> (tel. 604 731 322).</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">2013</span>
-            <div class="post__text"><p>Aktuální stáže aikidó v Praze a okolí: Ulli Kubetzek (6. dan) So 6. 4. – Ne 7. 4. 2013, ČFA, Lublaňská 20, Praha 2. Bernard Caloz (6. dan) So 11. 5. – Ne 12. 5. 2013, ČAA, Na Balkáně 812, Praha 3.</p></div>
+            <div class="post__text"><p>Aktuální stáže aikida v Praze a okolí: Ulli Kubetzek (6. dan) So 6. 4. – Ne 7. 4. 2013, ČFA, Lublaňská 20, Praha 2. Bernard Caloz (6. dan) So 11. 5. – Ne 12. 5. 2013, ČAA, Na Balkáně 812, Praha 3.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1408,7 +1422,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">2012</span>
-            <div class="post__text"><p>Cvičení <strong>Aikidó pro předškolní děti a prvňáčky</strong> (cca 4–7 let) <strong>PÍĎATA</strong> opět začíná. Každé <strong>úterý nebo čtvrtek</strong> od září, vždy <strong>od 16:00 do 17:00 h</strong>.</p></div>
+            <div class="post__text"><p>Cvičení <strong>Aikido pro předškolní děti a prvňáčky</strong> (cca 4–7 let) <strong>PÍĎATA</strong> opět začíná. Každé <strong>úterý nebo čtvrtek</strong> od září, vždy <strong>od 16:00 do 17:00 h</strong>.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1420,7 +1434,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">13.–31. srpna 2012</span>
-            <div class="post__text"><p>V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal <strong>Aikidó tábor pro děti</strong>.</p></div>
+            <div class="post__text"><p>V srpnu 2012 (ve třech termínech, od 13. do 31. 8.) se konal <strong>Aikido tábor pro děti</strong>.</p></div>
             <a class="post__doc" href="assets/prazdniny-2012.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Příměstský tábor 2012 (PDF)</a>
           </div>
         </article>
@@ -1435,19 +1449,19 @@
             </div>
           <div class="post__body">
             <span class="post__date">leden 2012</span>
-            <div class="post__text"><p>V sobotu 21. ledna 2012 proběhla na Balkáně <strong>dětská stáž Aikidó</strong>.</p></div>
+            <div class="post__text"><p>V sobotu 21. ledna 2012 proběhla na Balkáně <strong>dětská stáž Aikido</strong>.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">listopad 2011</span>
-            <div class="post__text"><p>Aikidó Říčany a Dojo Na Cestě Vás srdečně zvou na <strong>PIKNIK NA CESTĚ v pátek 9. listopadu 2011</strong> (předvečer úplňku) <strong>od 19.30</strong>. Večerem Vás budou provázet Miroslav Píďa Skala (kytara, zpěv) a Štěpán Holoubek (rytmika). Vezměte si s sebou piknikové košíky (plné), deky na sezení a pestrobarevné oblečení. Vstupné dobrovolné. Výtěžek bude použit na zřízení tematické knihovny — filozofie, spiritualita, jóga, aikidó, tchaj-ťi. Hodně štěstí a zdraví Vám přeje občanské sdružení Aikidó Kenkyukai Říčany.</p></div>
+            <div class="post__text"><p>Aikido Říčany a Dojo Na Cestě Vás srdečně zvou na <strong>PIKNIK NA CESTĚ v pátek 9. listopadu 2011</strong> (předvečer úplňku) <strong>od 19.30</strong>. Večerem Vás budou provázet Miroslav Píďa Skala (kytara, zpěv) a Štěpán Holoubek (rytmika). Vezměte si s sebou piknikové košíky (plné), deky na sezení a pestrobarevné oblečení. Vstupné dobrovolné. Výtěžek bude použit na zřízení tematické knihovny — filozofie, spiritualita, jóga, aikido, tchaj-ťi. Hodně štěstí a zdraví Vám přeje občanské sdružení Aikido Kenkyukai Říčany.</p></div>
           </div>
         </article>
         <article class="post">
           <div class="post__body">
             <span class="post__date">1. listopadu 2011</span>
-            <div class="post__text"><p><strong>Cvičení Aikidó pro předškolní děti začíná.</strong> Od prvního úterý v listopadu, tj. 1. 11., začínáme cvičení na téma Aikidó a Jóga pro předškolní děti cca 4–6 let, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Cvičení bude probíhat zatím jednou týdně, <strong>každé úterý</strong>, vždy <strong>od 15.00 do 16.00 h</strong>. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky, a také se zbavovat strachu a získávat větší sebejistotu. Cena: 2 200,- do konce školního roku, nebo 150,- jedno cvičení.</p></div>
+            <div class="post__text"><p><strong>Cvičení Aikido pro předškolní děti začíná.</strong> Od prvního úterý v listopadu, tj. 1. 11., začínáme cvičení na téma Aikido a Jóga pro předškolní děti cca 4–6 let, s učitelem, který u nás cvičí s dětmi již od počátků našeho sdružení a je certifikovaným lektorem jógy. Cvičení bude probíhat zatím jednou týdně, <strong>každé úterý</strong>, vždy <strong>od 15.00 do 16.00 h</strong>. Děti si tak budou zvykat na práci v kolektivu a získávat správné morální a etické návyky, a také se zbavovat strachu a získávat větší sebejistotu. Cena: 2 200,- do konce školního roku, nebo 150,- jedno cvičení.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1459,7 +1473,7 @@
         <article class="post">
           <div class="post__body">
             <span class="post__date">červen 2011</span>
-            <div class="post__text"><p>V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikidó, tchaj-ťi čchüan, jóga a aikidó dětí), a ty byly umístěny na příslušné podstránky.</p></div>
+            <div class="post__text"><p>V červnu proběhlo další natáčení, ze kterého vznikly čtyři samostatné filmy (aikido, tchaj-ťi čchüan, jóga a aikido dětí), a ty byly umístěny na příslušné podstránky.</p></div>
             <a class="post__doc" href="#slide-4" data-goto="4"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>Videa v Galerii</a>
           </div>
         </article>
@@ -1504,7 +1518,7 @@
                       <img src="assets/2010-seminar-5let.jpg" alt="" loading="lazy">
           <div class="post__body">
             <span class="post__date">20.–21. března 2010</span>
-            <div class="post__text"><p>O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikidó v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.</p></div>
+            <div class="post__text"><p>O víkendu 20.–21. 3. 2010 proběhl u příležitosti oslavy 5 let cvičení Aikido v Říčanech SEMINÁŘ pod vedením učitelů R. Skupého (3. dan), M. Kodyma (5. dan) a R. Růžičky (4. dan). Fotografie by se tu měly brzy objevit.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1533,7 +1547,7 @@
           <div class="post__body">
             <span class="post__marker" aria-hidden="true"></span>
             <span class="post__date">Září 2004</span>
-            <div class="post__text"><p>Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikidó i jóga představují.</p></div>
+            <div class="post__text"><p>Skupina nadšenců přeměnila bývalou tiskařskou halu na cvičební prostor. Vzniklo tak dójó, které neslo jméno „Na Cestě", podle cesty (dó), kterou aikido i jóga představují.</p></div>
           </div>
         </article>
         <article class="post">
@@ -1618,9 +1632,8 @@
             <p class="lede" style="margin-bottom:0.9rem;">Na dójó Na Cestě cvičíme Rádža jógu, tradiční systém jógy zaměřený na práci s tělem, dechem a myslí. Cvičení je vhodné pro každého a nevyžaduje žádné speciální vybavení &mdash; stačí pohodlné oblečení a chuť cvičit. Pravidelná praxe přináší:</p>
             <ul>
               <li>lepší kondici a sílu</li>
-              <li>lepší krevní oběh a soustředění</li>
+              <li>lepší soustředění</li>
               <li>kvalitnější odpočinek a spánek</li>
-              <li>podporu imunity</li>
               <li>lepší vnímání vlastního těla</li>
             </ul>
           </div>
@@ -1758,7 +1771,7 @@
       <div class="chapter-first-screen">
       <span class="kicker">五 &middot; Galerie</span>
       <h2 class="h2">Ze života dójó.</h2>
-      <p class="lede">Podívejte se, jak trénujeme.</p>
+      <p class="lede">Podívejte se, jak žijeme.</p>
       <div class="chapter-body">
       <div class="gal-stage">
         <div class="deck" id="galDeck" tabindex="0" role="group" aria-roledescription="balíček sbírek" aria-label="Sbírky fotografií — kolečkem nebo tažením listuješ, klikem otevřeš celou sbírku">
@@ -1881,6 +1894,7 @@
     <div class="slide__inner slide__inner--top slide__inner--fill">
       <span class="kicker">六 &middot; Kontakt</span>
       <h2 class="h2">Přijďte se podívat. Nezavazuje vás to.</h2>
+      <p class="lede">Na první trénink můžete přijít bez předchozí domluvy.</p>
       <div class="chapter-body">
       <div class="kontakt">
         <div>
