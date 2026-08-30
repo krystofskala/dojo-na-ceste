@@ -839,6 +839,19 @@
     width: 100%; height: 100%; object-fit: cover;
     border-radius: 8px; display: block; cursor: zoom-in;
   }
+  /* Collections that span several years (Koláčová soutěž): a year heading
+     before each year's photos, newest on top. The container is no longer
+     the grid itself — each year is its own bento block, so a year's tiles
+     never bleed into the next year's row. These collections always scroll. */
+  .gal-modal__bento--sectioned { display: block; }
+  .gal-modal__bento--sectioned .gal-modal__bento {
+    grid-auto-rows: clamp(4.5rem, 13vw, 8rem); margin-bottom: 1.1rem;
+  }
+  .gal-modal__year {
+    margin: 1.1rem 0 0.5rem; font-size: var(--text-caption); font-weight: 600;
+    letter-spacing: 0.04em; color: var(--ink-soft);
+  }
+  .gal-modal__bento--sectioned > .gal-modal__year:first-child { margin-top: 0; }
 
   /* "Všechny sbírky" — a plain grid of all collection covers. */
   .deck__all {
@@ -1646,33 +1659,45 @@
       <div class="chapter-body">
       <div class="gal-stage">
         <div class="deck" id="galDeck" tabindex="0" role="group" aria-roledescription="balíček sbírek" aria-label="Sbírky fotografií — kolečkem nebo tažením listuješ, klikem otevřeš celou sbírku">
-          <div class="deck__card" data-slug="soustredeni-2025" data-n="9" data-ext="jpg">
-            <img src="assets/gal-soustredeni.jpg" alt="Letní soustředění se senseiem Hiroshi Tada" loading="lazy">
-            <div class="deck__cap"><b>Soustředění 2025</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="soustredeni-2025" data-n="12" data-ext="jpg">
+            <img src="assets/gal-soustredeni-2025.jpg" alt="Soustředění 2025" loading="lazy">
+            <div class="deck__cap"><b>Soustředění 2025</b><span>12 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="10-let-vyroci" data-n="9" data-ext="jpg">
-            <img src="assets/gal-vyroci.jpg" alt="10 let výročí" loading="lazy">
-            <div class="deck__cap"><b>10 let výročí</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="10-let-vyroci" data-n="26" data-ext="jpg">
+            <img src="assets/gal-10-let-vyroci.jpg" alt="10 let výročí" loading="lazy">
+            <div class="deck__cap"><b>10 let výročí</b><span>26 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="primestsky-tabor" data-n="9" data-ext="jpg">
-            <img src="assets/gal-tabor.jpg" alt="Příměstský tábor" loading="lazy">
-            <div class="deck__cap"><b>Příměstský tábor</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="primestsky-tabor" data-n="40" data-ext="jpg">
+            <img src="assets/gal-primestsky-tabor.jpg" alt="Příměstský tábor" loading="lazy">
+            <div class="deck__cap"><b>Příměstský tábor</b><span>40 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="detsky-trenink" data-n="9" data-ext="jpg">
-            <img src="assets/gal-detsky.jpg" alt="Dětský trénink" loading="lazy">
-            <div class="deck__cap"><b>Dětský trénink</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="detsky-trenink" data-n="14" data-ext="jpg">
+            <img src="assets/gal-detsky-trenink.jpg" alt="Dětský trénink" loading="lazy">
+            <div class="deck__cap"><b>Dětský trénink</b><span>14 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="kolacova-soutez-2014" data-n="9" data-ext="jpg">
-            <img src="assets/gal-kolace.jpg" alt="Koláčová soutěž 2014" loading="lazy">
-            <div class="deck__cap"><b>Koláčová soutěž</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="kolacova-soutez" data-n="17" data-ext="jpg" data-sections="2014:13,2012:3,2011:1">
+            <img src="assets/gal-kolacova-soutez.jpg" alt="Koláčová soutěž" loading="lazy">
+            <div class="deck__cap"><b>Koláčová soutěž</b><span>17 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="detsky-den" data-n="6" data-ext="jpg">
-            <img src="assets/gal-detskyden.jpg" alt="Dětský den" loading="lazy">
-            <div class="deck__cap"><b>Dětský den</b><span>6 fotografií</span></div>
+          <div class="deck__card" data-slug="detsky-den" data-n="7" data-ext="jpg">
+            <img src="assets/gal-detsky-den.jpg" alt="Dětský den" loading="lazy">
+            <div class="deck__cap"><b>Dětský den</b><span>7 fotografií</span></div>
           </div>
-          <div class="deck__card" data-slug="aikivandr-2020" data-n="9" data-ext="png">
-            <img src="assets/gal-aikivandr.png" alt="Aikivandr 2020" loading="lazy">
-            <div class="deck__cap"><b>Aikivandr 2020</b><span>9 fotografií</span></div>
+          <div class="deck__card" data-slug="aikivandr-2020" data-n="16" data-ext="jpg">
+            <img src="assets/gal-aikivandr-2020.jpg" alt="Aikivandr 2020" loading="lazy">
+            <div class="deck__cap"><b>Aikivandr 2020</b><span>16 fotografií</span></div>
+          </div>
+          <div class="deck__card" data-slug="aikivandr-na-chate" data-n="5" data-ext="jpg">
+            <img src="assets/gal-aikivandr-na-chate.jpg" alt="Aikivandr na chatě" loading="lazy">
+            <div class="deck__cap"><b>Aikivandr na chatě</b><span>5 fotografií</span></div>
+          </div>
+          <div class="deck__card" data-slug="vanocni-caj" data-n="9" data-ext="jpg">
+            <img src="assets/gal-vanocni-caj.jpg" alt="Vánoční čaj" loading="lazy">
+            <div class="deck__cap"><b>Vánoční čaj</b><span>9 fotografií</span></div>
+          </div>
+          <div class="deck__card" data-slug="aikido-dospeli" data-n="9" data-ext="jpg">
+            <img src="assets/gal-aikido-dospeli.jpg" alt="Aikido dospělí" loading="lazy">
+            <div class="deck__cap"><b>Aikido dospělí</b><span>9 fotografií</span></div>
           </div>
         </div>
         <p class="deck__hint"><span class="deck__count" id="galDeckCount" aria-hidden="true"></span>Kolečkem nebo tažením listuješ sbírkami. Klikni na sbírku pro všechny fotky.</p>
@@ -2468,13 +2493,17 @@
     /* One record per collection, read off the deck cards. Both the deck and
        the "all collections" grid open a collection from these. */
     var COLLECTIONS = cards.map(function (c) {
+      var sec = c.getAttribute('data-sections');   // "2014:13,2012:3,2011:1"
       return {
         slug: c.getAttribute('data-slug'),
         n: parseInt(c.getAttribute('data-n'), 10) || 0,
         ext: c.getAttribute('data-ext') || 'jpg',
         title: c.querySelector('.deck__cap b').textContent,
         count: c.querySelector('.deck__cap span').textContent,
-        cover: c.querySelector('img').getAttribute('src')
+        cover: c.querySelector('img').getAttribute('src'),
+        sections: sec ? sec.split(',').map(function (p) {
+          var kv = p.split(':'); return { label: kv[0].trim(), n: parseInt(kv[1], 10) || 0 };
+        }) : null
       };
     });
 
@@ -2707,6 +2736,7 @@
         modalCard.classList.toggle('can-scroll', modalCard.scrollHeight > modalCard.clientHeight + 4);
       });
     }
+    function imgTag(it) { return '<img src="' + it.src + '" alt="' + it.alt.replace(/"/g, '&quot;') + '">'; }
     function openCollection(coll) {
       if (!coll) return;
       var items = [];
@@ -2718,18 +2748,46 @@
       }
       modalTitle.textContent = coll.title;
       modalSub.textContent = coll.n + plural(coll.n);
-      modalBento.innerHTML = items.map(function (it) {
-        return '<img src="' + it.src + '" alt="' + it.alt.replace(/"/g, '&quot;') + '">';
-      }).join('');
+
+      var sectioned = coll.sections && coll.sections.length > 1;
+      modalBento.classList.toggle('gal-modal__bento--sectioned', !!sectioned);
+      if (sectioned) {
+        var html = '', at = 0;
+        coll.sections.forEach(function (sec) {
+          html += '<h4 class="gal-modal__year">' + sec.label + '</h4><div class="gal-modal__bento">';
+          for (var s = 0; s < sec.n && at < items.length; s++, at++) html += imgTag(items[at]);
+          html += '</div>';
+        });
+        modalBento.innerHTML = html;
+      } else {
+        modalBento.innerHTML = items.map(imgTag).join('');
+      }
       var imgs = Array.prototype.slice.call(modalBento.querySelectorAll('img'));
       imgs.forEach(function (im, i) { im.addEventListener('click', function () { openLightbox(items, i); }); });
       modalCard.classList.remove('can-scroll', 'is-scrolled');
-      var pending = imgs.length;
-      function done() { if (--pending <= 0) fitBento(tileBento(imgs)); }
+
+      var pending = imgs.length || 1;
+      function done() {
+        if (--pending > 0) return;
+        if (sectioned) {
+          Array.prototype.forEach.call(modalBento.querySelectorAll('.gal-modal__bento'), function (grid) {
+            tileBento(Array.prototype.slice.call(grid.querySelectorAll('img')));
+          });
+          requestAnimationFrame(function () {
+            modalCard.classList.remove('is-scrolled');
+            modalCard.scrollTop = 0;
+            modalCard.classList.toggle('can-scroll', modalCard.scrollHeight > modalCard.clientHeight + 4);
+          });
+        } else {
+          fitBento(tileBento(imgs));
+        }
+      }
       imgs.forEach(function (im) {
         if (im.complete && im.naturalWidth) done();
         else { im.addEventListener('load', done); im.addEventListener('error', done); }
       });
+      if (!imgs.length) done();
+
       modalReturn = document.activeElement;
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
@@ -2739,6 +2797,7 @@
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
       modalBento.innerHTML = '';
+      modalBento.classList.remove('gal-modal__bento--sectioned');
       if (modalReturn && modalReturn.focus) modalReturn.focus();
     }
     modalCard.addEventListener('scroll', function () {
