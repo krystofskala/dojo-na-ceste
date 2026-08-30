@@ -340,13 +340,13 @@
   .lightbox__nav--prev { left: 0.2rem; }
   .lightbox__nav--next { right: 0.2rem; }
   .lightbox__nav[hidden] { display: none; }
-  .lightbox__close, .course-popup__close {
+  .lightbox__close, .course-popup__close, .gal-modal__close {
     display: flex; align-items: center; justify-content: center;
     width: 2.75rem; height: 2.75rem; border-radius: 50%;
     border: none; background: rgba(24,35,56,0.08); font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--navy);
     transition: background 150ms var(--ease);
   }
-  .lightbox__close:hover, .course-popup__close:hover { background: rgba(24,35,56,0.16); }
+  .lightbox__close:hover, .course-popup__close:hover, .gal-modal__close:hover { background: rgba(24,35,56,0.16); }
   .lightbox__close { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 3; }
   .lightbox__strip {
     flex: none; display: flex; gap: 0.5rem; overflow-x: auto;
@@ -803,7 +803,9 @@
     border-radius: 16px; padding: clamp(1.2rem, 3vw, 2rem);
     box-shadow: 0 40px 90px rgba(0,0,0,0.5);
     transform: scale(0.97); transition: transform 200ms var(--ease);
+    scrollbar-width: none;   /* same as #hub / .slide — no visible bars */
   }
+  .gal-modal__card::-webkit-scrollbar { display: none; }
   .gal-modal.is-open .gal-modal__card { transform: none; }
   .gal-modal__title { font-size: var(--text-heading); margin: 0 0 0.2rem; }
   .gal-modal__sub { font-size: var(--text-caption); color: var(--ink-soft); margin: 0 0 1.3rem; }
