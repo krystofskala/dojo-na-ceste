@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
 <title>Dójó Na Cestě · nenásilná cesta</title>
 <meta name="description" content="Aikido a jóga v Říčanech od roku 2004. Kronika, komiksy od kamaráda, kurzy podle věku, rozpis, galerie a kontakt.">
 <!-- Two variants, not one: on first paint (before the JS below has run —
@@ -2155,6 +2156,33 @@
       goto(i);
     });
   });
+
+  /* Deep links: /#slide-3, or a named chapter like /#kontakt. Used by
+     404.html to land visitors from the old multi-page URLs on the right
+     chapter; also makes those anchors shareable. */
+  var HASH_MAP = {
+    domu: 0, aktuality: 0, cesta: 1, 'o-nas': 1, 'pro-koho': 2, kurzy: 2,
+    'kdy-prijit': 3, rozpis: 3, cenik: 3, galerie: 4, kresba: 4, kontakt: 5
+  };
+  function slideFromHash() {
+    var h = (location.hash || '').replace(/^#/, '').toLowerCase();
+    if (!h) return -1;
+    var m = h.match(/^slide-(\d+)$/);
+    if (m) { var n = parseInt(m[1], 10); return n >= 0 && n < slides.length ? n : -1; }
+    return h in HASH_MAP ? HASH_MAP[h] : -1;
+  }
+  (function () {
+    var i = slideFromHash();
+    if (i < 0) return;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { hub.scrollLeft = slides[i].offsetLeft; syncChrome(); });
+    });
+  })();
+  window.addEventListener('hashchange', function () {
+    var i = slideFromHash();
+    if (i >= 0 && i !== activeIndex()) goto(i);
+  });
+
   arrowLeft.addEventListener('click', function () { goto(activeIndex() - 1); });
   arrowRight.addEventListener('click', function () { goto(activeIndex() + 1); });
   arrowDown.addEventListener('click', function () {
