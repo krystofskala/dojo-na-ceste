@@ -153,56 +153,51 @@
      Top chrome: mark + dots. Fixed over the whole hub, colour follows
      whichever slide is currently active (see JS).
   --------------------------------------------------------------------- */
-  /* ONE bar, ONE set of glyphs. As the hub scrolls between two chapters
-     their backgrounds meet at a vertical seam travelling across the
-     viewport; the bar's text is filled with a single horizontal gradient
-     whose hard colour change sits exactly on that seam — left of it the
-     outgoing chapter's ink (+ its active numeral in accent), right of it
-     the incoming chapter's. Because it is one gradient on one text layer,
-     nothing can double or ghost. paintTopbar() rebuilds that gradient each
-     frame (just the stop positions move). The scrim is a separate masked
-     strip that carries the same seam via --seam. */
+  /* Two identical faces in one fixed container. As the hub scrolls between
+     two chapters their real backgrounds meet at a vertical seam travelling
+     across the viewport; the bar is painted as if that seam cut through
+     it. Face A wears the chapter LEFT of the seam, face B the one on its
+     RIGHT (ink, accent hue, active numeral, scrim colour, all set from JS,
+     only when the chapter pair changes). paintTopbar() clips them into
+     COMPLEMENTARY halves at the seam (A keeps [0..seam], B keeps
+     [seam..100%]) so their visible areas never overlap: transparent glyphs
+     have nothing behind them to ghost against, and a glyph the seam is
+     crossing is exactly half each chapter. Settled = seam at 100%: face A
+     is the whole bar, face B clipped to nothing. Only the seam moves per
+     frame. */
   .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     height: 3.9rem; pointer-events: none;
-    --seam: 100vw;
   }
-  .topbar__scrim {
-    position: absolute; left: 0; right: 0; top: 0; height: 3.75rem; pointer-events: none;
-    background-image: linear-gradient(90deg,
-      var(--scrim-a, #F7F4EC) var(--seam), var(--scrim-b, #F7F4EC) var(--seam));
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 92%);
-            mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 92%);
-  }
-  .topbar__ink {
-    position: absolute; left: 0; right: 0; top: 0;
+  .topbar__face {
+    position: absolute; top: 0; left: 0; right: 0;
     display: flex; align-items: flex-start; justify-content: space-between;
-    padding: 1rem var(--gutter) 0;
-    color: var(--ink, #182338);           /* readable fallback if JS never runs */
+    /* the bottom padding is the scrim's fade runway: the gradient (set
+       inline per face) spans the padding box then stops, so the dimming
+       reaches just below the text, not down into the page content */
+    padding: 1rem var(--gutter) 2.3rem;
+    color: var(--face-ink, #182338);
     background-repeat: no-repeat;
-    background-origin: border-box;          /* gradient px stops = viewport px */
   }
-  .topbar__ink.is-split {
-    color: transparent;
-    -webkit-background-clip: text; background-clip: text;
-    background-image: var(--ink-grad, none);
-  }
-  .topbar__ink .topbar__mark,
-  .topbar__ink .navlink { pointer-events: auto; }
+  .topbar__face--a .topbar__mark,
+  .topbar__face--a .navlink { pointer-events: auto; }
+  .topbar__face--b,
+  .topbar__face--b .navlinks,
+  .topbar__face--b .navlink,
+  .topbar__face--b .topbar__mark { pointer-events: none; }
   .topbar__mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: inherit; }
-  /* woodcut mark, masked so it takes the same ink as the wordmark; it sits
-     far left, where the seam only ever is in the settled zone, so it flips
-     as a unit (--mark-ink) rather than splitting */
+  /* Recolored via mask instead of filter: invert()/brightness() pushed the
+     fine woodcut hatching to blown-out pure black/white with no tone left
+     in it. Masking the artwork's own alpha with background:currentColor
+     paints it in the same ink as the wordmark, so it splits at the seam. */
   .topbar__mark-icon {
-    display: block; width: 26px; height: 26px; border-radius: 5px; flex: none;
-    background-color: var(--mark-ink, #182338);
+    display: block; width: 26px; height: 26px; border-radius: 5px; background-color: currentColor;
     -webkit-mask-image: url('assets/mark.gif'); mask-image: url('assets/mark.gif');
     -webkit-mask-size: contain; mask-size: contain;
     -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     -webkit-mask-position: center; mask-position: center;
   }
-  .topbar__ink.is-split .topbar__mark-icon { background-color: var(--mark-ink, #182338); }
-  .topbar__mark span { font-family: var(--font-text); font-size: var(--text-caption); letter-spacing: 0.06em; text-transform: uppercase; }
+  .topbar__mark span { font-family: var(--font-text); font-size: var(--text-caption); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
   /* Side arrows: real navigation tools, not just a scroll hint. Click to
      move a chapter; hovering in their zone also redirects the wheel there
      even mid-way through reading a tall chapter (see the JS wheel handler). */
@@ -358,13 +353,21 @@
   .navlink {
     display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
     color: inherit; font-family: var(--font-text); font-size: var(--text-kicker); letter-spacing: 0.01em;
-    padding: 0.3rem 0.1rem; transition: transform 180ms var(--ease);
+    padding: 0.3rem 0.1rem; opacity: 0.6; transition: opacity 180ms var(--ease), transform 180ms var(--ease);
   }
   .navlink__kanji { font-family: var(--font-kanji); font-size: 1rem; line-height: 1; flex: none; }
-  .navlink:hover, .navlink:focus-visible { transform: translateY(-1px); }
-  /* dim/bright/accent per numeral all come from the single text gradient
-     (see paintTopbar) — no per-element colour or opacity here, so a glyph
-     the seam crosses is one glyph, half each colour, never doubled */
+  .navlink:hover, .navlink:focus-visible { opacity: 1; transform: translateY(-1px); }
+  /* Hover + "you are here" both use the face's own accent (red on a light
+     chapter, gold on a dark one) — set on the face from JS as --face-accent
+     so it splits at the seam like everything else. No font-weight change on
+     active: the two faces must stay metric-identical or a glyph the seam
+     crosses would jump. */
+  .navlink:hover .navlink__kanji, .navlink:focus-visible .navlink__kanji,
+  .navlink:hover .navlink__label, .navlink:focus-visible .navlink__label {
+    color: var(--face-accent, var(--red));
+  }
+  .navlink.is-active { opacity: 1; }
+  .navlink.is-active .navlink__kanji { color: var(--face-accent, var(--red)); }
   @media (max-width: 900px) {
     /* only the word, not the numeral — .navlink span used to hit both,
        which blanked the whole nav on phones. */
@@ -841,8 +844,7 @@
 <body>
 
 <div class="topbar">
-<div class="topbar__scrim" aria-hidden="true"></div>
-<nav class="topbar__ink" aria-label="Kapitoly">
+<nav class="topbar__face topbar__face--a" aria-label="Kapitoly">
   <a class="topbar__mark" href="#slide-0" data-goto="0">
     <span class="topbar__mark-icon" aria-hidden="true"></span>
     <span>Dójó Na Cestě</span>
@@ -875,7 +877,6 @@
   </ul>
 </nav>
 </div>
-<!-- /topbar -->
 
 
 <div class="side-arrow-zone side-arrow-zone--left" data-zone="left"></div>
@@ -1741,29 +1742,39 @@
   var groundBg = { paper: '#F7F4EC', 'paper-alt': '#EFE8D9', navy: '#182338', 'navy-deep': '#101828' };
   var groundInk = { paper: '#182338', 'paper-alt': '#182338', navy: '#F5EBDD', 'navy-deep': '#F5EBDD' };
 
-  /* Top bar: ONE bar, its text filled by a single horizontal gradient
-     whose hard colour switch rides the chapter seam. No layers, no clones,
-     nothing that can double. See paintTopbar(). */
+  /* Top bar: two faces in one container. Face A (authored, interactive)
+     wears the chapter left of the seam; face B (a clone, inert) wears the
+     one on its right. paintTopbar() clips them into complementary halves
+     at the moving seam — see the .topbar CSS comment. Each face's scrim is
+     a short fade of its own ground colour so it splits at the same seam. */
   var topbar = document.querySelector('.topbar');
-  var topInk = topbar.querySelector('.topbar__ink');
-  var topMark = topbar.querySelector('.topbar__mark');
-  var topScrim = topbar.querySelector('.topbar__scrim');
-  var navEls = Array.prototype.slice.call(topbar.querySelectorAll('.navlink'));
+  var faceA = topbar.querySelector('.topbar__face--a');
+  var faceB = faceA.cloneNode(true);
+  faceB.className = 'topbar__face topbar__face--b';
+  faceB.setAttribute('aria-hidden', 'true');
+  faceB.removeAttribute('aria-label');
+  faceB.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+  faceB.querySelectorAll('[data-goto]').forEach(function (el) { el.removeAttribute('data-goto'); el.tabIndex = -1; });
+  topbar.appendChild(faceB);
+  var faceLinksA = Array.prototype.slice.call(faceA.querySelectorAll('.navlink'));
+  var faceLinksB = Array.prototype.slice.call(faceB.querySelectorAll('.navlink'));
 
-  // rgba() ink strings — dim (inactive) and full (wordmark / active label)
-  var inkFull = { paper: 'rgba(24,35,56,1)', 'paper-alt': 'rgba(24,35,56,1)', navy: 'rgba(245,235,221,1)', 'navy-deep': 'rgba(245,235,221,1)' };
-  var inkDim  = { paper: 'rgba(24,35,56,.55)', 'paper-alt': 'rgba(24,35,56,.55)', navy: 'rgba(245,235,221,.58)', 'navy-deep': 'rgba(245,235,221,.58)' };
-  var accent  = { paper: '#A63D2C', 'paper-alt': '#A63D2C', navy: '#E9C9A0', 'navy-deep': '#E9C9A0' };
-  var scrimCol = { paper: 'rgba(247,244,236,.82)', 'paper-alt': 'rgba(239,232,217,.82)', navy: 'rgba(24,35,56,.8)', 'navy-deep': 'rgba(16,24,40,.82)' };
+  var scrimByGround = {
+    paper:       'linear-gradient(180deg, rgba(247,244,236,0.95), rgba(247,244,236,0.62) 42%, rgba(247,244,236,0) 100%)',
+    'paper-alt': 'linear-gradient(180deg, rgba(239,232,217,0.95), rgba(239,232,217,0.62) 42%, rgba(239,232,217,0) 100%)',
+    navy:        'linear-gradient(180deg, rgba(24,35,56,0.92), rgba(24,35,56,0.56) 42%, rgba(24,35,56,0) 100%)',
+    'navy-deep': 'linear-gradient(180deg, rgba(16,24,40,0.94), rgba(16,24,40,0.58) 42%, rgba(16,24,40,0) 100%)'
+  };
+  var accentByGround = { paper: 'var(--red)', 'paper-alt': 'var(--red)', navy: 'var(--gold)', 'navy-deep': 'var(--gold)' };
 
-  /* x-ranges (viewport px) of the wordmark and each numeral — the gradient
-     needs them to know where to switch dim ink -> accent. Cached; re-read
-     only on resize and once after webfonts settle. */
-  var geo = { mark: [0, 0], nums: [] };
-  function measureTopbar() {
-    var r = topMark.getBoundingClientRect();
-    geo.mark = [r.left, r.right];
-    geo.nums = navEls.map(function (n) { var b = n.getBoundingClientRect(); return [b.left, b.right]; });
+  /* Restyle a whole face for one chapter — done only when the on-screen
+     chapter pair changes, never per frame. */
+  function dressFace(face, links, ci) {
+    var g = slides[ci].getAttribute('data-ground');
+    face.style.setProperty('--face-ink', groundInk[g] || '#182338');
+    face.style.setProperty('--face-accent', accentByGround[g] || 'var(--red)');
+    face.style.backgroundImage = scrimByGround[g] || 'none';
+    links.forEach(function (n, k) { n.classList.toggle('is-active', k === ci); });
   }
 
   function activeIndex() {
@@ -1794,6 +1805,8 @@
       el.style.color = ink;
       el.style.setProperty('--halo', bg);
     });
+    /* The numerals belong to paintTopbar() — it's the only thing that
+       touches the two faces. */
     arrowLeft.toggleAttribute('disabled', i === 0);
     arrowRight.toggleAttribute('disabled', i === slides.length - 1);
     syncSlideEdges(s);
@@ -1801,60 +1814,27 @@
     document.body.style.backgroundColor = groundBg[ground] || '#F7F4EC';
   }
 
-  /* Paint the bar for the current scroll position. `a = floor(pos)` is the
-     chapter on the left of the seam, `b` the one on its right, `seamPx`
-     the seam's on-screen x. One horizontal gradient fills every glyph:
-     left of the seam it's chapter a's dim ink with an accent bump over
-     chapter a's own numeral; right of the seam, chapter b's. Colours only
-     change when the chapter pair changes; each frame just moves the stops.
-     Nothing is layered, so nothing can ghost, and there is no snapping or
-     scroll nudging — the bar simply shows the honest position. */
-  var lastPair = '';
-  var colA, colB;   // { dim, full, acc, scrim } for the two chapters
+  /* One job: find the seam and clip the two faces into complementary
+     halves at it. `pos` is the scroll position in chapter-widths; its
+     floor `a` is the chapter on the LEFT of the seam, `b = a + 1` the one
+     on the right, and `frac` how far between them (0 at a, 1 at b). The
+     seam sits at (1 - frac) of the viewport from the left. A sub-pixel
+     scroll error just nudges the seam a sub-pixel — still an exact
+     partition — so no epsilon fudge is needed. Faces are re-dressed only
+     when `a` or `b` changes. */
+  var dressedA = -1, dressedB = -1;
   function paintTopbar() {
-    var vw = hub.clientWidth || 1;
-    var pos = hub.scrollLeft / vw;
-    var a = Math.max(0, Math.min(slides.length - 1, Math.floor(pos + 1e-4)));
+    var pos = hub.scrollLeft / (hub.clientWidth || 1);
+    var a = Math.max(0, Math.min(slides.length - 1, Math.floor(pos)));
     var b = Math.min(slides.length - 1, a + 1);
     var frac = Math.min(1, Math.max(0, pos - a));
-    var seam = (1 - frac) * vw;
+    var seam = (1 - frac) * 100;
 
-    var pair = a + '-' + b;
-    if (pair !== lastPair) {
-      lastPair = pair;
-      var gA = slides[a].getAttribute('data-ground'), gB = slides[b].getAttribute('data-ground');
-      colA = { dim: inkDim[gA], full: inkFull[gA], acc: accent[gA], scrim: scrimCol[gA] };
-      colB = { dim: inkDim[gB], full: inkFull[gB], acc: accent[gB], scrim: scrimCol[gB] };
-      topbar.style.setProperty('--scrim-a', colA.scrim);
-      topbar.style.setProperty('--scrim-b', colB.scrim);
-    }
-    topbar.style.setProperty('--seam', seam + 'px');
-    topScrim.style.setProperty('--seam', seam + 'px');
+    if (a !== dressedA) { dressFace(faceA, faceLinksA, a); dressedA = a; }
+    if (b !== dressedB) { dressFace(faceB, faceLinksB, b); dressedB = b; }
 
-    // build the text gradient (all stops in viewport px, left -> right)
-    var s = [];
-    function seg(base, acc, x0, x1) {                 // dim..base then a hard acc block x0..x1
-      if (x1 <= x0) return;
-      s.push(base + ' ' + x0 + 'px', acc + ' ' + x0 + 'px', acc + ' ' + x1 + 'px', base + ' ' + x1 + 'px');
-    }
-    s.push(colA.dim + ' 0px');
-    // wordmark: full-strength ink (left of seam only; it's always far left)
-    seg(colA.dim, colA.full, geo.mark[0], Math.min(geo.mark[1], seam));
-    // chapter a's own numeral, accented, on the a-side
-    var na = geo.nums[a] || [0, 0];
-    seg(colA.dim, colA.acc, na[0], Math.min(na[1], seam));
-    s.push(colA.dim + ' ' + seam + 'px', colB.dim + ' ' + seam + 'px');
-    // wordmark spill onto the b-side (only in the last sliver of a change)
-    seg(colB.dim, colB.full, Math.max(geo.mark[0], seam), geo.mark[1]);
-    // chapter b's own numeral, accented, on the b-side
-    var nb = geo.nums[b] || [0, 0];
-    seg(colB.dim, colB.acc, Math.max(nb[0], seam), nb[1]);
-    s.push(colB.dim + ' ' + vw + 'px');
-    topInk.style.setProperty('--ink-grad', 'linear-gradient(90deg,' + s.join(',') + ')');
-
-    // the mark icon isn't text — flip it as a unit at the seam
-    var markMid = (geo.mark[0] + geo.mark[1]) / 2;
-    topInk.style.setProperty('--mark-ink', (seam > markMid ? colA.full : colB.full));
+    faceA.style.clipPath = 'inset(0 ' + (100 - seam) + '% 0 0)';
+    faceB.style.clipPath = 'inset(0 0 0 ' + seam + '%)';
   }
 
   function syncSlideEdges(s) {
@@ -2000,16 +1980,6 @@
       bottomLine.classList.toggle('is-lit', lit);
     }, { passive: true });
   });
-  /* the ink gradient references cached numeral/wordmark x-ranges — re-read
-     them whenever layout can have shifted (resize, and once webfonts land
-     since they change the numeral widths). */
-  measureTopbar();
-  paintTopbar();                       // fill --ink-grad before we switch text to transparent
-  topInk.classList.add('is-split');
-  window.addEventListener('resize', function () { measureTopbar(); lastPair = ''; syncChrome(); });
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { measureTopbar(); lastPair = ''; syncChrome(); });
-  }
   syncChrome();
 
   /* Pointer-zone navigation: the left/right 12vw strips and the bottom
