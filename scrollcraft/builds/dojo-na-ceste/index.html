@@ -184,13 +184,16 @@
      compositor, so slide A's scrim meets slide B's exactly on the border,
      at any speed, with zero JS in the loop. --ground is the slide's own. */
   .chapter-topscrim {
-    --scrim-h: clamp(3.25rem, 8vh, 4.75rem);
+    --scrim-h: clamp(4rem, 9.5vh, 5.5rem);
     position: sticky; top: 0; z-index: 6; pointer-events: none;
     height: var(--scrim-h);
     margin-bottom: calc(-1 * var(--scrim-h));
+    /* near-solid down past where the bar text sits, then a soft tail so
+       there is never a hard edge into the page content */
     background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ground, transparent) 88%, transparent) 0%,
-      color-mix(in srgb, var(--ground, transparent) 55%, transparent) 40%,
+      color-mix(in srgb, var(--ground, transparent) 96%, transparent) 0%,
+      color-mix(in srgb, var(--ground, transparent) 92%, transparent) 34%,
+      color-mix(in srgb, var(--ground, transparent) 62%, transparent) 60%,
       transparent 100%);
   }
   .topbar__face--a .topbar__mark,
