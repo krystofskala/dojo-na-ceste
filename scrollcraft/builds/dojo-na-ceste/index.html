@@ -530,12 +530,11 @@
   /* The two founding entries, oldest in the whole kronika: given a little
      more weight than an ordinary post since this is where the dojo itself
      begins, not just another announcement. */
-  .post--origin { display: grid; grid-template-columns: 1.1rem 1fr; column-gap: 0.9rem; row-gap: 0.3rem; align-items: start; }
-  .post--origin .post__date { grid-column: 2; margin-bottom: 0.3rem; }
-  .post--origin .post__text { grid-column: 2; }
+  .post--origin .post__body { position: relative; padding-left: 2rem; }
+  .post--origin .post__date { margin-bottom: 0.3rem; }
   .post__marker {
-    grid-column: 1; grid-row: 1 / span 2; width: 1.1rem; height: 1.1rem; border-radius: 50%;
-    border: 2px solid var(--accent); position: relative; margin-top: 0.15rem;
+    position: absolute; left: 0; top: 0.2rem;
+    width: 1.1rem; height: 1.1rem; border-radius: 50%; border: 2px solid var(--accent);
   }
   .post__marker::after { content: ""; position: absolute; inset: 0.24rem; border-radius: 50%; background: var(--accent); }
   /* Post media is normalised by JS (see the Aktuality script) into one of
