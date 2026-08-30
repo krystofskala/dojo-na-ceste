@@ -697,7 +697,11 @@
   .course-popup__body h3 { font-size: var(--text-heading); margin: 0 0 0.6rem; color: var(--navy); }
   .course-popup__body p { display: block; font-size: var(--text-caption); line-height: 1.7; color: #4A5163; margin: 0 0 1.2rem; }
   .course-popup__body .course__age { color: var(--red); }
-  .course-popup__close { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 2; }
+  /* Solid, always-legible: this close button sits over the photo, not the
+     paper card like the other two, so the faint shared background left it
+     invisible against dark parts of the image (worst on mobile). */
+  .course-popup__close { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 2; background: rgba(255,255,255,0.94); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .course-popup__close:hover, .course-popup__close:focus-visible { background: #fff; }
   .cta-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-1); }
   .btn {
     display: inline-block; font-size: var(--text-caption); font-weight: 600; padding: 0.75em 1.4em;
@@ -800,13 +804,22 @@
   @media (max-width: 680px) { .videa__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .videa__tile {
     position: relative; display: block; border-radius: 12px; overflow: hidden; text-decoration: none;
-    aspect-ratio: 4 / 3; background: linear-gradient(160deg, var(--navy), var(--navy-deep));
-    padding: 0.9rem; transition: transform 200ms var(--ease);
+    aspect-ratio: 4 / 3; background: var(--navy-deep); transition: transform 200ms var(--ease);
   }
   .videa__tile:hover, .videa__tile:focus-visible { transform: translateY(-3px); }
-  .videa__tile::before { content: "\25B6"; position: absolute; top: 0.7rem; right: 0.8rem; font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+  .videa__thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 300ms var(--ease); }
+  .videa__tile:hover .videa__thumb, .videa__tile:focus-visible .videa__thumb { transform: scale(1.05); }
+  .videa__tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(16,24,40,0.9) 0%, rgba(16,24,40,0.14) 52%, rgba(16,24,40,0.04) 100%); }
+  .videa__play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;
+    width: 2.6rem; height: 2.6rem; border-radius: 50%; background: rgba(255,255,255,0.92); color: var(--navy-deep);
+    display: flex; align-items: center; justify-content: center; transition: transform 200ms var(--ease);
+  }
+  .videa__play svg { width: 1.05rem; height: 1.05rem; margin-left: 2px; }
+  .videa__tile:hover .videa__play, .videa__tile:focus-visible .videa__play { transform: translate(-50%, -50%) scale(1.09); }
+  .videa__cap { position: absolute; left: 0.85rem; right: 0.85rem; bottom: 0.7rem; z-index: 1; }
   .videa__tile b { display: block; font-weight: 600; font-size: var(--text-caption); color: #fff; }
-  .videa__tile span { font-size: var(--text-micro); color: rgba(245,235,221,0.72); }
+  .videa__cap span { display: block; font-size: var(--text-micro); color: rgba(245,235,221,0.82); }
 
   /* Collection viewer: paper card on a navy wash, a bento of every photo
      in the clicked collection; a photo opens in the shared lightbox. */
@@ -1794,10 +1807,26 @@
         <div class="videa">
           <h3>Videa</h3>
           <div class="videa__row">
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=2adHCm2pe0w" target="_blank" rel="noopener"><b>Dobré Říčany</b><span>Reportáž o dójó Na Cestě</span></a>
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=8YUmP_NH7Rs" target="_blank" rel="noopener"><b>Aikidó děti</b><span>Ukázka tréninku dětského aikidó</span></a>
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=Nz6oTxLYgWg" target="_blank" rel="noopener"><b>Jóga</b><span>Ukázka hodiny jógy na dójó</span></a>
-            <a class="videa__tile" href="https://www.youtube.com/watch?v=XEHJ3qUY4aA" target="_blank" rel="noopener"><b>Aikidó dospělí</b><span>Ukázka tréninku aikidó pro dospělé</span></a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=2adHCm2pe0w" target="_blank" rel="noopener">
+              <img class="videa__thumb" src="assets/video-dobre-ricany.jpg" width="640" height="480" alt="" loading="lazy">
+              <span class="videa__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="videa__cap"><b>Dobré Říčany</b><span>Reportáž o dójó Na Cestě</span></span>
+            </a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=8YUmP_NH7Rs" target="_blank" rel="noopener">
+              <img class="videa__thumb" src="assets/video-aikido-deti.jpg" width="640" height="480" alt="" loading="lazy">
+              <span class="videa__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="videa__cap"><b>Aikidó děti</b><span>Ukázka tréninku dětského aikidó</span></span>
+            </a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=Nz6oTxLYgWg" target="_blank" rel="noopener">
+              <img class="videa__thumb" src="assets/video-joga.jpg" width="640" height="480" alt="" loading="lazy">
+              <span class="videa__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="videa__cap"><b>Jóga</b><span>Ukázka hodiny jógy na dójó</span></span>
+            </a>
+            <a class="videa__tile" href="https://www.youtube.com/watch?v=XEHJ3qUY4aA" target="_blank" rel="noopener">
+              <img class="videa__thumb" src="assets/video-aikido-dospeli.jpg" width="640" height="480" alt="" loading="lazy">
+              <span class="videa__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="videa__cap"><b>Aikidó dospělí</b><span>Ukázka tréninku aikidó pro dospělé</span></span>
+            </a>
           </div>
         </div>
       </div>
@@ -1816,28 +1845,28 @@
           <figure class="komiks-piece">
             <img src="assets/komiks-zluty.jpg" width="835" height="1300" alt="Komiks: chlapec skládá origami, rozzlobený samuraj útočí, chlapec uhýbá a nakonec mu podá jen složený papír">
             <div class="komiks-piece__meta">
-              <img class="komiks-piece__avatar" src="assets/profil-zluty.jpg" width="700" height="485" alt="">
+              <img class="komiks-piece__avatar" src="assets/profil-zluty.jpg" width="1372" height="1600" alt="">
               <figcaption>Chlapec s origami. Uhne, počká, podá papír místo boje.</figcaption>
             </div>
           </figure>
           <figure class="komiks-piece">
             <img src="assets/komiks-cerveny.jpg" width="919" height="1300" alt="Komiks: gejša s růží čelí samurajovu úderu a jen se otočí, meč ji mine">
             <div class="komiks-piece__meta">
-              <img class="komiks-piece__avatar" src="assets/profil-cerveny.jpg" width="700" height="483" alt="">
+              <img class="komiks-piece__avatar" src="assets/profil-cerveny.jpg" width="1131" height="1600" alt="">
               <figcaption>Gejša s růží. Úder ji mine, protože se prostě otočí.</figcaption>
             </div>
           </figure>
           <figure class="komiks-piece">
             <img src="assets/komiks-sedy.jpg" width="1061" height="1500" alt="Komiks: stařec s motýly a samuraj, klidná scéna v šedé">
             <div class="komiks-piece__meta">
-              <img class="komiks-piece__avatar" src="assets/profil-sedy.jpg" width="700" height="360" alt="">
+              <img class="komiks-piece__avatar" src="assets/profil-sedy.jpg" width="1059" height="1500" alt="">
               <figcaption>Děda s motýlem. I samuraj u něj jen na chvíli usedne.</figcaption>
             </div>
           </figure>
           <figure class="komiks-piece">
             <img src="assets/komiks-modry.jpg" width="1052" height="1500" alt="Komiks: modrý samuraj v klidu sedí na rohoži s mečem">
             <div class="komiks-piece__meta">
-              <img class="komiks-piece__avatar" src="assets/profil-modry.jpg" width="691" height="700" alt="">
+              <img class="komiks-piece__avatar" src="assets/profil-modry.jpg" width="1131" height="1600" alt="">
               <figcaption>Samuraj v modré. Meč u boku, ale v klidu.</figcaption>
             </div>
           </figure>
